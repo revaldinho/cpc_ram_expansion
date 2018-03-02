@@ -1,0 +1,27 @@
+# Sample pin assignments only 
+PIN "adr15"	LOC = P1 ;
+PIN "adr14"	LOC = P2 ;
+PIN "iorq_b"	LOC = P3 ;
+PIN "mreq_b"	LOC = P4 ;
+PIN "ramrd_b"	LOC = P5 ;
+PIN "reset_b"	LOC = P6 ;
+PIN "wr_b"	LOC = P7 ;
+
+PIN "ramdis"	LOC = P8 ;
+PIN "ramcs_b"	LOC = P9 ;
+PIN "ramoe_b"	LOC = P11 ;
+PIN "ramwe_b"	LOC = P12 ;                
+PIN "ramadrhi[0]"  LOC = P13 ;
+PIN "ramadrhi[1]"  LOC = P14 ;
+PIN "ramadrhi[2]"  LOC = P18 ;
+PIN "ramadrhi[3]"  LOC = P19 ;
+PIN "ramadrhi[4]"  LOC = P20 ;
+
+PIN "datain[0]"	LOC = P22 ;
+PIN "datain[1]"	LOC = P24 ;
+PIN "datain[2]"	LOC = P25 ;
+PIN "datain[3]"	LOC = P26 ;
+PIN "datain[4]"	LOC = P27 ;
+PIN "datain[5]"	LOC = P28 ;
+PIN "datain[6]"	LOC = P29 ;
+PIN "datain[7]"	LOC = P33 ;
