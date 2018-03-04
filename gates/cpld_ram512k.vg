@@ -10,60 +10,57 @@ module cpld_ram512k ( adr15, adr14, iorq_b, mreq_b, ramrd_b, reset_b, wr_b,
   output [4:0] ramadrhi;
   input adr15, adr14, iorq_b, mreq_b, ramrd_b, reset_b, wr_b;
   output ramdis, ramcs_b, ramoe_b, ramwe_b;
-  wire   blocksel_w, ramblock_q_2_, ramblock_q_1_, ramblock_q_0_, n18, n19,
-         n20, n21, n22, n23, n24, n25, n26, n27, n28, n29, n30, n31, n32, n33,
-         n34, n35, n36, n37, blocksel_n;
+  wire   blocksel_w, blocksel_n, ramblock_q_2_, ramblock_q_1_, ramblock_q_0_, n18, n19,
+         n20, n21, n22, n23, n24, n25, n26, n27, n28, n29, n30, n31, n32, n33, n34, n35;
 
   # Hex posedge triggered D-FF with clear*  74HCT174
-  DFFR  ramblock_q_reg_0_ ( .d(datain[0]), .phi(blocksel_w), .resetb(reset_b), .q(ramblock_q_0_) );
-  DFFR  ramblock_q_reg_1_ ( .d(datain[1]), .phi(blocksel_w), .resetb(reset_b), .q(ramblock_q_1_) );
-  DFFR  ramblock_q_reg_2_ ( .d(datain[2]), .phi(blocksel_w), .resetb(reset_b), .q(ramblock_q_2_) );
-  DFFR  ramblock_q_reg_3_ ( .d(datain[3]), .phi(blocksel_w), .resetb(reset_b), .q(ramadrhi[2]) );
-  DFFR  ramblock_q_reg_4_ ( .d(datain[4]), .phi(blocksel_w), .resetb(reset_b), .q(ramadrhi[3]) );
-  DFFR  ramblock_q_reg_5_ ( .d(datain[5]), .phi(blocksel_w), .resetb(reset_b), .q(ramadrhi[4]) );
+  DFFR U0_0 ( .d(datain[0]), .phi(blocksel_w), .resetb(reset_b), .q(ramblock_q_0_) );
+  DFFR U0_1 ( .d(datain[1]), .phi(blocksel_w), .resetb(reset_b), .q(ramblock_q_1_) );
+  DFFR U0_2 ( .d(datain[2]), .phi(blocksel_w), .resetb(reset_b), .q(ramblock_q_2_) );
+  DFFR U0_3 ( .d(datain[3]), .phi(blocksel_w), .resetb(reset_b), .q(ramadrhi[2]) );
+  DFFR U0_4 ( .d(datain[4]), .phi(blocksel_w), .resetb(reset_b), .q(ramadrhi[3]) );
+  DFFR U0_5 ( .d(datain[5]), .phi(blocksel_w), .resetb(reset_b), .q(ramadrhi[4]) );  
+
+  # Quad NAND2 74HCT00
+  NAND2 U1_0 ( .i0(n22), .i1(n19), .o(ramadrhi[0]) );
+  NAND2 U1_1 ( .i0(ramblock_q_0_), .i1(n21), .o(n23) );
+  NAND2 U1_2 ( .i0(ramblock_q_1_), .i1(n25), .o(n20) );
+  NAND2 U1_3 ( .i0(n23), .i1(n20), .o(ramadrhi[1]) );
+
+  # Quad NAND2 74HCT00
+  NAND2 U2_0 ( .i0(adr15), .i1(n23), .o(n24) );
+  NAND2 U2_1 ( .i0(n27), .i1(n26), .o(n31) );
+  NAND2 U2_2 ( .i0(n32), .i1(n31), .o(ramwe_b) );
+  NAND2 U2_3 ( .i0(n31), .i1(n29), .o(ramcs_b) );
+
+  # Quad NAND2 74HCT00
+  NAND2 U3_0 ( .i0(ramrd_b), .i1(n28), .o(n29) );
+  NAND2 U3_1 ( .i0(n32), .i1(n32), .o(n28));
+  NAND2 U3_2 ( .i0(ramblock_q_0_), .i0(ramblock_q_0_), .o(n22) );
+  NAND2 U3_3 ( .i0(ramblock_q_2_), .i0(ramblock_q_2_), .o(n21) );
 
   # Triple NAND3 74HCT10
-  NAND3 U0_0 ( .i0(adr14), .i1(ramblock_q_1_), .i2(n31), .o(n19) );
-  NAND3 U0_1 ( .i0(adr15), .i1(ramblock_q_0_), .i2(adr14), .o(n21) );
-  NAND3 U0_0 ( .i0(n18), .i1(datain[6]), .i2(datain[7]), .o(blocksel_n) );
+  NAND3 U4_0 ( .i0(ramblock_q_1_), .i1(adr14), .i2(n21), .o(n19) );
+  NAND3 U4_1 ( .i0(ramblock_q_1_), .i1(n22), .i2(n21), .o(n27) );
+  NAND3 U4_2 ( .i0(n25), .i1(adr14), .i2(n24), .o(n26) );
 
-  # Triple NOR3 74HCT ???
-  NOR3 U1_0 ( .i0(adr15), .i1(wr_b), .i2(iorq_b), .o(n18) );  
-  NOR3 U1_1 ( .i0(n25), .i1(n25), .o(n26) );
-  NOR3 U1_2 ( .i0(n30), .i1(n30), .o(n32) );
+  # Triple NOR3 74HCT27
+  NOR3 U5_0 ( .i0(ramdis), .i1(ramdis), .i2(ramdis), .o(ramoe_b) );  
+  NOR3 U5_1 ( .i0(adr15), .i1(wr_b), .i2(iorq_b), .o(n18) );
+  NOR3 U5_2 ( .i0(blocksel_n), .o(blocksel_w)));
 
-  # Quad NAND2 74HCT00
-  NAND2 U2_1 ( .i0(n20), .i1(n19), .o(ramadrhi[0]) );  
-  NAND2 U2_2 ( .i0(ramblock_q_1_), .i1(n20), .o(n22) );
-  NAND2 U2_3 ( .i0(n22), .i1(n21), .o(n23) );
-  NAND2 U2_4 ( .i0(blocksel_n),.i0(blocksel_n), .o(blocksel_w) );  
-
-  # Quad NAND2 74HCT00
-  NAND2 U3_0 ( .i0(n25), .i1(n28), .o(ramwe_b) );
-  NAND2 U3_1 ( .i0(ramrd_b), .i1(n26), .o(n27) );
-  NAND2 U3_2 ( .i0(n28), .i1(n27), .o(ramcs_b) );
-  NAND2 U3_3 ( .i0(ramblock_q_2_), .i1(ramblock_q_2_), .o(n31) );  
+  # Triple NAND3 74HCT10
+  NAND3 U6_0 ( .i0(datain[7]), .i1(datain[6]), .i2(n18), .o(blocksel_n) );
+  NAND3 U6_1 ( .i0(n27), .i1(n26), .i2(n26), .o(n35) );
+  NAND3 U6_2 ( .i0(n35), .i1(n35), .o(n33) );
 
   # Quad NOR2 74HCT02
-  NOR2  U4_0 ( .i0(mreq_b), .i1(wr_b), .o(n25) );
-  NOR2  U4_1 ( .i0(adr15), .i1(n31), .o(n24) );
-  NOR2  U4_2 ( .i0(n29), .i1(ramrd_b), .o(ramdis) );
-  NOR2  U4_3 ( .i0(ramblock_q_2_), .i1(adr15), .o(n30) );
+  NOR2 U7_0 ( .i0(mreq_b), .i1(wr_b), .o(n32) );  
+  NOR2 U7_1 ( .i0(ramblock_q_2_), .i1(adr15), .o(n34) );
+  NOR2 U7_2 ( .i0(n34), .i1(n34), .o(n25));
+  NOR2 U7_3 ( .i0(n33), .i1(ramrd_b), .o(ramdis) );
 
-  # Quad NAND2 74HCT00
-  NAND2 U5_0 ( .i0(n24), .i1(adr14), .o(n34) );
-  NAND2 U5_1 ( .i0(n31), .i1(n23), .o(n35) );  
-  NAND2 U5_2 ( .i0(n35), .i1(n34), .o(n28) );
-  NAND2 U5_2 ( .i0(n36), .i1(n36), .o(n29) );  
 
-  # Quad NAND2 74HCT00
-  NAND2 U6_0 ( .i0(ramblock_q_1_), .i1(n32), .o(n36) );
-  NAND2 U6_1 ( .i0(ramblock_q_0_), .i1(n31), .o(n37) );
-  NAND2 U6_2 ( .i0(n36), .i1(n37), .o(ramadrhi[1]) );
-  NAND2 U6_3 ( .i0(ramdis), .i1(ramdis), .o(ramoe_b) );
 
-  # Hex Inverter 74HCT04
-  INV   U7_0 ( .i(ramblock_q_0_), .o(n20) );
-
-  
 endmodule
+
