@@ -48,34 +48,56 @@
  * -------------------------------------------------------------------------------------------------------------------------------
  *
  */
-module cpld_ram512k(adr15,adr14,iorq_b,mreq_b,ramrd_b,reset_b,wr_b,datain,ramdis,ramcs_b,ramadrhi);
+module cpld_ram512k(
+                    adr15,
+                    adr14,
+                    adr13,
+                    clk,
+                    ready,
+                    iorq_b,
+                    mreq_b,
+                    ramrd_b,
+                    reset_b,
+                    wr_b,
+                    rd_b,                    
+                    data,
+                    ramdis,
+                    ramcs_b,
+                    ramadrhi
+                    );
+
+  
     input           adr15;
     input           adr14;
+    input           adr13;  
     input           iorq_b;
     input           mreq_b;
     input           ramrd_b;
-    input 	        reset_b;
+    input 	    reset_b;
+    input           clk;
+    input           ready;    
     input           wr_b;
-    input [7:0]     datain;
+    input           rd_b;  
+    input [7:0]     data;
 
-    output	        ramdis;
-    output	        amcs_b;
+    output	    ramdis;
+    output	    ramcs_b;
     output [4:0]    ramadrhi;
 
     reg [5:0]       ramblock_q;
     reg [4:0]	    ramadrhi_r;
-    reg		        notextram_r;
+    reg		    notextram_r;
 
-    wire blocksel_w = (!iorq_b && !wr_b && !adr15 && datain[7] && datain[6] ) ;
+    wire blocksel_w = (!iorq_b && !wr_b && !adr15 && data[7] && data[6] ) ;
     assign ramadrhi = ramadrhi_r ;
-    assign ramcs_b  = notextram_r | mreq_b ; // Select RAM for all memory accesses with valid bank num
-    assign ramdis   = ( !(notextram_r | mreq_b) ) ;
+    assign ramcs_b  = notextram_r | mreq_b ;        // Select RAM for all memory accesses (write and read) with valid bank num
+    assign ramdis   = ( !(notextram_r | mreq_b) ) ; // Disable internal RAM for all memory accesses (write and read) with valid bank num
 
     always @ (negedge reset_b or posedge blocksel_w )
         if (!reset_b)
             ramblock_q <= 5'b0;
         else
-            ramblock_q <= datain[5:0];
+            ramblock_q <= data[5:0];
 
     always @ (ramblock_q, adr15, adr14 )
         case (ramblock_q[2:0])
