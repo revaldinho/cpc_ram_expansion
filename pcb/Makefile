@@ -1,5 +1,5 @@
 
-netlister_dir ?= ~/Documents/Development/sockets/trunk/netlister
+netlister_dir ?= ~/Documents/Development/git/netlister
 
 ALLLIBS ?= $(shell ls -1 ${netlister_dir}/lib/*.lib)
 
