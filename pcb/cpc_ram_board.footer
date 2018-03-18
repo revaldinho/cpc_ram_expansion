@@ -1,0 +1,39 @@
+# Maximum Eagle freeware board size is 4.0x3.2" (100x80mm) 
+
+# better to work in inches for 0.1 inch pad pitch
+Grid default;
+Set Wire_Bend 0;
+Layer Dimension;
+Wire 0  (0 0) (3.1 2.6) (0 0);
+Layer Top;
+
+# PCB-Pool/PCB-Train design rule is actually 0.006/0.006 for wires
+CLASS 0 signal 0.010 0.010 ;
+CLASS 1 supply 0.024 0.010 ;
+
+ROTATE =R0 CONN0 ;
+MOVE CONN0         (0.2 2.4) ;
+MOVE L1            (0.2 2.1);
+ROTATE =R180 L1 ; 
+MOVE CAP22UF_0     (0.2 1.9) ;
+MOVE REG_CAP1      (0.2 1.65);
+ROTATE =R270 REG3V3 ;
+MOVE REG3V3     (0.2 1.45);
+MOVE REG_CAP0      (0.2 1.20);
+ROTATE =R180 CONN1 ;
+MOVE CONN1         (1.45 0.30) ;
+MOVE SRAM          (2.5 1.55) ;
+ROTATE =R270 SRAM ;
+ROTATE =R270 CPLD ;
+MOVE CPLD          (1.0 1.70);
+MOVE CAP100N_1    (2.7 2.45) ;
+MOVE CAP100N_2    (1.35  2.45)  ;
+ROTATE =R180 CAP100N_3 ;
+MOVE CAP100N_3    (0.75  1.15)  ; 
+MOVE JTAG          (0.8 2.4)  ;
+
+Layer tPlace ;
+TEXT CPC512K RAM Expansion  R0 (0.15 0.65) ;
+TEXT Revaldinho 2018  R0 (0.15 0.55) ;
+Window Fit;
+

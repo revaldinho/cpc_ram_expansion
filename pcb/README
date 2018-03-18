@@ -1,0 +1,14 @@
+#!/bin/tcsh -f
+
+# Need to have access to the Jython netlister program
+set netlister_dir = ~/Documents/Development/sockets/trunk/netlister
+which netlister.py > /dev/null
+if ($status != 0) then
+   setenv CLASSPATH ${netlister_dir}:$CLASSPATH
+   setenv PATH      ${netlister_dir}:$PATH
+   rehash
+endif
+
+
+#make cpc_ram_board.net
+make cpc_ram_board.scr

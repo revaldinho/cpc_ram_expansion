@@ -1,0 +1,46 @@
+
+
+# Libraries we are going to need
+# 74xx DILS 
+USE 74xx-us ;
+# Memory (inc DIL40)
+USE memory ;
+# PLCC sockets
+USE plcc-socket ;
+# Boxed header connectors
+USE con-3m;
+# Pin headers
+USE pinhead;
+# resistors, capacitors and inductors
+USE rcl;
+# Generic ic-packages
+USE ic-package;
+# SMD caps
+USE wuerth-elektronik ;
+# regulator
+USE triac ;
+
+# Need to issue these commands to delete components if you didn't start with a clean board
+#SCR delete-signals.scr;
+#DEL conn1 ;
+#DEL sram32kx8 ;
+#DEL IC3 ;
+#DEL IC4 ;
+
+# # Examples of adding components and placing
+# ADD DIL14@ic-package IC1 R270 (10 20);
+# ADD DIL14@74xx-us IC2 R270 (25 20);
+# ADD DIL20@74xx-us IC3 R270 (40 20);
+# ADD 3M44@plcc-socket  IC4 R0 (55 20);
+# ADD DIL40@ic-package IC5 R270 (80 40);
+# ADD DIL32@ic-package IC6 R270 (80 40);
+# # connectors
+# ADD PAK100/2500-5-40 CON1 R270 (90 40);
+# ADD 2X05 CON2 R0 (20 50);
+# 
+# # Try adding signals
+# SIGNAL VDD IC1 14 IC2 14 IC3 20 IC4 41;
+# SIGNAL VSS IC1  7 IC2  7 IC3 10;
+# SIGNAL n1  IC1  2 IC1  3 ;
+# signal n2  IC2  2 IC4 32 ;
+# 
