@@ -9,5 +9,5 @@ if ($status != 0) then
    rehash
 endif
 
-#make cpc_ram_board.net
+make cpc_ram_board.net
 make cpc_ram_board.scr

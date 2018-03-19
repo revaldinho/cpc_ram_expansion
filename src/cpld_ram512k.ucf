@@ -7,31 +7,26 @@ PIN "clk"	LOC = P5 ; # GCK1
 PIN "ramcs_b"	LOC = P6 ; # GCK2
 PIN "rd_b"	LOC = P7 ; # GCK3
 
-
 PIN "ramadrhi[4]"  LOC = P8 ;
 PIN "ramadrhi[3]"  LOC = P9 ;
 PIN "ramadrhi[2]"  LOC = P11 ;
 PIN "ramadrhi[1]"  LOC = P12 ;
 PIN "ramadrhi[0]"  LOC = P13 ;
 
-PIN "adr13"	LOC = P14 ;
-PIN "data[7]"	LOC = P18 ;
-PIN "data[6]"	LOC = P19 ;
-PIN "data[5]"	LOC = P20 ;
-PIN "data[4]"	LOC = P22 ;
-PIN "data[3]"	LOC = P24 ;
-PIN "data[2]"	LOC = P25 ;
-PIN "data[1]"	LOC = P26 ;
-PIN "data[0]"	LOC = P27 ;
-
+PIN "adr15"	LOC = P25 ;
+PIN "adr14"	LOC = P26 ;
+PIN "adr13"	LOC = P27 ;
 PIN "ready"     LOC = P28 ;
 PIN "ramdis"    LOC = P29 ;
 
+PIN "data[7]"	LOC = P33 ;
+PIN "data[6]"	LOC = P34 ;
+PIN "data[5]"	LOC = P35 ;
+PIN "data[4]"	LOC = P36 ;
+PIN "data[3]"	LOC = P37 ;
+PIN "data[2]"	LOC = P38 ;
+
 PIN "reset_b"   LOC = P39 ; # GSR
-PIN "adr15"	LOC = P43 ;
-PIN "adr14"	LOC = P44 ;
-
-
-#PIN "" LOC = 42 # GTS1
-#PIN "" LOC = 40 # GTS2
+PIN "data[0]" LOC = 42 # GTS1
+PIN "data[1]" LOC = 40 # GTS2
 
