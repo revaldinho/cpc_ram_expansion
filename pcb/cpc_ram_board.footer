@@ -4,7 +4,7 @@
 Grid default;
 Set Wire_Bend 0;
 Layer Dimension;
-Wire 0  (0 0) (3.1 2.5) (0 0);
+Wire 0  (0 0) (3.0 2.5) (0 0);
 Layer Top;
 
 # PCB-Pool/PCB-Train design rule is actually 0.006/0.006 for wires
@@ -12,28 +12,32 @@ CLASS 0 signal 0.010 0.010 ;
 CLASS 1 supply 0.024 0.010 ;
 
 ROTATE =R180 CONN0 ;
-MOVE CONN0         (2.80 2.3) ;
+MOVE CONN0         (2.75 2.3) ;
 ROTATE =R180 L1 ;
-MOVE L1            (2.80 2.0);
+MOVE L1            (2.75 2.0);
 ROTATE =R180 L1 ; 
-MOVE CAP22UF_0     (2.8 1.75) ;
-MOVE REG_CAP1      (2.8 1.50);
+ROTATE =R180 CAP22UF ; 
+MOVE CAP22UF       (2.75 1.75) ;
+MOVE REG_CAP0      (2.75 1.5);
+ROTATE =R180 REG_CAP0 ; 
 ROTATE =R0 REG3V3 ;
-MOVE REG3V3        (2.8 1.25);
-MOVE REG_CAP0      (2.8 0.95);
+MOVE REG3V3        (2.75 1.25);
+ROTATE =R180 REG_CAP1 ; 
+MOVE REG_CAP1      (2.75 1.00);
 ROTATE =R180 CONN1 ;
 MOVE CONN1         (1.45 0.25) ;
+
 ROTATE =R270 SRAM ;
-MOVE SRAM          (0.75 1.6) ;
+MOVE SRAM          (0.85 1.5) ;
 ROTATE =R270 CPLD ;
-MOVE CPLD          (2.05 1.60);
-ROTATE =R180 CAP100N_1 ;
-MOVE CAP100N_1     (1.30 2.35) ;
+MOVE CPLD          (1.9 1.70);
+ROTATE =R0 CAP100N_1 ;
+MOVE CAP100N_1     (0.30 2.25) ;
 ROTATE =R180 CAP100N_2 ;
-MOVE CAP100N_2     (2.35  2.35)  ;
-ROTATE =R180 CAP100N_3 ;
-MOVE CAP100N_3     (1.85 1.00)  ; 
-MOVE JTAG          (1.90 2.3)  ;
+MOVE CAP100N_2     (2.20  2.35)  ;
+ROTATE =R270 CAP100N_3 ;
+MOVE CAP100N_3     (2.45 1.40)  ; 
+MOVE JTAG          (1.75 2.3)  ;
 
 Layer tPlace ;
 TEXT CPC512K RAM Expansion, 2018 Revaldinho  R90 (0.10 0.5) ;
@@ -44,10 +48,10 @@ AUTO ;
 
 ## Define ground fills top and bottom over whole board area
 layer Top ; 
-polygon VSS 0.08 (0 0) (0 2.5) (3.1 2.5) (3.1 0) (0 0) ;
+polygon VSS 0.08 (0 0) (0 2.5) (3.0 2.5) (3.0 0) (0 0) ;
 
 layer Bottom ; 
-polygon VSS 0.08 (0 0) (0 2.5) (3.1 2.5) (3.1 0) (0 0) ;
+polygon VSS 0.08 (0 0) (0 2.5) (3.0 2.5) (3.0 0) (0 0) ;
 
 
 Ratsnest ;  ## Calculate and display polygons

@@ -74,7 +74,7 @@ module cpc_ram_board ();
 
 
   // Radial electolytic, one per board on the main 5V supply
-  cap22uf CAP22UF_0(.minus(VSS),.plus(VDD));
+  cap22uf         CAP22UF(.minus(VSS),.plus(VDD));
 
   // Two ceramic caps to be placed v. close to regulator pins
   cap1uf          reg_cap0 (.p0(VDD), .p1(VSS));
@@ -140,9 +140,9 @@ module cpc_ram_board ();
 	            .p19(HIADR1),
 	            .p20(HIADR3),
 	            .vccint1(VDD3V3),
-	            .p22(HIADR0),
+	            .p22(RAMWE_B),
 	            .gnd2(VSS),
-	            .p24(RAMWE_B),
+	            .p24(HIADR0),
 	            .p25(A15),
 	            .p26(A14),
 	            .p27(),
@@ -177,8 +177,8 @@ module cpc_ram_board ();
                     .a4(A9),  .a11(A1),
                     .a3(A10),  .oeb(RAMOE_B),
                     .a2(A11),  .a10(A0),
-                    .a1(A12),  .csb(RAMCS_B),
-                    .a0(A13),  .d7(D7),
+                    .a1(A13),  .csb(RAMCS_B),
+                    .a0(A12),  .d7(D7),
                     .d0(D0),  .d6(D6),
                     .d1(D1),  .d5(D5),
                     .d2(D2),  .d4(D4),
