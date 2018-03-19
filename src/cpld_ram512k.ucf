@@ -1,21 +1,26 @@
 # Pin Assignments to match PCB netlist
 PIN "mreq_b"	LOC = P1 ;
 PIN "iorq_b"	LOC = P2 ;
-PIN "wr_b"	LOC = P3 ;
+# PIN ""	LOC = P3 ;
 PIN "ramrd_b"	LOC = P4 ;
 PIN "clk"	LOC = P5 ; # GCK1
 PIN "ramcs_b"	LOC = P6 ; # GCK2
 PIN "rd_b"	LOC = P7 ; # GCK3
+PIN "wr_b"	LOC = P8 ;
+#PIN ""	        LOC = P9 ;
+#PIN ""	        LOC = P11 ;
+#PIN ""	        LOC = P12 ;
 
-PIN "ramadrhi[4]"  LOC = P8 ;
-PIN "ramadrhi[3]"  LOC = P9 ;
-PIN "ramadrhi[2]"  LOC = P11 ;
-PIN "ramadrhi[1]"  LOC = P12 ;
-PIN "ramadrhi[0]"  LOC = P13 ;
-
+PIN "ramoe_b"	LOC = P13 ;
+PIN "ramadrhi[2]"  LOC = P14 ;
+PIN "ramadrhi[4]"  LOC = P18 ;
+PIN "ramadrhi[1]"  LOC = P19 ;
+PIN "ramadrhi[3]"  LOC = P20 ;
+PIN "ramwe_b"	LOC = P22 ;
+PIN "ramadrhi[0]"  LOC = P24 ;
 PIN "adr15"	LOC = P25 ;
 PIN "adr14"	LOC = P26 ;
-PIN "adr13"	LOC = P27 ;
+#PIN ""	        LOC = P27 ;
 PIN "ready"     LOC = P28 ;
 PIN "ramdis"    LOC = P29 ;
 
@@ -25,8 +30,9 @@ PIN "data[5]"	LOC = P35 ;
 PIN "data[4]"	LOC = P36 ;
 PIN "data[3]"	LOC = P37 ;
 PIN "data[2]"	LOC = P38 ;
-
 PIN "reset_b"   LOC = P39 ; # GSR
-PIN "data[0]" LOC = 42 # GTS1
-PIN "data[1]" LOC = 40 # GTS2
+PIN "data[0]" LOC = P42 ; # GTS1
+PIN "data[1]" LOC = P40 ; # GTS2
 
+PIN "busreset_b"  LOC = P43 ;
+#PIN ""  LOC = P43 ;

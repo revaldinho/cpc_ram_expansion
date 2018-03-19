@@ -5,32 +5,8 @@
  *
  * (c) 2018, Revaldinho
  *
- *  ---------+                                             +----------------+
- *   C P C   |                                             |   S R A M      |
- *       we* |------------*--------------------------------| wr*            |
- *    ramrd* |-----------*|--------------------------------| oe*            |
- *  adr[13:0]|===========||================================| adr[13:0]      |
- *  data[7:0]|==========*||================================| data[7:0]      |
- *           |          ||| +-------------------------+    |                |
- *           |          ||| |       C P L D           |    |                |
- *           |          ||`-| wr_b            ramadrhi|====| adr[18:14]     |
- *           |          |`--| ramrd_b          ramcs_b|----| cs*            |
- *           |          `===| datain[7:0]             |    |                |
- *     ioreq*|--------------| iorq_b                  |    +----------------+
- *      mreq*|--------------| mreq_b                  |
- * adr[15:14]|==============| adr15, adr14            |
- *           |              |                         |
- *    ramdis |--------------| ramdis                  |
- *    reset* |--------------| reset_b                 |
- *           |              +-------------------------+
- * ----------+
- *
- * Notes:
- * - we*, rd* connected directly to RAM, control provided via cs* pin from CPLD
- * - diode on RAMDIS forms wired OR with pull-down on CPC motherboard only if
- *   a ramdis is made a non-tristate output in the CPLD (and equivalent 74
- *   series implementation)
- *
+ * Select RAM bank scheme by writing to 0x7FXX with 0b11cccbbb, where:
+ * 
  * ccc - picks one of 8 possible 64K banks
  * bbb - selects a block switching scheme within the chosen bank
  *       the actual block used for a RAM access is then selected by the top 2 addr bits for that access.
@@ -62,7 +38,10 @@ module cpld_ram512k(
                     data,
                     ramdis,
                     ramcs_b,
-                    ramadrhi
+                    ramadrhi,
+                    ramoe_b,
+                    ramwe_b,
+                    busreset_b
                     );
 
   
@@ -77,9 +56,13 @@ module cpld_ram512k(
     input           wr_b;
     input           rd_b;  
     input [7:0]     data;
+    input           busreset_b;
+  
 
     output	    ramdis;
     output	    ramcs_b;
+    output          ramoe_b;  
+    output          ramwe_b;  
     output [4:0]    ramadrhi;
 
     reg [5:0]       ramblock_q;
@@ -91,6 +74,11 @@ module cpld_ram512k(
     assign ramcs_b  = notextram_r | mreq_b ;        // Select RAM for all memory accesses (write and read) with valid bank num
     assign ramdis   = ( !(notextram_r | mreq_b) ) ; // Disable internal RAM for all memory accesses (write and read) with valid bank num
 
+  assign ramoe_b = ramrd_b;
+  assign ramwe_b = wr_b;
+  
+
+  
     always @ (negedge reset_b or posedge blocksel_w )
         if (!reset_b)
             ramblock_q <= 5'b0;
