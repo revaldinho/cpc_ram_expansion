@@ -51,7 +51,6 @@
 module cpld_ram512k(
                     adr15,
                     adr14,
-                    adr13,
                     clk,
                     ready,
                     iorq_b,
@@ -69,7 +68,6 @@ module cpld_ram512k(
   
     input           adr15;
     input           adr14;
-    input           adr13;  
     input           iorq_b;
     input           mreq_b;
     input           ramrd_b;

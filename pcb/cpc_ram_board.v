@@ -43,6 +43,10 @@ module cpc_ram_board ();
   wire RAMCS_B;
   wire HIADR4,HIADR3,HIADR2,HIADR1,HIADR0;
 
+  wire RAMOE_B;
+  wire RAMWE_B;
+  
+
   wire TMS;
   wire TDI;
   wire TDO;
@@ -141,7 +145,7 @@ module cpc_ram_board ();
 	            .p24(RAMWE_B),
 	            .p25(A15),
 	            .p26(A14),
-	            .p27(A13),
+	            .p27(),
 	            .p28(READY),
 	            .p29(RAMDIS),
 	            .tdo(TDO),
@@ -161,20 +165,20 @@ module cpc_ram_board ();
 	            .p44(),
                     );
 
-  // Alliance 512K x 8 SRAM
+  // Alliance 512K x 8 SRAM - address pins wired to suit layout
   bs62lv4006  SRAM (
                     .a18(HIADR4),  .vcc(VDD),
                     .a16(HIADR2),  .a15(HIADR1),
                     .a14(HIADR0),  .a17(HIADR3),
-                    .a12(A12),  .web(RAMWE_B),
-                    .a7(A7),  .a13(A13),
-                    .a6(A6),  .a8(A8),
-                    .a5(A5),  .a9(A9),
-                    .a4(A4),  .a11(A11),
-                    .a3(A3),  .oeb(RAMOE_B),
-                    .a2(A2),  .a10(A10),
-                    .a1(A1),  .csb(RAMCS_B),
-                    .a0(A0),  .d7(D7),
+                    .a12(A5),  .web(RAMWE_B),
+                    .a7(A6),  .a13(A4),
+                    .a6(A7),  .a8(A3),
+                    .a5(A8),  .a9(A2),
+                    .a4(A9),  .a11(A1),
+                    .a3(A10),  .oeb(RAMOE_B),
+                    .a2(A11),  .a10(A0),
+                    .a1(A12),  .csb(RAMCS_B),
+                    .a0(A13),  .d7(D7),
                     .d0(D0),  .d6(D6),
                     .d1(D1),  .d5(D5),
                     .d2(D2),  .d4(D4),
