@@ -40,7 +40,10 @@ MOVE CAP100N_3     (2.45 1.40)  ;
 MOVE JTAG          (1.75 2.3)  ;
 
 Layer tPlace ;
-TEXT CPC512K RAM Expansion, 2018 Revaldinho  R90 (0.10 0.5) ;
+CHANGE FONT PROPORTIONAL ; 
+CHANGE SIZE 0.06
+TEXT 'CPC 512K RAM Expansion, v1.00' R90 (0.10 0.5) ;
+TEXT '(C) 2018 Revaldinho'  R90      (0.18 0.5) ;
 
 # Autorouter
 # AUTO VDD VDD_CPC VDD_EXT VDD3V3 CLK VSS;   # Route clock and supplies first
