@@ -49,7 +49,7 @@ TEXT '(C) 2018 Revaldinho'  R90      (0.18 0.5) ;
 # AUTO VDD VDD_CPC VDD_EXT VDD3V3 CLK VSS;   # Route clock and supplies first
 AUTO ;
 
-## Define ground fills top and bottom over whole board area
+## Define power fills top and bottom over whole board area
 layer Top ; 
 polygon VSS 0.08 (0 0) (0 2.5) (3.0 2.5) (3.0 0) (0 0) ;
 
