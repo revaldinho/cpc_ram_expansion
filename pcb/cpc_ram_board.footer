@@ -25,7 +25,7 @@ MOVE REG3V3        (2.75 1.15);
 ROTATE =R180 REG_CAP1 ; 
 MOVE REG_CAP1      (2.75 0.90);
 ROTATE =R180 CONN1 ;
-MOVE CONN1         (1.45 0.35) ;
+MOVE CONN1         (1.5 0.30) ;
 
 ROTATE =R270 SRAM ;
 MOVE SRAM          (0.85 1.4) ;
