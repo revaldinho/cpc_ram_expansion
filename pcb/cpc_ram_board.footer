@@ -4,40 +4,40 @@
 Grid default;
 Set Wire_Bend 0;
 Layer Dimension;
-Wire 0  (0 0) (3.0 2.5) (0 0);
+Wire 0  (0 0) (3.0 2.4) (0 0);
 Layer Top;
 
 # PCB-Pool/PCB-Train design rule is actually 0.006/0.006 for wires
 CLASS 0 signal 0.010 0.010 ;
-CLASS 1 supply 0.024 0.010 ;
+CLASS 1 supply 0.025 0.010 ;
 
 ROTATE =R180 CONN0 ;
-MOVE CONN0         (2.75 2.3) ;
+MOVE CONN0         (2.75 2.2) ;
 ROTATE =R180 L1 ;
-MOVE L1            (2.75 2.0);
+MOVE L1            (2.75 1.9);
 ROTATE =R180 L1 ; 
 ROTATE =R180 CAP22UF ; 
-MOVE CAP22UF       (2.75 1.75) ;
-MOVE REG_CAP0      (2.75 1.5);
+MOVE CAP22UF       (2.75 1.65) ;
+MOVE REG_CAP0      (2.75 1.4);
 ROTATE =R180 REG_CAP0 ; 
 ROTATE =R0 REG3V3 ;
-MOVE REG3V3        (2.75 1.25);
+MOVE REG3V3        (2.75 1.15);
 ROTATE =R180 REG_CAP1 ; 
-MOVE REG_CAP1      (2.75 1.00);
+MOVE REG_CAP1      (2.75 0.90);
 ROTATE =R180 CONN1 ;
-MOVE CONN1         (1.45 0.25) ;
+MOVE CONN1         (1.45 0.35) ;
 
 ROTATE =R270 SRAM ;
-MOVE SRAM          (0.85 1.5) ;
+MOVE SRAM          (0.85 1.4) ;
 ROTATE =R270 CPLD ;
-MOVE CPLD          (1.9 1.70);
+MOVE CPLD          (1.9 1.60);
 ROTATE =R0 CAP100N_1 ;
-MOVE CAP100N_1     (0.30 2.25) ;
+MOVE CAP100N_1     (0.30 2.15) ;
 ROTATE =R180 CAP100N_2 ;
-MOVE CAP100N_2     (2.20  2.35)  ;
+MOVE CAP100N_2     (2.20  2.25)  ;
 ROTATE =R270 CAP100N_3 ;
-MOVE CAP100N_3     (2.45 1.40)  ; 
-MOVE JTAG          (1.75 2.3)  ;
+MOVE CAP100N_3     (2.45 1.30)  ; 
+MOVE JTAG          (1.75 2.2)  ;
 
 Layer tPlace ;
 CHANGE FONT PROPORTIONAL ; 
@@ -51,10 +51,10 @@ AUTO ;
 
 ## Define power fills top and bottom over whole board area
 layer Top ; 
-polygon VSS 0.08 (0 0) (0 2.5) (3.0 2.5) (3.0 0) (0 0) ;
+polygon VSS 0.08 (0 0) (0 2.4) (3.0 2.4) (3.0 0) (0 0) ;
 
 layer Bottom ; 
-polygon VSS 0.08 (0 0) (0 2.5) (3.0 2.5) (3.0 0) (0 0) ;
+polygon VSS 0.08 (0 0) (0 2.4) (3.0 2.4) (3.0 0) (0 0) ;
 
 
 Ratsnest ;  ## Calculate and display polygons

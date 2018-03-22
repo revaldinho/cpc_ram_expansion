@@ -24,6 +24,9 @@
  * -------------------------------------------------------------------------------------------------------------------------------
  *
  */
+
+
+
 module cpld_ram512k(
                     adr15,
                     adr14,
@@ -43,41 +46,39 @@ module cpld_ram512k(
                     ramwe_b,
                     busreset_b
                     );
-
   
-    input           adr15;
-    input           adr14;
-    input           iorq_b;
-    input           mreq_b;
-    input           ramrd_b;
-    input 	    reset_b;
-    input           clk;
-    input           ready;    
-    input           wr_b;
-    input           rd_b;  
-    input [7:0]     data;
-    input           busreset_b;
   
-
-    output	    ramdis;
-    output	    ramcs_b;
-    output          ramoe_b;  
-    output          ramwe_b;  
-    output [4:0]    ramadrhi;
-
-    reg [5:0]       ramblock_q;
-    reg [4:0]	    ramadrhi_r;
-    reg		    notextram_r;
-
-    wire blocksel_w = (!iorq_b && !wr_b && !adr15 && data[7] && data[6] ) ;
-    assign ramadrhi = ramadrhi_r ;
-    assign ramcs_b  = notextram_r | mreq_b ;        // Select RAM for all memory accesses (write and read) with valid bank num
-    assign ramdis   = ( !(notextram_r | mreq_b) ) ; // Disable internal RAM for all memory accesses (write and read) with valid bank num
+  input           adr15;
+  input           adr14;
+  input           iorq_b;
+  input           mreq_b;
+  input           ramrd_b;
+  input           reset_b;
+  input           clk;
+  input           ready;    
+  input           wr_b;
+  input           rd_b;  
+  input [7:0]     data;
+  input           busreset_b;
+  
+  
+  output          ramdis;
+  output          ramcs_b;
+  output          ramoe_b;  
+  output          ramwe_b;  
+  output [4:0]    ramadrhi;
+  
+  reg [5:0]       ramblock_q;
+  reg [4:0]       ramadrhi_r;
+  reg             notextram_r;
+  
+  wire            blocksel_w = (!iorq_b && !wr_b && !adr15 && data[7] && data[6] ) ;
+  assign ramadrhi = ramadrhi_r ;
+  assign ramcs_b  = notextram_r | mreq_b ;        // Select RAM for all memory accesses (write and read) with valid bank num
+  assign ramdis   = ( !(notextram_r | mreq_b) ) ; // Disable internal RAM for all memory accesses (write and read) with valid bank num
 
   assign ramoe_b = ramrd_b;
   assign ramwe_b = wr_b;
-  
-
   
     always @ (negedge reset_b or posedge blocksel_w )
         if (!reset_b)
