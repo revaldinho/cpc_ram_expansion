@@ -10,5 +10,9 @@ The second implemention will replace the Xilinx CPLD with 8 or 9 74 series compo
 Unless otherwise noted, all files and the project are copyright by the contributors and licensed under the GPL. Contact us by raising an [issue on GitHub](https://github.com/revaldinho/cpc_ram_expansion/issues)
 
 
-                            
+## Example PCB for CPLD Version
+
+<img src="https://github.com/revaldinho/cpc_ram_expansion/blob/master/img/CPC_512K_RAM_Eagle_v1.00.png" alt="V1.00 PCB Image from Eagle" width="512">
+
+
 <img src="https://github.com/revaldinho/cpc_ram_expansion/blob/master/img/CPC_512K_RAM_top_v1.00.png" alt="V1.00 PCB Image" width="512">

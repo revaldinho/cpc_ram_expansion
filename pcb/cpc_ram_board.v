@@ -170,7 +170,7 @@ module cpc_ram_board ();
 
   // Alliance 512K x 8 SRAM - address pins wired to suit layout
   bs62lv4006  SRAM (
-                    .a18(HIADR4),  .vcc(VDD3V3),
+                    .a18(HIADR4),  .vcc(VDD),
                     .a16(HIADR2),  .a15(HIADR1),
                     .a14(HIADR0),  .a17(HIADR3),
                     .a12(A5),  .web(RAMWE_B),
@@ -189,7 +189,7 @@ module cpc_ram_board ();
                     );
 
    // Decoupling caps for CPLD and one for SRAM
-   cap100nf CAP100N_1 (.p0( VSS ), .p1( VDD3V3 ));
+   cap100nf CAP100N_1 (.p0( VSS ), .p1( VDD ));
    cap100nf CAP100N_2 (.p0( VSS ), .p1( VDD3V3 ));
    cap100nf CAP100N_3 (.p0( VSS ), .p1( VDD3V3 ));
 
