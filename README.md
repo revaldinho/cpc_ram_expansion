@@ -11,4 +11,4 @@ Unless otherwise noted, all files and the project are copyright by the contribut
 
 
                             
-<img src="https://github.com/revaldinho/cpld_ram_expansion/blob/master/img/CPC_512K_RAM_top.png" alt="V1.00 PCB Image" width="512">
+<img src="https://github.com/revaldinho/cpld_ram_expansion/blob/master/img/CPC_512K_RAM_top_v1.00.png" alt="V1.00 PCB Image" width="512">
