@@ -8,7 +8,7 @@ Wire 0  (0 0) (3.0 2.4) (0 0);
 Layer Top;
 
 # PCB-Pool/PCB-Train design rule is actually 0.006/0.006 for wires
-CLASS 0 signal 0.010 0.010 ;
+CLASS 0 signal 0.015 0.010 ;
 CLASS 1 supply 0.025 0.010 ;
 
 ROTATE =R180 CONN0 ;
@@ -25,12 +25,12 @@ MOVE REG3V3        (2.75 1.15);
 ROTATE =R180 REG_CAP1 ; 
 MOVE REG_CAP1      (2.75 0.90);
 ROTATE =R180 CONN1 ;
-MOVE CONN1         (1.5 0.30) ;
+MOVE CONN1         (1.5 0.25) ;
 
 ROTATE =R270 SRAM ;
 MOVE SRAM          (0.85 1.4) ;
 ROTATE =R270 CPLD ;
-MOVE CPLD          (1.9 1.60);
+MOVE CPLD          (1.9 1.50);
 ROTATE =R0 CAP100N_1 ;
 MOVE CAP100N_1     (0.30 2.15) ;
 ROTATE =R180 CAP100N_2 ;

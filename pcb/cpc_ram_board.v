@@ -81,32 +81,35 @@ module cpc_ram_board ();
   cap1uf          reg_cap1 (.p0(VDD3V3), .p1(VSS));
 
   // Amstrad CPC Edge Connector
+  //
+  // NB Numbering is correct to get the rows the right way around to match the CPC edge connector
+  //    either when plugging directly into the CPC or via the MX4 Motherboard.
   idc_hdr_50w  CONN1 (
-                      .p50(Sound),   .p49(VSS),
-                      .p48(A15),     .p47(A14),
-                      .p46(A13),     .p45(A12),
-                      .p44(A11),     .p43(A10),
-                      .p42(A9),      .p41(A8)
-                      .p40(A7),      .p39(A6),
-                      .p38(A5),      .p37(A4),
-                      .p36(A3),      .p35(A2),
-                      .p34(A1),      .p33(A0),
-                      .p32(D7),      .p31(D6)
-                      .p30(D5),      .p29(D4),
-                      .p28(D3),      .p27(D2),
-                      .p26(D1),      .p25(D0),
-                      .p24(VDD_CPC), .p23(MREQ_B),
-                      .p22(M1_B),    .p21(RFSH_B),
-                      .p20(IOREQ_B), .p19(RD_B),
-                      .p18(WR_B),    .p17(HALT_B),
-                      .p16(INT_B),   .p15(NMI_B),
-                      .p14(BUSRQ_B), .p13(BUSACK_B),
-                      .p12(READY),   .p11(BUSRESET_B),
-                      .p10(RESET_B), .p9(ROMEN_B),
-                      .p8(ROMDIS),   .p7(RAMRD_B),
-                      .p6(RAMDIS),   .p5(CURSOR),
-                      .p4(LPEN),     .p3(EXP_B),
-                      .p2(VSS),      .p1(CLK),
+                      .p49(Sound),   .p50(VSS),
+                      .p47(A15),     .p48(A14),
+                      .p45(A13),     .p46(A12),
+                      .p43(A11),     .p44(A10),
+                      .p41(A9),      .p42(A8)
+                      .p39(A7),      .p40(A6),
+                      .p37(A5),      .p38(A4),
+                      .p35(A3),      .p36(A2),
+                      .p33(A1),      .p34(A0),
+                      .p31(D7),      .p32(D6)
+                      .p29(D5),      .p30(D4),
+                      .p27(D3),      .p28(D2),
+                      .p25(D1),      .p26(D0),
+                      .p23(VDD_CPC), .p24(MREQ_B),
+                      .p21(M1_B),    .p22(RFSH_B),
+                      .p19(IOREQ_B), .p20(RD_B),
+                      .p17(WR_B),    .p18(HALT_B),
+                      .p15(INT_B),   .p16(NMI_B),
+                      .p13(BUSRQ_B), .p14(BUSACK_B),
+                      .p11(READY),   .p12(BUSRESET_B),
+                      .p9 (RESET_B), .p10(ROMEN_B),
+                      .p7 (ROMDIS),  .p8 (RAMRD_B),
+                      .p5 (RAMDIS),  .p6 (CURSOR),
+                      .p3 (LPEN),    .p4 (EXP_B),
+                      .p1 (VSS),     .p2 (CLK),
                       ) ;
 
   // Standard layout JTAG port for programming the CPLD
@@ -131,12 +134,12 @@ module cpc_ram_board ();
 	            .gnd1(VSS),
 	            .p11(),
 	            .p12(),
-	            .p13(),
-	            .p14(HIADR2),
+	            .p13(HIADR4),
+	            .p14(),
 	            .tdi(TDI),
 	            .tms(TMS),
 	            .tck(TCK),
-	            .p18(HIADR4),
+	            .p18(HIADR2),
 	            .p19(HIADR1),
 	            .p20(HIADR3),
 	            .vccint1(VDD3V3),
