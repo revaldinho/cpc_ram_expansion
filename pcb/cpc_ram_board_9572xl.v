@@ -13,6 +13,7 @@ module cpc_ram_board ();
   supply1 VDD_EXT;
   supply1 VDD_CPC;
   supply1 VDD;
+  supply1 VDD3V3;
 
   wire Sound;  
   wire A15,A14,A13,A12,A11,A10,A9,A8,A7,A6,A5,A4,A3,A2,A1,A0 ;
@@ -65,8 +66,19 @@ module cpc_ram_board ();
                         .gnd(VSS)
                         );
 
+  MCP1700_3302E   REG3V3 (
+                            .vin(VDD),
+                            .gnd(VSS),
+                            .vout(VDD3V3)
+                            );
+
+
   // Radial electolytic, one per board on the main 5V supply
   cap22uf         CAP22UF(.minus(VSS),.plus(VDD));
+
+  // Two ceramic caps to be placed v. close to regulator pins
+  cap1uf          reg_cap0 (.p0(VDD), .p1(VSS));
+  cap1uf          reg_cap1 (.p0(VDD3V3), .p1(VSS));
 
   // Amstrad CPC Edge Connector
   //
@@ -130,7 +142,7 @@ module cpc_ram_board ();
 	            .p18(HIADR2),
 	            .p19(HIADR1),
 	            .p20(HIADR3),
-	            .vccint1(VDD),
+	            .vccint1(VDD3V3),
 	            .p22(RAMWE_B),
 	            .gnd2(VSS),
 	            .p24(HIADR0),
@@ -141,7 +153,7 @@ module cpc_ram_board ();
 	            .p29(D7),
 	            .tdo(TDO),
 	            .gnd3(VSS),
-	            .vccio(VDD),
+	            .vccio(VDD3V3),
 	            .p33(D6),
 	            .p34(D5),
 	            .p35(D4),
@@ -150,7 +162,7 @@ module cpc_ram_board ();
 	            .p38(D1),
 	            .gsr(RESET_B),
 	            .gts2(BUSRESET_B),
-	            .vccint2(VDD),
+	            .vccint2(VDD3V3),
 	            .gts1(WR_B),
 	            .p43(D0),
 	            .p44(RD_B),
@@ -178,7 +190,7 @@ module cpc_ram_board ();
 
    // Decoupling caps for CPLD and one for SRAM
    cap100nf CAP100N_1 (.p0( VSS ), .p1( VDD ));
-   cap100nf CAP100N_2 (.p0( VSS ), .p1( VDD ));
-   cap100nf CAP100N_3 (.p0( VSS ), .p1( VDD ));
+   cap100nf CAP100N_2 (.p0( VSS ), .p1( VDD3V3 ));
+   cap100nf CAP100N_3 (.p0( VSS ), .p1( VDD3V3 ));
 
 endmodule

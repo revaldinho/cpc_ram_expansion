@@ -11,3 +11,6 @@ endif
 
 make cpc_ram_board.net
 make cpc_ram_board.scr
+
+make cpc_ram_board_9572xl.net
+make cpc_ram_board_9572xl.scr
