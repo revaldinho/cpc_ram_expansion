@@ -125,11 +125,11 @@ module cpc_ram_board ();
                     .p1(MREQ_B),
 	            .p2(IOREQ_B),
 	            .p3(READY),
-	            .p4(),
+	            .p4(RAMRD_B),
 	            .gck1(CLK),
-	            .gck2(),
-	            .gck3(RD_B),
-	            .p8(WR_B),
+	            .gck2(RAMDIS),
+	            .gck3(),
+	            .p8(),
 	            .p9(),
 	            .gnd1(VSS),
 	            .p11(),
@@ -163,9 +163,9 @@ module cpc_ram_board ();
 	            .gsr(RESET_B),
 	            .gts2(BUSRESET_B),
 	            .vccint2(VDD3V3),
-	            .gts1(RAMDIS),
+	            .gts1(WR_B),
 	            .p43(D0),
-	            .p44(RAMRD_B),
+	            .p44(RD_B),
                     );
 
   // Alliance 512K x 8 SRAM - address pins wired to suit layout

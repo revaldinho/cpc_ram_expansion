@@ -2,10 +2,11 @@
 PIN "mreq_b"	LOC = P1 ;
 PIN "iorq_b"	LOC = P2 ;
 PIN "ready"	LOC = P3 ;
+PIN "ramrd_b"	LOC = P4 ;
 PIN "clk"	LOC = P5 ; # GCK1
-#PIN ""	LOC = P6 ; # GCK2
-PIN "rd_b"	LOC = P7 ; # GCK3
-PIN "wr_b"	LOC = P8 ;
+PIN "ramdis"	LOC = P6 ; # GCK2
+#PIN ""	LOC = P7 ; # GCK3
+PIN ""	LOC = P8 ;
 #PIN ""	        LOC = P9 ;
 #PIN ""	        LOC = P11 ;
 #PIN ""	        LOC = P12 ;
@@ -30,7 +31,6 @@ PIN "data[2]"	LOC = P37 ;
 PIN "data[1]"	LOC = P38 ;
 PIN "reset_b"   LOC = P39 ; # GSR
 PIN "busreset_b"   LOC = P40 ; # GTS2
-PIN "ramdis"    LOC = P42 ; # GTS1
-
+PIN "wr_b"    LOC = P42 ; # GTS1
 PIN "data[0]"  LOC = P43 ;
-PIN "ramrd_b"	LOC = P44 ;
+PIN "rd_b"	LOC = P44 ;
