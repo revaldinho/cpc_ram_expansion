@@ -15,3 +15,5 @@ Unless otherwise noted, all files and the project are copyright by the contribut
 
 
 <img src="https://github.com/revaldinho/cpc_ram_expansion/blob/master/img/CPC_512K_RAM_top_v1.00.png" alt="V1.00 PCB Image" width="512">
+
+This PCB is available as an Eagle board file, or for ordering directly from OSHPark: [CPC 512K RAM](https://oshpark.com/shared_projects/UwZ7VwqU) 
