@@ -12,6 +12,7 @@ ALLLIBS ?= $(shell ls -1 ${netlister_dir}/lib/*.lib)
 	-l ${netlister_dir}/lib/xilinx.lib \
 	-l ${netlister_dir}/lib/rcl.lib \
 	-l ${netlister_dir}/lib/triac.lib \
+	-l ${netlister_dir}/lib/74series.lib \
 	-o $*.net \
 	-f net
 
@@ -24,6 +25,7 @@ ALLLIBS ?= $(shell ls -1 ${netlister_dir}/lib/*.lib)
 	-l ${netlister_dir}/lib/xilinx.lib \
 	-l ${netlister_dir}/lib/rcl.lib \
 	-l ${netlister_dir}/lib/triac.lib \
+	-l ${netlister_dir}/lib/74series.lib \
 	-o $*.scr \
 	-f scr \
 	-d common.header \

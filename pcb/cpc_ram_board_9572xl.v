@@ -117,7 +117,7 @@ module cpc_ram_board ();
                 .p1(VSS),  .p2(VSS),
                 .p3(TMS),  .p4(TDI),
                 .p5(TDO),  .p6(TCK),
-                .p7(VDD),  .p8(),
+                .p7(VDD3V3),  .p8(),
                 );
 
   // 9572XL CPLD - 3.3V core, 5V IO

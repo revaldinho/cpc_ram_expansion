@@ -51,7 +51,7 @@ CHANGE SIZE 0.03 ;
 CHANGE WIDTH 0.01 ;
 WIRE  (1.92 2.12) (1.92 2.24 ) (2.48 2.24 ) (2.48 2.12) ( 1.92 2.12 ) ;
 TEXT 'GND  TDI  TCK  NC' R0 (1.95 2.2) ;
-TEXT 'GND  TMS  TDO  5V' R0 (1.95 2.15) ;
+TEXT 'GND  TMS  TDO  3V3' R0 (1.95 2.15) ;
 
 # Autorouter
 # AUTO VDD VDD_CPC VDD_EXT VDD3V3 CLK VSS;   # Route clock and supplies first
