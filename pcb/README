@@ -9,6 +9,8 @@ if ($status != 0) then
    rehash
 endif
 
+cp autorouter.ctl /tmp
+
 make cpc_ram_board.net
 make cpc_ram_board.scr
 

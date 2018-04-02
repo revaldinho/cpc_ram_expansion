@@ -36,7 +36,7 @@ MOVE JTAG          (1.7 2.15)  ;
 Layer tPlace ;
 CHANGE FONT PROPORTIONAL ; 
 CHANGE SIZE 0.06
-TEXT 'CPC 512K RAM Expansion, v1.00' R90 (0.10 0.5) ;
+TEXT 'CPC 512K RAM Expansion, v1.01' R90 (0.10 0.5) ;
 CHANGE SIZE 0.04
 TEXT '(C) 2018 Revaldinho'  R90      (0.2 0.5) ;
 TEXT 'github.com/revaldinho/cpc_ram_expansion'  R90      (0.3 0.5) ;
@@ -50,6 +50,7 @@ TEXT 'GND  TMS  TDO  5V' R0 (1.95 2.15) ;
 
 # Autorouter
 # AUTO VDD VDD_CPC VDD_EXT VDD3V3 CLK VSS;   # Route clock and supplies first
+AUTO load /tmp/autorouter.ctl;
 AUTO ;
 
 ## Define power fills top and bottom over whole board area

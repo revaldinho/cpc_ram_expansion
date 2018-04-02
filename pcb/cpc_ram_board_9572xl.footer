@@ -55,8 +55,8 @@ TEXT 'GND  TMS  TDO  3V3' R0 (1.95 2.15) ;
 
 # Autorouter
 # AUTO VDD VDD_CPC VDD_EXT VDD3V3 CLK VSS;   # Route clock and supplies first
+AUTO load /tmp/autorouter.ctl ;
 AUTO ;
-
 ## Define power fills top and bottom over whole board area
 layer Top ; 
 polygon VSS 0.08 (0 0) (0 2.35) (2.95 2.35) (2.95 0) (0 0) ;
