@@ -3,59 +3,94 @@
  * RAM expansion board. To be simulated directly vs the RTL and cpld versions
  * of the code.
  */
-module cpld_ram512k ( adr15, adr14, iorq_b, mreq_b, ramrd_b, reset_b, wr_b, 
-        datain, ramdis, ramcs_b, ramadrhi );
-  input [7:0] datain;
+
+
+module sn74xx_ram512k (
+       adr15,
+       adr14,       
+       iorq_b,
+       mreq_b,
+       ramrd_b,
+       reset_b,
+       wr_b,
+       rd_b,
+       data, 
+       ramdis,
+       ramcs_b,
+       ramadrhi,
+       ready,
+       clk,
+       ramoe_b,
+       ramwe_b );
+       
+  input adr15;
+  input adr14;  
+  input [7:0] data;
   output [4:0] ramadrhi;
-  input adr15, adr14, iorq_b, mreq_b, ramrd_b, reset_b, wr_b;
-  output ramdis, ramcs_b;
-  wire   blocksel_w, ramblock_q_2_, ramblock_q_1_, ramblock_q_0_, n19, n20,
-         n21, n22, n23, n24, n25, n26, n27, n28, n29, n30, n31, n32, n33, n34,
-         n35, n36;
+  input iorq_b, mreq_b, ramrd_b, reset_b, wr_b, rd_b, ready, clk;
+  output ramdis, ramcs_b, ramoe_b, ramwe_b;
 
-  # Quad NOR2 74HCT02
-  NOR2 U0_0 ( .i0(adr15), .i1(iorq_b), .o(n19) );
-  NOR2 U0_1 ( .i0(wr_b), .i1(n20), .o(blocksel_w) );
+  wire   clken_lat_q, ramblock_q_2_, ramblock_q_1_, ramblock_q_0_, n17, n18,
+         n19, n20, n21, n22, n23, n24, n25, n26, n27, n28, n29, n30, n31, n32;
 
-  # Triple NAND3 74HCT10
-  NAND3 U1_0 ( .i0(datain[6]), .i1(datain[7]), .i2(n19), .o(n20) );
-  NAND3 U1_1 ( .i0(adr14), .i1(ramblock_q_1_), .i2(n31), .o(n21) );
-  NAND3 U1_2 ( .i0(n36), .i1(n35), .i2(n34), .o(ramcs_b) );
+  wire nn1, nn2;
+  // Hex posedge triggered D-FF with clear*  74HCT174
+  DFFR ramblock_q_4_u0 ( .d(data[4]), .phi(n17), .resetb(reset_b), .q(ramadrhi[3]) );
+  DFFR ramblock_q_3_u0 ( .d(data[3]), .phi(n17), .resetb(reset_b), .q(ramadrhi[2]) );
+  DFFR ramblock_q_5_u0 ( .d(data[5]), .phi(n17), .resetb(reset_b), .q(ramadrhi[4]) );
+  DFFR ramblock_q_1_u0 ( .d(data[1]), .phi(n17), .resetb(reset_b), .q(ramblock_q_1_) );
+  DFFR ramblock_q_2_u0 ( .d(data[2]), .phi(n17), .resetb(reset_b), .q(ramblock_q_2_) );
+  DFFR ramblock_q_0_u0 ( .d(data[0]), .phi(n17), .resetb(reset_b), .q(ramblock_q_0_) );
 
-  # Quad NAND2 74HCT00
-  NAND2 U2_0 ( .i0(n27), .i1(n21), .o(ramadrhi[0]) );
-  NAND2 U2_1 ( .i0(n31), .i1(ramblock_q_0_), .o(n24) );
-  NAND2 U2_2 ( .i0(n31), .i1(n32), .o(n22) );
-  NAND2 U2_3 ( .i0(ramblock_q_1_), .i1(n22), .o(n23) );
+  // Dual latch 74HCT75
+  DLAT clken_lat_q_u0 ( .phi(clk), .d(n18), .q(clken_lat_q) );
 
-  # Quad NAND2 74HCT00
-  NAND2 U3_0 ( .i0(n24), .i1(n23), .o(ramadrhi[1]) );
-  NAND2 U3_1 ( .i0(adr14), .i1(adr15), .o(n25) );
-  NAND2 U3_2 ( .i0(ramblock_q_0_), .i1(n25), .o(n29) );
-  NAND2 U3_3 ( .i0(n27), .i1(n26), .o(n28) );
+  // These are direct connections from CPC bus to SRAM IC
+  //BUF U29 ( .i(wr_b), .o(ramwe_b) );
+  //BUF U30 ( .i(ramrd_b), .o(ramoe_b) );
 
-  # Quad NAND2 74HCT00
-  NAND2 U4_0 ( .i0(n29), .i1(n28), .o(n30) );
-  NAND2 U4_1 ( .i0(n31), .i1(n30), .o(n35) );
-  NAND2 U4_2 ( .i0(adr14), .i1(n32), .o(n33) );
-  NAND2 U4_3 ( .i0(n33), .i1(ramblock_q_2_), .o(n34) );
-
-  # Hex INV 74HCT04
-  INV U5_0 ( .i(ramcs_b), .o(ramdis) );
-  INV U5_1 ( .i(mreq_b), .o(n36) );
-  INV U5_2 ( .i(adr15), .o(n32) );
-  INV U5_3 ( .i(ramblock_q_2_), .o(n31) );
-  INV U5_4 ( .i(ramblock_q_0_), .o(n27) );
-  INV U5_5 ( .i(ramblock_q_1_), .o(n26) );
-
-  # Hex posedge triggered D-FF with clear*  74HCT174
-  DFFR U6_0 ( .d(datain[5]), .phi(blocksel_w), .resetb(reset_b), .q(ramadrhi[4]) );
-  DFFR U6_1 ( .d(datain[4]), .phi(blocksel_w), .resetb(reset_b), .q(ramadrhi[3]) );
-  DFFR U6_2 ( .d(datain[3]), .phi(blocksel_w), .resetb(reset_b), .q(ramadrhi[2]) );
-  DFFR U6_3 ( .d(datain[2]), .phi(blocksel_w), .resetb(reset_b), .q(ramblock_q_2_) );
-  DFFR U6_4 ( .d(datain[1]), .phi(blocksel_w), .resetb(reset_b), .q(ramblock_q_1_) );
-  DFFR U6_5 ( .d(datain[0]), .phi(blocksel_w), .resetb(reset_b), .q(ramblock_q_0_) );
+  // Quad NOR2 74HCT02
+  NOR2 U31 ( .i0(clk), .i1(clken_lat_q), .o(n17) );
+  NOR2 U42 ( .i0(n27), .i1(mreq_b), .o(n31) );
+  NOR2 U2ECO (.i0(nn1), .i2(adr15), .o(nn2));
 
 
+  // Triple NOR3 74HCT27
+  NOR3 U32 ( .i0(adr15), .i1(iorq_b), .i2(wr_b), .o(n19) )
+  NOR3 U41 ( .i0(ramblock_q_0_), .i1(ramblock_q_2_), .i2(ramblock_q_1_), .o(n27) );
+
+  // Triple NAND3 74HCT10
+  NAND3 U25 ( .i0(data[6]), .i1(data[7]), .i2(n19), .o(n18) );    
+  NAND3 U45 ( .i0(n32), .i1(n31), .i2(n30), .o(ramcs_b) );    
+  NAND3 U33 ( .i0(adr14), .i1(ramblock_q_1_), .i2(n22), .o(n20) );
+
+  // Quad NAND2 74HCT00
+  NAND2 U34 ( .i0(n21), .i1(n20), .o(ramadrhi[0]) );
+  NAND2 U35 ( .i0(n22), .i1(n28), .o(n25) );
+  NAND2 U36 ( .i0(ramblock_q_1_), .i1(n25), .o(n24) );
+  NAND2 U37 ( .i0(ramblock_q_0_), .i1(n22), .o(n23) );
+
+  // Quad NAND2 74HCT00
+  NAND2 U38 ( .i0(n24), .i1(n23), .o(ramadrhi[1]) );
+  NAND2 U39 ( .i0(adr14), .i1(n25), .o(n26) );
+  NAND2 U40 ( .i0(ramblock_q_0_), .i1(n26), .o(n32) );
+  NAND2 U44 ( .i0(ramblock_q_2_), .i1(n29), .o(n30) );
+
+  // Hex INV 74HCT04
+  INV U27 ( .i(ramblock_q_2_), .o(n22) );
+  INV U28 ( .i(ramblock_q_0_), .o(n21) );
+  INV U46 ( .i(ramcs_b), .o(ramdis) );
+  INV U26 ( .i(adr15), .o(n28) );    
+  INV U1ECO (.i(adr14), .o(nn1));
+  INV U3ECO (.i(nn2), .o(n29))
+
+//  ECO out this gate to reduce chip count
+//  NAND2 U43 ( .i0(adr14), .i1(n28), .o(n29) );
+
+      
+    
 endmodule
+
+
+
 
