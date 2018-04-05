@@ -162,7 +162,7 @@ module cpc_ram_board ();
   // Quad latch 74HCT75
   SN7475 U6 ( .en01(CLK), .d0(n18), .q0(clken_lat_q), .qb0(),
                         .d1(VDD), .q1(), .qb1(),
-            .en23(VDD), .d2(VDD), .q2(), .qb2(),
+            .en23(VSS), .d2(VDD), .q2(), .qb2(),
                         .d3(VDD), .q3(), .qb3(),
             .vdd(VDD), .vss(VSS));               
 
