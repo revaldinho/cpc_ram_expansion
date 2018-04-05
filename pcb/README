@@ -16,3 +16,6 @@ make cpc_ram_board.scr
 
 make cpc_ram_board_9572xl.net
 make cpc_ram_board_9572xl.scr
+
+
+make cpc_ram_board_74.scr
