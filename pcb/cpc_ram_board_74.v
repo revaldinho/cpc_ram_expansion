@@ -135,14 +135,15 @@ module cpc_ram_board ();
   SN7400 U3 ( 
               .i0_0(n21), .i0_1(n20), .o0(hiadr0),
               .i1_0(n22), .i1_1(n28), .o1(n25),
-              .i3_0(ramblock_q1), .i3_1(n25), .o3(n24),              
-              .i2_0(ramblock_q0), .i2_1(n22), .o2(n23),
+              .i2_0(n24), .i2_1(n23), .o2(hiadr1),
+	      .i3_0(A14), .i3_1(n25), .o3(n26),
+
               .vdd(VDD), .vss(VSS));              
 
   // Quad NAND2 74HCT00
   SN7400 U4 ( 
-              .i0_0(n24),   .i0_1(n23), .o0(hiadr1),
-	      .i1_0(A14), .i1_1(n25), .o1(n26),
+              .i0_0(ramblock_q1), .i0_1(n25), .o0(n24),              
+              .i1_0(ramblock_q0), .i1_1(n22), .o1(n23),
 	      .i2_0(ramblock_q0), .i2_1(n26), .o2(n32),
 	      .i3_0(ramblock_q2), .i3_1(n29), .o3(n30),
               .vdd(VDD), .vss(VSS));              
