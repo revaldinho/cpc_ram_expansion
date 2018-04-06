@@ -191,22 +191,3 @@ AND capitalch(ch) = 'a' <= ch <= 'z' -> ch + 'A' - 'a', ch
 
 AND compch(ch1, ch2) = capitalch(ch1) - capitalch(ch2)
 
-AND compstring(s1, s2) = VALOF
-$( LET lens1, lens2 = s1%0, s2%0
-  LET smaller = lens1 < lens2 -> s1, s2
-  FOR i = 1 TO smaller%0 DO
-  $( LET res = compch(s1%i, s2%i)
-    IF res RESULTIS res
-  $)
-  IF lens1 = lens2 RESULTIS 0
-  RESULTIS smaller = s1 -> -1, 1
-$)
-
-AND copystring(f, t) BE
-  FOR i = 0 TO f%0 DO t%i := f%i
-
-AND copy_words(f, t, n) BE
-  FOR i = 0 TO n-1 DO t!i := f!i
-
-AND clear_words(v, n) BE
-  FOR i = 0 TO n-1 DO v!i := 0

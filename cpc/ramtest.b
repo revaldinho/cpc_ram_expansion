@@ -51,20 +51,19 @@ LET rollcall() = VALOF $(
     FOR bank=0 TO 7 DO $(
         FOR block=0 TO 3 DO $(
             ramsel(bank,block)
-            poke( BLKBOT, (bank*4)+block)
+            poke( BLKBOT, (bank<<2)+block)
         $)
     $)
 
     FOR bank=0 TO 7 DO $(
         FOR block=0 TO 3 DO $(
             ramsel(bank,block)
-            IF peek( BLKBOT) = (bank*4+block) DO $(
-               ledger!((bank*4)+block+1) := 1
+            IF peek( BLKBOT) = ((bank<<2)+block) DO $(
+               ledger!((bank<<2)+block+1) := 1
                ramblocks := ramblocks + 1
             $)
         $)
     $)
-
     RESULTIS ramblocks
 
 $)
@@ -124,7 +123,6 @@ $)
  * RAM test of full RAM to check no interference between blocks
  *
  */
-
 LET fullramtest() = VALOF $(
     LET bank = 0
     LET block = 0
@@ -219,7 +217,6 @@ LET display(test_results) BE $(
         ELSE writes(" absent  |")
         IF (i& #x3) = 3 DO $(
            writes("*n")
-           //writes("      +---------+---------+---------+---------+*n")
         $)
     $)
     writes("      +---------+---------+---------+---------+*n")
@@ -250,7 +247,6 @@ LET start() BE $(
         IF ledger!i DO $(
              total_ram_kb := total_ram_kb + 16
              fails := blocktest(i-1)
-             
              TEST fails > 0 THEN $(
                  writes(" FAIL*n")
                  test_results!i := 0
