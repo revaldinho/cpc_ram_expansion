@@ -19,13 +19,13 @@ This PCB is available as an Eagle board file, or for ordering directly from OSHP
 
 ## Example PCB for XC9572XL CPLD Version
 
-<img src="https://github.com/revaldinho/cpc_ram_expansion/blob/master/img/CPC_512K_RAM_XL_Eagle_top_v1.00.png" alt="V1.00 PCB Image from Eagle" width="512">
+<img src="https://github.com/revaldinho/cpc_ram_expansion/blob/master/img/CPC_512K_RAM_XL_Eagle_top_v1.00.png" alt="V1.00 PCB Image from Eagle" width="521">
 
-<img src="https://github.com/revaldinho/cpc_ram_expansion/blob/master/img/CPC_512K_RAM_XL_top_v1.00.png" alt="V1.00 PCB Image" width="512">
+<img src="https://github.com/revaldinho/cpc_ram_expansion/blob/master/img/CPC_512K_RAM_XL_top_v1.00.png" alt="V1.00 PCB Image" width="521">
 
 
 ## Example PCB for 74 Series Version
 
-<img src="https://github.com/revaldinho/cpc_ram_expansion/blob/master/img/CPC_512K_RAM_SN74_Eagle_top_v2.00.png" alt="V2.00 PCB Image from Eagle" width="512">
+<img src="https://github.com/revaldinho/cpc_ram_expansion/blob/master/img/CPC_512K_RAM_SN74_Eagle_top_v2.00.png" alt="V2.00 PCB Image from Eagle" width="706">
 
-<img src="https://github.com/revaldinho/cpc_ram_expansion/blob/master/img/CPC_512K_RAM_SN74_top_v2.00.png" alt="V2.00 PCB Image" width="512">
+<img src="https://github.com/revaldinho/cpc_ram_expansion/blob/master/img/CPC_512K_RAM_SN74_top_v2.00.png" alt="V2.00 PCB Image" width="706">
