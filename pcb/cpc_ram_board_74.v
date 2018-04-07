@@ -43,15 +43,11 @@ module cpc_ram_board ();
   wire hiadr4,hiadr3,hiadr2,hiadr1,hiadr0;
 
 
-  wire ramblock_q5,ramblock_q4,ramblock_q3,ramblock_q2,ramblock_q1,ramblock_q0;
-  wire clken_lat_q, ramblock_q_2_, ramblock_q_1_, ramblock_q_0_, n17, n18,
+  wire ramblock_q2,ramblock_q1,ramblock_q0;
+  wire clken_lat_q, n17, n18,
        n19, n20, n21, n22, n23, n24, n25, n26, n27, n28, n29, n30, n31, n32;
   wire nn1, nn2;
-  
-  wire TMS;
-  wire TDI;
-  wire TDO;
-  wire TCK;
+
   
   // 3 pin header with link to use either CPC or external 5V power for the board
   hdr1x03      L1 (
@@ -214,5 +210,6 @@ module cpc_ram_board ();
    cap100nf CAP100N_3 (.p0( VSS ), .p1( VDD ));
    cap100nf CAP100N_4 (.p0( VSS ), .p1( VDD ));
    cap100nf CAP100N_5 (.p0( VSS ), .p1( VDD ));
+   cap100nf CAP100N_6 (.p0( VSS ), .p1( VDD ));  
 
 endmodule
