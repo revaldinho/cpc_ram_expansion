@@ -23,9 +23,8 @@ This PCB is available as an Eagle board file, or for ordering directly from OSHP
 
 <img src="https://github.com/revaldinho/cpc_ram_expansion/blob/master/img/CPC_512K_RAM_XL_top_v1.00.png" alt="V1.00 PCB Image" width="640">
 
-
 ## Example PCB for 74 Series Version
 
-<img src="https://github.com/revaldinho/cpc_ram_expansion/blob/master/img/CPC_512K_RAM_SN74_Eagle_top_v2.00.png" alt="V2.00 PCB Image from Eagle" width="640">
+<img src="https://github.com/revaldinho/cpc_ram_expansion/blob/master/img/CPC_512K_RAM_SN74_Eagle_top_v2.00.png" alt="V2.00 PCB Image from Eagle" width="800">
 
-<img src="https://github.com/revaldinho/cpc_ram_expansion/blob/master/img/CPC_512K_RAM_SN74_top_v2.00.png" alt="V2.00 PCB Image" width="640">
+<img src="https://github.com/revaldinho/cpc_ram_expansion/blob/master/img/CPC_512K_RAM_SN74_top_v2.00.png" alt="V2.00 PCB Image" width="800">
