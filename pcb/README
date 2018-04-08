@@ -9,6 +9,9 @@ if ($status != 0) then
    rehash
 endif
 
+setenv TERM xterm
+
+
 cp autorouter.ctl /tmp
 
 make cpc_ram_board.net
@@ -19,3 +22,4 @@ make cpc_ram_board_9572xl.scr
 
 cp autorouter_74.ctl /tmp
 make cpc_ram_board_74.scr
+make cpc_ram_board_74.net

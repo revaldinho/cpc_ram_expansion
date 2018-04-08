@@ -37,4 +37,8 @@ USE triac ;
 # SIGNAL VSS IC1  7 IC2  7 IC3 10;
 # SIGNAL n1  IC1  2 IC1  3 ;
 # signal n2  IC2  2 IC4 32 ;
-# 
+#
+
+# Common settings for manual work
+via round ;
+change drill .024 in ;
