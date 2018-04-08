@@ -10,8 +10,11 @@ module cpc_ram_board ();
 
   // wire declarations
   supply0 VSS;
+
+#ifdef ALT_POWER  
   supply1 VDD_EXT;
   supply1 VDD_CPC;
+#endif  
   supply1 VDD;
 
   wire Sound;  
@@ -48,7 +51,8 @@ module cpc_ram_board ();
        n19, n20, n21, n22, n23, n24, n25, n26, n27, n28, n29, n30, n31, n32;
   wire nn1, nn2;
 
-  
+
+#ifdef ALT_POWER  
   // 3 pin header with link to use either CPC or external 5V power for the board
   hdr1x03      L1 (
                    .p1(VDD_CPC),
@@ -62,7 +66,8 @@ module cpc_ram_board ();
                         .vdd2(VDD_EXT),
                         .gnd(VSS)
                         );
-
+#endif
+  
   // Radial electolytic, one per board on the main 5V supply
   cap22uf         CAP22UF(.minus(VSS),.plus(VDD));
 
@@ -84,7 +89,11 @@ module cpc_ram_board ();
                       .p29(D5),      .p30(D4),
                       .p27(D3),      .p28(D2),
                       .p25(D1),      .p26(D0),
+#ifdef ALT_POWER                      
                       .p23(VDD_CPC), .p24(MREQ_B),
+#else                      
+                      .p23(VDD), .p24(MREQ_B),
+#endif                      
                       .p21(M1_B),    .p22(RFSH_B),
                       .p19(IOREQ_B), .p20(RD_B),
                       .p17(WR_B),    .p18(HALT_B),
