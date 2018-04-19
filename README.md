@@ -8,6 +8,15 @@ The second implemention will replace the Xilinx CPLD with 8 or 9 74 series compo
 
 Unless otherwise noted, all files and the project are copyright by the contributors and licensed under the GPL. Contact us by raising an [issue on GitHub](https://github.com/revaldinho/cpc_ram_expansion/issues)
 
+## Current status
+
+Prototype version, V1.00 PCB with XC9572 CPLD and SRAM has been assembled and initial tests are working with my Amstrad CPC464.
+
+<img src="https://github.com/revaldinho/cpc_ram_expansion/blob/master/img/protoboard.jpg" alt="Assembled V1.00 Prototype" width="640">
+
+All CPLD code is included in this git repository and the original v1.00 board is available via OSHPark as an Eagle board file, or for ordering directly from OSHPark: [CPC 512K RAM](https://oshpark.com/shared_projects/UwZ7VwqU).
+
+NB The snap shows the CPC box connector on the top side of the board, but the upper and lower rows of pins are swapped in the layout, so the connector actually needs to be fitted to the underside. This will be fixed in the V1.01 board file once I can check that's an orientation that will work with the MX Mother expansion card.
 
 ## Example PCB for XC9572 CPLD Version
 
