@@ -5,70 +5,70 @@
 Grid default;
 Set Wire_Bend 0;
 Layer Dimension;
-Wire 0  (0 0) (3.9 3.2) (0 0);
+Wire 0  (0 0) (4.0 3.2) (0 0);
 Layer Top;
 
 # PCB-Pool/PCB-Train design rule is actually 0.006/0.006 for wires
-CLASS 0 signal 0.010 0.010 ;
-CLASS 1 supply 0.030 0.020 ;
+CLASS 0 signal 0.015 0.012 ;
+CLASS 1 supply 0.030 0.015 ;
 
 #ifdef ALT_POWER
-ROTATE =R90 CONN0 ;
-MOVE CONN0         (0.2 2.95) ;
+ROTATE =R0 CONN0 ;
+MOVE CONN0         (0.4 3.00) ;
 ROTATE =R90 L1 ;
-MOVE L1            (0.2 2.55) ;
+MOVE L1            (0.15 2.75) ;
 #endif
 
 ROTATE =R180 CONN1 ;
-MOVE CONN1         (1.45 0.20) ;
+MOVE CONN1         (1.6 0.25) ;
 
-ROTATE =R180 CAP22UF ; 
-MOVE CAP22UF       (1.10 3.05 ) ;
+ROTATE =R270 CAP22UF ; 
+MOVE CAP22UF       (0.45 2.7 ) ;
 
 ROTATE =R270 SRAM ;
-MOVE SRAM          (0.85 1.65) ;
+MOVE SRAM          (0.9 1.75) ;
 
 ROTATE =R0 U0 ;
-MOVE U0          (2.05 2.9) ;
-ROTATE =R0 U6 ;
-MOVE U6          (3.0 2.9) ;
+MOVE U0          (2.1 2.9) ;
+ROTATE =R0 U1 ;
+MOVE U1          (3.05 2.9) ;
 
 ROTATE =R270 U7 ;
-MOVE U7          (1.85 0.85) ;
+MOVE U7          (1.9 0.9) ;
 ROTATE =R270 U4 ;
-MOVE U4          (2.6 0.95) ;
-ROTATE =R270 U2 ;
-MOVE U2          (3.5 0.95) ;
+MOVE U4          (2.75 0.9) ;
+ROTATE =R270 U6 ;
+MOVE U6          (3.55 0.9) ;
 
 ROTATE =R270 U3 ;
-MOVE U3          (1.85 2.05) ;
+MOVE U3          (1.9 2.05) ;
 ROTATE =R270 U5 ;
-MOVE U5          (2.6 2.05) ;
-ROTATE =R270 U1 ;
-MOVE U1          (3.5 2.05) ;
+MOVE U5          (2.75 2.05) ;
+ROTATE =R270 U2 ;
+MOVE U2          (3.55 2.05) ;
 
 ROTATE =R0 CAP100N_1 ;
-MOVE CAP100N_1     (1.05 2.65) ;
+MOVE CAP100N_1     (1.10 2.65) ;
 
 ROTATE =R270 CAP100N_2 ;
-MOVE CAP100N_2     (2.0  1.5)  ;
+MOVE CAP100N_2     (2.05  1.5)  ;
 ROTATE =R270 CAP100N_3 ;
-MOVE CAP100N_3     (2.75 1.5)  ; 
+MOVE CAP100N_3     (2.8 1.5)  ; 
 ROTATE =R270 CAP100N_5 ;
-MOVE CAP100N_5     (3.65 1.5)  ; 
+MOVE CAP100N_5     (3.7 1.5)  ; 
 
 ROTATE =R90 CAP100N_4 ;
-MOVE CAP100N_4     (1.5 2.95)  ; 
+MOVE CAP100N_4     (1.55 2.95)  ; 
 ROTATE =R270 CAP100N_6 ;
-MOVE CAP100N_6     (3.65 2.95)  ; 
+MOVE CAP100N_6     (3.7 2.60)  ; 
 
 Layer tPlace ;
 CHANGE FONT PROPORTIONAL ; 
 CHANGE SIZE 0.06
-TEXT 'CPC 512K RAM Expansion, v2.00'            R90 (0.1 0.45) ;
+TEXT 'CPC 512K RAM Expansion, v2.00'            R90 (0.1 0.5) ;
 CHANGE SIZE 0.04
-TEXT '(C) 2018 Revaldinho.'  R90 (0.2 0.45) ;
-TEXT 'https://github.com/revaldinho/cpc_ram_expansion'  R90 (0.3 0.45) ;
+TEXT '(C) 2018 Revaldinho.'  R90 (0.2 0.5) ;
+TEXT 'https://github.com/revaldinho/cpc_ram_expansion'  R90 (0.3 0.5) ;
 
 # Autorouter
 AUTO load /tmp/autorouter_74.ctl ;
@@ -76,10 +76,10 @@ AUTO ;
  
 ## ## Define power fills top and bottom over whole board area
 layer Top ; 
-polygon VSS 0.08 (0 0) (0 3.2) (3.9 3.2) (3.9 0) (0 0) ;
+polygon VSS 0.08 (0 0) (0 3.2) (4.0 3.2) (4.0 0) (0 0) ;
 
 layer Bottom ; 
-polygon VSS 0.08 (0 0) (0 3.2) (3.9 3.2) (3.9 0) (0 0) ;
+polygon VSS 0.08 (0 0) (0 3.2) (4.0 3.2) (4.0 0) (0 0) ;
 
 Ratsnest ;  ## Calculate and display polygons
 

@@ -3,12 +3,13 @@ netlister_dir ?= ~/Documents/Development/git/netlister
 
 ALLLIBS ?= $(shell ls -1 ${netlister_dir}/lib/*.lib)
 
+ARGS ?= 
 
 %.v_cpp: %.v
-	grep -v '^# ' $*.v | cpp -E | grep -v '^# ' > $*.v_cpp
+	grep -v '^# ' $*.v | cpp -E ${ARGS} | grep -v '^# ' > $*.v_cpp
 
 %.footer_cpp: %.footer
-	grep -v '^# ' $*.footer | cpp -E | grep -v '^# ' > $*.footer_cpp
+	grep -v '^# ' $*.footer | cpp -E ${ARGS} | grep -v '^# ' > $*.footer_cpp
 
 %.net : %.v_cpp ${ALLLIBS}
 	netlister.py -i $*.v_cpp \

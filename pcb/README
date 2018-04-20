@@ -21,5 +21,6 @@ make cpc_ram_board_9572xl.net
 make cpc_ram_board_9572xl.scr
 
 cp autorouter_74.ctl /tmp
-make cpc_ram_board_74.scr
-make cpc_ram_board_74.net
+
+make cpc_ram_board_74.scr ARGS='"-D ALT_POWER=1"'
+make cpc_ram_board_74.net ARGS='"-D ALT_POWER=1"'
