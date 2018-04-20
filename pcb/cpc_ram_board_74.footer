@@ -14,7 +14,7 @@ CLASS 1 supply 0.030 0.015 ;
 
 #ifdef ALT_POWER
 ROTATE =R0 CONN0 ;
-MOVE CONN0         (0.4 3.00) ;
+MOVE CONN0         (0.5 3.00) ;
 ROTATE =R90 L1 ;
 MOVE L1            (0.15 2.75) ;
 #endif
