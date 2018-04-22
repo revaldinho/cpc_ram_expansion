@@ -5,7 +5,7 @@
 Grid default;
 Set Wire_Bend 0;
 Layer Dimension;
-Wire 0  (0 0) (4.0 3.2) (0 0);
+Wire 0  (0 0) (3.9 3.2) (0 0);
 Layer Top;
 
 # PCB-Pool/PCB-Train design rule is actually 0.006/0.006 for wires
@@ -38,14 +38,14 @@ MOVE U7          (1.9 0.9) ;
 ROTATE =R270 U4 ;
 MOVE U4          (2.75 0.9) ;
 ROTATE =R270 U6 ;
-MOVE U6          (3.55 0.9) ;
+MOVE U6          (3.5 0.9) ;
 
 ROTATE =R270 U3 ;
 MOVE U3          (1.9 2.05) ;
 ROTATE =R270 U5 ;
 MOVE U5          (2.75 2.05) ;
 ROTATE =R270 U2 ;
-MOVE U2          (3.55 2.05) ;
+MOVE U2          (3.5 2.05) ;
 
 ROTATE =R0 CAP100N_1 ;
 MOVE CAP100N_1     (1.10 2.65) ;
@@ -55,12 +55,12 @@ MOVE CAP100N_2     (2.05  1.5)  ;
 ROTATE =R270 CAP100N_3 ;
 MOVE CAP100N_3     (2.8 1.5)  ; 
 ROTATE =R270 CAP100N_5 ;
-MOVE CAP100N_5     (3.7 1.5)  ; 
+MOVE CAP100N_5     (3.65 1.5)  ; 
 
 ROTATE =R90 CAP100N_4 ;
 MOVE CAP100N_4     (1.55 2.95)  ; 
 ROTATE =R270 CAP100N_6 ;
-MOVE CAP100N_6     (3.7 2.60)  ; 
+MOVE CAP100N_6     (3.65 2.60)  ; 
 
 Layer tPlace ;
 CHANGE FONT PROPORTIONAL ; 
@@ -76,10 +76,10 @@ AUTO ;
  
 ## ## Define power fills top and bottom over whole board area
 layer Top ; 
-polygon VSS 0.08 (0 0) (0 3.2) (4.0 3.2) (4.0 0) (0 0) ;
+polygon VSS 0.08 (0 0) (0 3.2) (3.9 3.2) (3.9 0) (0 0) ;
 
 layer Bottom ; 
-polygon VSS 0.08 (0 0) (0 3.2) (4.0 3.2) (4.0 0) (0 0) ;
+polygon VSS 0.08 (0 0) (0 3.2) (3.9 3.2) (3.9 0) (0 0) ;
 
 Ratsnest ;  ## Calculate and display polygons
 
