@@ -26,20 +26,28 @@ THe gate level netlist and PCB are both derived from the working CPLD code above
 
 ## Example PCB for XC9572 CPLD Version
 
+ *NB This version has requires the IDC Connector to be mounted on the rear side of the card to be used with an MX4 board and requires then a non-keyed female connector on the board*
+ 
 <img src="https://github.com/revaldinho/cpc_ram_expansion/blob/master/img/CPC_512K_RAM_Eagle_top_v1.00.png" alt="V1.00 PCB Image from Eagle" width="640">
 
 <img src="https://github.com/revaldinho/cpc_ram_expansion/blob/master/img/CPC_512K_RAM_top_v1.00.png" alt="V1.00 PCB Image" width="640">
 
-This PCB is available as an Eagle board file, or for ordering directly from OSHPark: [CPC 512K RAM](https://oshpark.com/shared_projects/UwZ7VwqU) 
+This PCB is available as an Eagle board file, or for ordering directly from OSHPark: [CPC 512K RAM](https://oshpark.com/shared_projects/UwZ7VwqU)
 
-## Example PCB for XC9572XL CPLD Version
+A revised PCB layout is available here as V1.01. This is an autorouted version of the same V1.00 netlist with just the connector pins swapped over.
 
-<img src="https://github.com/revaldinho/cpc_ram_expansion/blob/master/img/CPC_512K_RAM_XL_Eagle_top_v1.00.png" alt="V1.00 PCB Image from Eagle" width="640">
+<img src="https://github.com/revaldinho/cpc_ram_expansion/blob/master/img/CPC_512K_RAM_Eagle_top_v1.01.png" alt="V1.01 PCB Image from Eagle" width="640">
 
-<img src="https://github.com/revaldinho/cpc_ram_expansion/blob/master/img/CPC_512K_RAM_XL_top_v1.00.png" alt="V1.00 PCB Image" width="640">
+<img src="https://github.com/revaldinho/cpc_ram_expansion/blob/master/img/CPC_512K_RAM_top_v1.01.png" alt="V1.01 PCB Image" width="640">
+
+This PCB is also available on OSHPark: [CPC 512K RAM V1.01](https://oshpark.com/shared_projects/h3dN136P)
+
 
 ## Example PCB for 74 Series Version
 
 <img src="https://github.com/revaldinho/cpc_ram_expansion/blob/master/img/CPC_512K_RAM_SN74_Eagle_top_v2.00.png" alt="V2.00 PCB Image from Eagle" width="800">
 
 <img src="https://github.com/revaldinho/cpc_ram_expansion/blob/master/img/CPC_512K_RAM_SN74_top_v2.00.png" alt="V2.00 PCB Image" width="800">
+
+
+The 74 Series version here has the connector orientation correct for the MX4 boards, but is still work in progress as far as the netlist and layout go.
