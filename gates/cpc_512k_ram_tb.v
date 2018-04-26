@@ -121,7 +121,7 @@ module cpc_512k_ram_tb();
   
   // Hex posedge triggered D-FF with clear*
   SN74174 U7 (
-              .clock(wclk),
+              .clock(!wclk),
               .resetb(RESET_B),
               .d0(D0),
               .d1(D1),
@@ -240,10 +240,11 @@ module cpc_512k_ram_tb();
         #20 web_r = 1'b0;            
       @ (posedge clk_r);
       @ (posedge clk_r);            
-      @ (posedge clk_r) begin  // FIXME - Should be delay after negedge
+      @ (negedge clk_r) begin 
         #10 ioreqb_r = 1'b1;
         #5  web_r = 1'b1;
       end
+      @ (negedge clk_r);
     end
   endtask
 
@@ -330,7 +331,7 @@ module cpc_512k_ram_tb();
   end
   
   always 
-    #125 clk_r = !clk_r;
+    #250 clk_r = !clk_r;
   
   
   
