@@ -180,20 +180,20 @@ module cpc_512k_ram_tb();
     input  [15:0]   address;
     begin      
       @ (posedge clk_r) begin
-        #30 addr_r <= address;
+        #30 addr_r = address;
       end
       @ (negedge clk_r) begin
-        #30 mreqb_r <= 1'b0;
-        #30 rdb_r <= 1'b0;
-        #30 ramrdb_r <= 1'b0;                
+        #30 mreqb_r = 1'b0;
+        rdb_r = 1'b0;
+        ramrdb_r = 1'b0;                
       end
       @ (posedge clk_r);
       @ (posedge clk_r);
       @ (negedge clk_r) begin
-        readback_r <= {D7,D6,D5,D4,D3,D2,D1,D0};
-        #90 mreqb_r <= 1'b1;
-        #90 rdb_r <= 1'b1;
-        #90 ramrdb_r <= 1'b1;                
+        readback_r = {D7,D6,D5,D4,D3,D2,D1,D0};
+        #90 mreqb_r = 1'b1;
+        rdb_r = 1'b1;
+        ramrdb_r = 1'b1;                
       end
       $display("%g Peek Task with address: %4h returned data: %2h", $time, address, readback_r);
     end       
@@ -205,20 +205,20 @@ module cpc_512k_ram_tb();
     begin
       $display("%g Poke Task with address: %4h data: %2h", $time, address, val);
       @ (posedge  clk_r) begin
-        #30 addr_r <= address;
+        #30 addr_r = address;
       end
       @ (negedge  clk_r) begin
-        #50 mreqb_r <= 1'b0;
+        #50 mreqb_r = 1'b0;
       end
       @ (posedge clk_r)
-        #30 data_r <= val;
+        #30 data_r = val;
       @ (negedge clk_r)
-        #20 web_r <= 1'b0;            
+        #20 web_r = 1'b0;            
       @ (posedge clk_r);
       @ (posedge clk_r);            
       @ (negedge clk_r) begin
-        #70 mreqb_r <= 1'b1;
-        #70 web_r <= 1'b1;
+        #70 mreqb_r = 1'b1;
+        web_r = 1'b1;
       end
     end
   endtask
@@ -229,20 +229,20 @@ module cpc_512k_ram_tb();
     begin
       $display("%g OUT Task with address: %4h data: %2h", $time, address, val);
       @ (posedge clk_r) begin
-        #30 addr_r <= address;
+        #30 addr_r = address;
       end
       @ (negedge clk_r) begin
-        #30 ioreqb_r <= 1'b0;
+        #30 ioreqb_r = 1'b0;
       end
       @ (posedge clk_r)
-        #30 data_r <= val;
+        #30 data_r = val;
       @ (negedge clk_r)
-        #20 web_r <= 1'b0;            
+        #20 web_r = 1'b0;            
       @ (posedge clk_r);
       @ (posedge clk_r);            
-      @ (negedge clk_r) begin
-        #70 ioreqb_r <= 1'b1;
-        #70 web_r <= 1'b1;
+      @ (posedge clk_r) begin  // FIXME - Should be delay after negedge
+        #10 ioreqb_r = 1'b1;
+        #5  web_r = 1'b1;
       end
     end
   endtask
@@ -252,7 +252,7 @@ module cpc_512k_ram_tb();
     input [7:0] actual;
     begin
       tests = tests + 1;      
-      if (expected!=actual) begin
+      if (expected!==actual) begin
         fails = fails + 1;
         $display("Error - mismatch, expected %2h actual %2h", expected, actual);
       end
@@ -270,15 +270,15 @@ module cpc_512k_ram_tb();
 
     tests = 0;
     fails = 0;    
-    clk_r <= 1'b0;
-    resetb_r <= 1'b0;
-    ioreqb_r <= 1'b1;
-    mreqb_r <= 1'b1;
-    web_r <= 1'b1;
-    rdb_r <= 1'b1;
-    ramrdb_r <= 1'b1;
+    clk_r = 1'b0;
+    resetb_r = 1'b0;
+    ioreqb_r = 1'b1;
+    mreqb_r = 1'b1;
+    web_r = 1'b1;
+    rdb_r = 1'b1;
+    ramrdb_r = 1'b1;
     
-    #300	resetb_r <= 1'b1;
+    #300	resetb_r = 1'b1;
     
     $display("Testing access to all blocks in map mode 4: 16K at a time swapped into &4000-&7FFF range");        
     // Write to each page in turn with an index marker in map mode 4
@@ -330,7 +330,7 @@ module cpc_512k_ram_tb();
   end
   
   always 
-    #125 clk_r <= !clk_r;
+    #125 clk_r = !clk_r;
   
   
   

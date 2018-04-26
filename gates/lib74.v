@@ -24,10 +24,10 @@ module SN7400 (
   output o3;  
   input  vss, vdd;
   
-  nand U0( o0, i0_0, i0_1);  
-  nand U1( o1, i1_0, i1_1);  
-  nand U2( o2, i2_0, i2_1);  
-  nand U3( o3, i3_0, i3_1); 
+  nand U0  ( o0, i0_0, i0_1);  
+  nand U1  ( o1, i1_0, i1_1);  
+  nand U2  ( o2, i2_0, i2_1);  
+  nand U3  ( o3, i3_0, i3_1); 
 endmodule
 
 // Quad NOR2 74HCT02
@@ -48,10 +48,10 @@ module SN7402 (
   output o3;  
   input  vss, vdd;
   
-  nor U0( o0, i0_0, i0_1);  
-  nor U1( o1, i1_0, i1_1);  
-  nor U2( o2, i2_0, i2_1);  
-  nor U3( o3, i3_0, i3_1); 
+  nor U0  ( o0, i0_0, i0_1);  
+  nor U1  ( o1, i1_0, i1_1);  
+  nor U2  ( o2, i2_0, i2_1);  
+  nor U3  ( o3, i3_0, i3_1); 
 endmodule
 
 // Quad AND2 74HCT08
@@ -73,10 +73,10 @@ module SN7408 (
   input  vss, vdd;
   
         
-  and U0( o0, i0_0, i0_1);  
-  and U1( o1, i1_0, i1_1);  
-  and U2( o2, i2_0, i2_1);  
-  and U3( o3, i3_0, i3_1); 
+  and U0 ( o0, i0_0, i0_1);  
+  and U1 ( o1, i1_0, i1_1);  
+  and U2 ( o2, i2_0, i2_1);  
+  and U3 ( o3, i3_0, i3_1); 
 endmodule
 
 
@@ -96,9 +96,9 @@ module SN7410 (
 
   input  vss, vdd;
   
-  nand U0( o0, i0_0, i0_1, i0_2);  
-  nand U1( o1, i1_0, i1_1, i1_2);  
-  nand U2( o2, i2_0, i2_1, i2_2);  
+  nand U0 ( o0, i0_0, i0_1, i0_2);  
+  nand U1 ( o1, i1_0, i1_1, i1_2);  
+  nand U2 ( o2, i2_0, i2_1, i2_2);  
 endmodule
 
 // Triple NOR3 74HCT27
@@ -117,9 +117,9 @@ module SN7427 (
 
   input  vss, vdd;
   
-  nor U0( o0, i0_0, i0_1, i0_2);  
-  nor U1( o1, i1_0, i1_1, i1_2);  
-  nor U2( o2, i2_0, i2_1, i2_2);  
+  nor U0 ( o0, i0_0, i0_1, i0_2);  
+  nor U1 ( o1, i1_0, i1_1, i1_2);  
+  nor U2 ( o2, i2_0, i2_1, i2_2);  
 endmodule
  
 // Quad or2 74HCT32
@@ -141,10 +141,10 @@ module SN7432 (
   input  vss, vdd;
   
   
-  or U0( o0, i0_0, i0_1);  
-  or U1( o1, i1_0, i1_1);  
-  or U2( o2, i2_0, i2_1);  
-  or U3( o3, i3_0, i3_1); 
+  or U0 ( o0, i0_0, i0_1);  
+  or U1 ( o1, i1_0, i1_1);  
+  or U2 ( o2, i2_0, i2_1);  
+  or U3 ( o3, i3_0, i3_1); 
 endmodule
 
 
