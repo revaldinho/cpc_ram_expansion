@@ -52,7 +52,7 @@ module bs62lv4006 (
   
   reg [7:0] mem [ 524288:0 ] ;
 
-  wire [15:0] addr  = {a18,a17,a16,a15,a14,a13,a12,a11,a10,a9,a8,a7,a6,a5,a4,a3,a2,a1,a0};
+  wire [18:0] addr  = {a18,a17,a16,a15,a14,a13,a12,a11,a10,a9,a8,a7,a6,a5,a4,a3,a2,a1,a0};
    
   assign {d7,d6,d5,d4,d3,d2,d1,d0} = (!csb && !oeb) ? mem[addr] : 8'bz ;
 

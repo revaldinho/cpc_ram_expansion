@@ -177,11 +177,11 @@ module SN7475 (
   
   always @ ( * ) 
     if ( en01 )
-      q01_r <= {d0, !d0, d1, !d1} ;
+      q01_r <= {d0, d1 } ;
 
   always @ ( * ) 
     if ( en23 ) 
-      q23_r <= {d2, !d2, d3, !d3} ;
+      q23_r <= {d2, d3 } ;
   
 endmodule
                     
@@ -223,13 +223,13 @@ module SN74174 (
 
   reg [5:0] q_r;
 
-  assign { q0,q1,q2,q3,q4,q5}  = q_r;  
+  assign { q5,q4,q3,q2,q1,q0}  = q_r;  
   
   always @ (posedge clock or negedge resetb )
     if ( !resetb )
       q_r = 6'b0;
     else
-      q_r= { d0,d1,d2,d3,d4,d5} ;
+      q_r= { d5,d4,d3,d2,d1,d0} ;
   
 endmodule // SN74174
 
