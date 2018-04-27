@@ -9,7 +9,7 @@ Wire 0  (0 0) (3.9 3.2) (0 0);
 Layer Top;
 
 # PCB-Pool/PCB-Train design rule is actually 0.006/0.006 for wires
-CLASS 0 signal 0.015 0.012 ;
+CLASS 0 signal 0.014 0.010 ;
 CLASS 1 supply 0.030 0.015 ;
 
 #ifdef ALT_POWER
