@@ -5,6 +5,25 @@
  * 
  */
 
+`ifdef DELAY_SIM
+  `define AND2_DELAY    9
+  `define NAND3_DELAY  10
+  `define NAND2_DELAY   8
+  `define NOR2_DELAY    8
+  `define NOR3_DELAY   10
+  `define OR2_DELAY    10
+  `define DLAT_DELAY   15
+  `define DFF_DELAY    17
+`else
+  `define AND2_DELAY   0
+  `define NAND3_DELAY  0
+  `define NAND2_DELAY  0
+  `define NOR2_DELAY   0
+  `define NOR3_DELAY   0
+  `define OR2_DELAY    0
+  `define DLAT_DELAY   0
+  `define DFF_DELAY    0
+`endif
 
 // Quad nand2 74HCT00
 module SN7400 (
@@ -24,10 +43,10 @@ module SN7400 (
   output o3;  
   input  vss, vdd;
   
-  nand U0  ( o0, i0_0, i0_1);  
-  nand U1  ( o1, i1_0, i1_1);  
-  nand U2  ( o2, i2_0, i2_1);  
-  nand U3  ( o3, i3_0, i3_1); 
+  nand  #(`NAND2_DELAY) U0  ( o0, i0_0, i0_1);  
+  nand  #(`NAND2_DELAY) U1  ( o1, i1_0, i1_1);  
+  nand  #(`NAND2_DELAY) U2  ( o2, i2_0, i2_1);  
+  nand  #(`NAND2_DELAY) U3  ( o3, i3_0, i3_1); 
 endmodule
 
 // Quad NOR2 74HCT02
@@ -48,10 +67,10 @@ module SN7402 (
   output o3;  
   input  vss, vdd;
   
-  nor U0  ( o0, i0_0, i0_1);  
-  nor U1  ( o1, i1_0, i1_1);  
-  nor U2  ( o2, i2_0, i2_1);  
-  nor U3  ( o3, i3_0, i3_1); 
+  nor #(`NOR2_DELAY) U0  ( o0, i0_0, i0_1);  
+  nor #(`NOR2_DELAY) U1  ( o1, i1_0, i1_1);  
+  nor #(`NOR2_DELAY) U2  ( o2, i2_0, i2_1);  
+  nor #(`NOR2_DELAY) U3  ( o3, i3_0, i3_1); 
 endmodule
 
 // Quad AND2 74HCT08
@@ -73,10 +92,10 @@ module SN7408 (
   input  vss, vdd;
   
         
-  and U0 ( o0, i0_0, i0_1);  
-  and U1 ( o1, i1_0, i1_1);  
-  and U2 ( o2, i2_0, i2_1);  
-  and U3 ( o3, i3_0, i3_1); 
+  and #(`AND2_DELAY) U0 ( o0, i0_0, i0_1);  
+  and #(`AND2_DELAY) U1 ( o1, i1_0, i1_1);  
+  and #(`AND2_DELAY) U2 ( o2, i2_0, i2_1);  
+  and #(`AND2_DELAY) U3 ( o3, i3_0, i3_1); 
 endmodule
 
 
@@ -96,9 +115,9 @@ module SN7410 (
 
   input  vss, vdd;
   
-  nand U0 ( o0, i0_0, i0_1, i0_2);  
-  nand U1 ( o1, i1_0, i1_1, i1_2);  
-  nand U2 ( o2, i2_0, i2_1, i2_2);  
+  nand #(`NAND3_DELAY) U0 ( o0, i0_0, i0_1, i0_2);  
+  nand #(`NAND3_DELAY) U1 ( o1, i1_0, i1_1, i1_2);  
+  nand #(`NAND3_DELAY) U2 ( o2, i2_0, i2_1, i2_2);  
 endmodule
 
 // Triple NOR3 74HCT27
@@ -117,9 +136,9 @@ module SN7427 (
 
   input  vss, vdd;
   
-  nor U0 ( o0, i0_0, i0_1, i0_2);  
-  nor U1 ( o1, i1_0, i1_1, i1_2);  
-  nor U2 ( o2, i2_0, i2_1, i2_2);  
+  nor #(`NOR3_DELAY) U0 ( o0, i0_0, i0_1, i0_2);  
+  nor #(`NOR3_DELAY) U1 ( o1, i1_0, i1_1, i1_2);  
+  nor #(`NOR3_DELAY) U2 ( o2, i2_0, i2_1, i2_2);  
 endmodule
  
 // Quad or2 74HCT32
@@ -141,10 +160,10 @@ module SN7432 (
   input  vss, vdd;
   
   
-  or U0 ( o0, i0_0, i0_1);  
-  or U1 ( o1, i1_0, i1_1);  
-  or U2 ( o2, i2_0, i2_1);  
-  or U3 ( o3, i3_0, i3_1); 
+  or #(`OR2_DELAY) U0 ( o0, i0_0, i0_1);  
+  or #(`OR2_DELAY) U1 ( o1, i1_0, i1_1);  
+  or #(`OR2_DELAY) U2 ( o2, i2_0, i2_1);  
+  or #(`OR2_DELAY) U3 ( o3, i3_0, i3_1); 
 endmodule
 
 
@@ -177,11 +196,11 @@ module SN7475 (
   
   always @ ( * ) 
     if ( en01 )
-      q01_r <= {d0, d1 } ;
+      q01_r <= #(`DLAT_DELAY) {d0, d1 } ;
 
   always @ ( * ) 
     if ( en23 ) 
-      q23_r <= {d2, d3 } ;
+      q23_r <= #(`DLAT_DELAY) {d2, d3 } ;
   
 endmodule
                     
@@ -229,7 +248,7 @@ module SN74174 (
     if ( !resetb )
       q_r = 6'b0;
     else
-      q_r= { d5,d4,d3,d2,d1,d0} ;
+      q_r= #(`DFF_DELAY) { d5,d4,d3,d2,d1,d0} ;
   
 endmodule // SN74174
 

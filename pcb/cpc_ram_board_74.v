@@ -44,8 +44,8 @@ module cpc_ram_board ();
   wire    CLK;
   wire    ramadrhi4,ramadrhi3,ramadrhi2,ramadrhi1,ramadrhi0;
   wire    ramblock_q2,ramblock_q1,ramblock_q0;
-  wire    ramcs_b, ramwe_b;
-  wire    clkenb_lat_q, wclk, n14;  
+  wire    ramcs_b, extram_b;
+  wire    clkenb_lat_q, wclk_b, n14;  
   wire    n15, n16, n17, n18, n19, n20, n21, n22, n23, n24, n25, n26, n27, n28; 
   wire    n29, nn1;
 
@@ -107,17 +107,17 @@ module cpc_ram_board ();
   // Quad OR2 74HCT32
   SN7432 U0 (
              .i0_0(ramblock_q0), .i0_1(ramblock_q1), .o0(n24),
-             .i1_0(WR_B), .i1_1(MREQ_B), .o1(ramwe_b),
-             .i2_0(CLK), .i2_1(clkenb_lat_q), .o2(wclk),
-             .i3_0(A15), .i3_1(WR_B), .o3(nn1),
+             .i1_0(extram_b), .i1_1(MREQ_B), .o1(ramcs_b),
+             .i2_0(A15), .i2_1(WR_B), .o2(nn1),
+             .i3_0(VDD), .i3_1(VDD), .o3(),             // Unused
              .vdd(VDD), .vss(VSS));
 
   // Dual NOR2 74HCT02
   SN7402 U1 (
              .i0_0(nn1), .i0_1(IOREQ_B), .o0(n15),
              .i1_0(ramblock_q0), .i1_1(ramblock_q0), .o1(n17),
-             .i2_0(A15), .i2_1(A15), .o2(n21),
-             .i3_0(ramcs_b), .i3_1(ramcs_b), .o3(RAMDIS),
+             .i2_0(A15), .i2_1(A15), .o2(n21),                
+             .i3_0(CLK), .i3_1(clkenb_lat_q), .o3(wclk_b), 
              .vdd(VDD), .vss(VSS));
 
   // Triple NAND3 74HCT10
@@ -146,22 +146,25 @@ module cpc_ram_board ();
   SN7400 U5 (
              .i0_0(n25), .i0_1(n24), .o0(n26),
              .i1_0(n27), .i1_1(n26), .o1(n28),
-             .i2_0(n29), .i2_1(n28), .o2(ramcs_b),
+             .i2_0(n29), .i2_1(n28), .o2(extram_b),
              .i3_0(n27), .i3_1(n21), .o3(n18),
              .vdd(VDD), .vss(VSS));                                             
   
   // Quad latch 74HCT75
   //
   // 'd' is active low so take output from q rather than qb in RTL
-  SN7475 U6 ( .en01(CLK), .d0(n14), .q0(clkenb_lat_q), .qb0(),
+  SN7475 U6 ( .en01(CLK), 
+              .d0(n14), .q0(clkenb_lat_q), .qb0(),
               .d1(VDD), .q1(), .qb1(),
-              .en23(VSS), .d2(VDD), .q2(), .qb2(),
+              // Use second pair of latch as inverter!
+              .en23(VDD), 
+              .d2(extram_b), .q2(), .qb2(RAMDIS),
               .d3(VDD), .q3(), .qb3(),
               .vdd(VDD), .vss(VSS));               
   
   // Hex posedge triggered D-FF with clear*
   SN74174 U7 (
-              .clock(wclk),
+              .clock(wclk_b),
               .resetb(RESET_B),
               .d0(D0),
               .d1(D1),
@@ -182,7 +185,7 @@ module cpc_ram_board ();
                     .a18(ramadrhi4),  .vcc(VDD),
                     .a16(ramadrhi2),  .a15(ramadrhi1),
                     .a14(ramadrhi0),  .a17(ramadrhi3),
-                    .a12(A5),  .web(ramwe_b),
+                    .a12(A5),  .web(WR_B),
                     .a7(A6),  .a13(A4),
                     .a6(A7),  .a8(A2),
                     .a5(A8),  .a9(A3),

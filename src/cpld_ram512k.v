@@ -51,14 +51,14 @@ module cpld_ram512k(busreset_b,adr15,adr14,iorq_b,mreq_b,ramrd_b,reset_b,wr_b,rd
    
    reg              clken_lat_qb;
    
-   // Create clock on IO write event - clock low pulse will be suppressed if not an IOWR* event
+   // Create neg edge clock on IO write event - clock low pulse will be suppressed if not an IOWR* event
    // but if the pulse is allowed through use the trailing (rising) edge to capture data
-   wire             wclk    = (clk|clken_lat_qb); 
+   wire             wclk    = !(clk|clken_lat_qb); 
    
    // Combination of RAMCS and RAMRD determine whether RAM output is enabled
-   assign ramoe_b = ramrd_b;		
-   assign ramwe_b = wr_b | mreq_b;     
-   assign ramcs_b = ramcs_b_r;
+   assign ramoe_b = ramrd_b ;		
+   assign ramwe_b = wr_b ;
+   assign ramcs_b = ramcs_b_r | mreq_b;     
    assign ramdis  = !ramcs_b_r;    
    assign ramadrhi = ramadrhi_r ;        
    
