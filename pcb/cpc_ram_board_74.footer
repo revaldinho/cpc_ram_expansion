@@ -31,19 +31,19 @@ MOVE SRAM          (0.9 1.75) ;
 ROTATE =R0 U0 ;
 MOVE U0          (2.1 2.9) ;
 ROTATE =R0 U1 ;
-MOVE U1          (3.05 2.9) ;
+MOVE U1          (3.2 2.9) ;
 
 ROTATE =R270 U7 ;
 MOVE U7          (1.9 0.9) ;
 ROTATE =R270 U4 ;
-MOVE U4          (2.75 0.9) ;
+MOVE U4          (2.8 0.9) ;
 ROTATE =R270 U6 ;
 MOVE U6          (3.5 0.9) ;
 
 ROTATE =R270 U3 ;
 MOVE U3          (1.9 2.05) ;
 ROTATE =R270 U5 ;
-MOVE U5          (2.75 2.05) ;
+MOVE U5          (2.8 2.05) ;
 ROTATE =R270 U2 ;
 MOVE U2          (3.5 2.05) ;
 
@@ -53,14 +53,16 @@ MOVE CAP100N_1     (1.10 2.65) ;
 ROTATE =R270 CAP100N_2 ;
 MOVE CAP100N_2     (2.05  1.5)  ;
 ROTATE =R270 CAP100N_3 ;
-MOVE CAP100N_3     (2.8 1.5)  ; 
-ROTATE =R270 CAP100N_5 ;
-MOVE CAP100N_5     (3.65 1.5)  ; 
+MOVE CAP100N_3     (2.85 1.5)  ; 
+ROTATE =R270 CAP100N_4 ;
+MOVE CAP100N_4     (3.65 1.5)  ; 
 
-ROTATE =R90 CAP100N_4 ;
-MOVE CAP100N_4     (1.55 2.95)  ; 
-ROTATE =R270 CAP100N_6 ;
-MOVE CAP100N_6     (3.65 2.60)  ; 
+ROTATE =R270 CAP100N_5 ;
+MOVE CAP100N_5     (1.5 2.60)  ; 
+ROTATE =R270 CAP100N_6 ; 
+MOVE CAP100N_6     (2.65 2.60)  ; 
+ROTATE =R270 CAP100N_7 ;
+MOVE CAP100N_7     (3.65 2.60)  ; 
 
 Layer tPlace ;
 CHANGE FONT PROPORTIONAL ; 
@@ -91,3 +93,4 @@ Window Fit;
 
 grid 0.010 ;
 wire 0.03 ;
+via round ; 

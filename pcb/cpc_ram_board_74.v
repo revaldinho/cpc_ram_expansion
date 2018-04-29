@@ -200,12 +200,13 @@ module cpc_ram_board ();
                     .vss(VSS),  .d3(D3)
                     );
 
-   // Decoupling caps for CPLD and one for SRAM
+   // Decoupling caps 
    cap100nf CAP100N_1 (.p0( VSS ), .p1( VDD ));
    cap100nf CAP100N_2 (.p0( VSS ), .p1( VDD ));
    cap100nf CAP100N_3 (.p0( VSS ), .p1( VDD ));
    cap100nf CAP100N_4 (.p0( VSS ), .p1( VDD ));
    cap100nf CAP100N_5 (.p0( VSS ), .p1( VDD ));
    cap100nf CAP100N_6 (.p0( VSS ), .p1( VDD ));  
+   cap100nf CAP100N_7 (.p0( VSS ), .p1( VDD ));  
 
 endmodule
