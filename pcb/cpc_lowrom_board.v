@@ -97,7 +97,7 @@ module cpc_lowrom_board ();
   // romcs_b              = active low  = !( !ROMEN_B & !A14 & !disable)  = (ROMEN_B + A14 + disable)
   // romdis  (via diode)  = active high = !A14 & !disable                 = !(A14 + disable)
 
-  // Triple OR3 74HCT27
+  // Triple NOR3 74HCT27
   SN7427 U0 (
              .i0_0(ROMEN_B), .i0_1(A14), .i0_2(disable), .o0(n1),
              .i1_0(disable), .i1_1(disable), ,i1_2(A14).o1(n2),
