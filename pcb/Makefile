@@ -19,6 +19,7 @@ ARGS ?=
 	-l ${netlister_dir}/lib/xilinx.lib \
 	-l ${netlister_dir}/lib/rcl.lib \
 	-l ${netlister_dir}/lib/triac.lib \
+	-l ${netlister_dir}/lib/diode.lib \
 	-l ${netlister_dir}/lib/74series.lib \
 	-o $*.net \
 	-f net
@@ -32,6 +33,7 @@ ARGS ?=
 	-l ${netlister_dir}/lib/xilinx.lib \
 	-l ${netlister_dir}/lib/rcl.lib \
 	-l ${netlister_dir}/lib/triac.lib \
+	-l ${netlister_dir}/lib/diode.lib \
 	-l ${netlister_dir}/lib/74series.lib \
 	-o $*.scr \
 	-f scr \
@@ -39,7 +41,7 @@ ARGS ?=
 	-t $*.footer_cpp
 
 
-all: cpc_ram_board.scr cpc_ram_board.net cpc_ram_board_9572xl.scr  cpc_ram_board_9572xl.net
+all: cpc_ram_board.scr cpc_ram_board.net cpc_ram_board_9572xl.scr  cpc_ram_board_9572xl.net  cpc_ram_board.scr cpc_ram_board.net cpc_lowrom_board.scr cpc_lowrom_board.net
 
 clean:
 	rm -f *~ *scr *net *_cpp

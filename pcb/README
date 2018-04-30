@@ -24,3 +24,6 @@ cp autorouter_74.ctl /tmp
 
 make cpc_ram_board_74.scr ARGS='"-D ALT_POWER=1"'
 make cpc_ram_board_74.net ARGS='"-D ALT_POWER=1"'
+
+make cpc_lowrom_board.scr 
+make cpc_lowrom_board.net 

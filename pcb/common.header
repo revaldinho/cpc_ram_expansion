@@ -19,6 +19,7 @@ USE ic-package;
 USE wuerth-elektronik ;
 # regulator
 USE triac ;
+USE diode ;
 
 
 # # Examples of adding components and placing
