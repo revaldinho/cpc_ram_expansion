@@ -14,16 +14,7 @@ setenv TERM xterm
 
 cp autorouter.ctl /tmp
 
-make cpc_ram_board.net
-make cpc_ram_board.scr
+make cpc_fourrom.scr  -f ../../common_pcb/Makefile
+make cpc_fourrom.net -f ../../common_pcb/Makefile
 
-make cpc_ram_board_9572xl.net
-make cpc_ram_board_9572xl.scr
 
-cp autorouter_74.ctl /tmp
-
-make cpc_ram_board_74.scr ARGS='"-D ALT_POWER=1"'
-make cpc_ram_board_74.net ARGS='"-D ALT_POWER=1"'
-
-make cpc_lowrom_board.scr 
-make cpc_lowrom_board.net 

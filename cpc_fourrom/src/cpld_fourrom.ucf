@@ -1,0 +1,36 @@
+# Pin Assignments to match PCB netlist
+PIN "dip[7]"	LOC = P1 ;
+PIN "dip[6]"	LOC = P2 ;
+PIN "dip[5]"	LOC = P3 ;
+PIN "dip[4]"	LOC = P4 ;
+PIN "clk"	LOC = P5 ; # GCK1
+PIN "dip[3]"	LOC = P6 ; # GCK2
+PIN "dip[2]"	LOC = P7 ; # GCK3
+PIN "dip[1]"	LOC = P8 ;
+PIN "dip[0]"	        LOC = P9 ;
+PIN "skt23p27"	        LOC = P11 ;
+PIN "skt01p27"	        LOC = P12 ;
+
+PIN "romoe_b"  LOC = P13 ;
+PIN "mreq_b"  LOC = P14 ;
+PIN "roma14"  LOC = P18 ;
+PIN "rom23cs_b"  LOC = P19 ;
+PIN "rom01cs_b"  LOC = P20 ;
+PIN "adr13"	LOC = P22 ;
+PIN "adr14"  LOC = P24 ;
+PIN "adr15"	LOC = P25 ;
+PIN "data[7]"	LOC = P26 ;
+PIN "data[6]"	LOC = P27 ;
+PIN "data[5]"     LOC = P28 ;
+PIN "data[4]"	LOC = P29 ;
+PIN "data[3]"   LOC = P33 ;
+PIN "data[2]"	LOC = P34 ;
+PIN "data[1]"	LOC = P35 ;
+PIN "data[0]"	LOC = P36 ;
+PIN "romen_b"	LOC = P37 ;
+PIN "romdis"	LOC = P38 ;
+PIN "reset_b"   LOC = P39 ; # GSR
+PIN "ioreq_b"   LOC = P40 ; # GTS2
+PIN "wr_b"    LOC = P42 ; # GTS1
+#PIN ""  LOC = P43 ;        # DO NOT USE also connected to D0
+PIN "rd_b"	LOC = P44 ;

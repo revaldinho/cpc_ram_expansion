@@ -21,10 +21,11 @@ ARGS ?=
 	-l ${netlister_dir}/lib/triac.lib \
 	-l ${netlister_dir}/lib/diode.lib \
 	-l ${netlister_dir}/lib/74series.lib \
+	-l ${netlister_dir}/lib/switches.lib \
 	-o $*.net \
 	-f net
 
-%.scr : %.v_cpp ${ALLLIBS} %.footer_cpp common.header
+%.scr : %.v_cpp ${ALLLIBS} %.footer_cpp ../../common_pcb/common.header
 	netlister.py \
 	-i $*.v_cpp \
 	-l ${netlister_dir}/lib/memory.lib \
@@ -35,13 +36,13 @@ ARGS ?=
 	-l ${netlister_dir}/lib/triac.lib \
 	-l ${netlister_dir}/lib/diode.lib \
 	-l ${netlister_dir}/lib/74series.lib \
+	-l ${netlister_dir}/lib/switches.lib \
 	-o $*.scr \
 	-f scr \
-	-d common.header \
+	-d ../../common_pcb/common.header \
 	-t $*.footer_cpp
 
 
-all: cpc_ram_board.scr cpc_ram_board.net cpc_ram_board_9572xl.scr  cpc_ram_board_9572xl.net  cpc_ram_board.scr cpc_ram_board.net cpc_lowrom_board.scr cpc_lowrom_board.net
 
 clean:
 	rm -f *~ *scr *net *_cpp

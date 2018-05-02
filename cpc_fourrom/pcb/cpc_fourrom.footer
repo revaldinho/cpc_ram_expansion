@@ -1,0 +1,80 @@
+# Maximum Eagle freeware board size is 4.0x3.2" (100x80mm) 
+
+# better to work in inches for 0.1 inch pad pitch
+Grid default;
+Set Wire_Bend 0;
+Layer Dimension;
+Wire 0  (0 0) (3.8 2.4) (0 0);
+Layer Top;
+
+# PCB-Pool/PCB-Train design rule is actually 0.006/0.006 for wires
+CLASS 0 signal 0.015 0.010 ;
+CLASS 1 supply 0.025 0.010 ;
+
+ROTATE =R270 CONN0 ;
+MOVE CONN0         (3.6 0.3) ;
+ROTATE =R0 L1 ;
+MOVE L1            (3.5 0.6);
+ROTATE =R180 CAP22UF ; 
+MOVE CAP22UF       (3.6 0.9 ) ;
+
+ROTATE =R180 CONN1 ;
+MOVE CONN1         (1.45 0.3) ;
+
+ROTATE =R270 DIPSW0 ;
+MOVE DIPSW0         (3.5 1.55) ;
+ROTATE =R270 SIL0 ;
+MOVE SIL0         (3.2 1.60) ;
+ROTATE =R90 D0 ;
+MOVE D0         (3.1 0.7) ;
+
+ROTATE =R270 ROM01 ;
+MOVE ROM01          (0.55 1.4) ;
+ROTATE =R270 ROM23 ;
+MOVE ROM23          (1.50 1.4) ;
+ROTATE =R270 CPLD ;
+MOVE CPLD          (2.55 1.2);
+ROTATE =R0 CAP100N_1 ;
+MOVE CAP100N_1     (0.75 2.2) ;
+ROTATE =R0 CAP100N_2 ;
+MOVE CAP100N_2     (1.7  2.2)  ;
+ROTATE =R180 CAP100N_3 ;
+MOVE CAP100N_3     (2.65 1.85)  ; 
+ROTATE =R0 CAP100N_4 ;
+MOVE CAP100N_4     (2.65 0.65)  ; 
+
+MOVE JTAG          (2.40 2.15)  ;
+
+Layer tPlace ;
+CHANGE FONT PROPORTIONAL ; 
+CHANGE SIZE 0.06
+TEXT 'CPC FourRom Card, v1.00' R90 (0.10 0.5) ;
+CHANGE SIZE 0.04
+TEXT '(C) 2018 Revaldinho'  R0      (0.3 0.55) ;
+TEXT 'github.com/revaldinho/cpc_ram_expansion'  R0      (0.3 0.5) ;
+
+CHANGE FONT FIXED ; 
+CHANGE SIZE 0.03 ;
+CHANGE WIDTH 0.01 ;
+WIRE  (2.7 2.10) (2.7 2.25 ) ( 3.3 2.25 ) (3.3 2.10) ( 2.7 2.10 ) ;
+TEXT 'GND  TDI  TCK  NC' R0 (2.75 2.18) ;
+TEXT 'GND  TMS  TDO  5V' R0 (2.75 2.14) ;
+
+# Autorouter
+# AUTO VDD VDD_CPC VDD_EXT VDD3V3 CLK VSS;   # Route clock and supplies first
+AUTO load /tmp/autorouter.ctl;
+AUTO ;
+
+## Define power fills top and bottom over whole board area
+layer Top ; 
+polygon VSS 0.08 (0 0) (0 2.4) (3.8 2.4) (3.8 0) (0 0) ;
+
+layer Bottom ; 
+polygon VSS 0.08 (0 0) (0 2.4) (3.8 2.4) (3.8 0) (0 0) ;
+
+
+Ratsnest ;  ## Calculate and display polygons
+
+
+Window Fit;
+
