@@ -4,7 +4,7 @@
 Grid default;
 Set Wire_Bend 0;
 Layer Dimension;
-Wire 0  (0 0) (3.15 2.5) (0 0);
+Wire 0  (0 0) (3.15 2.4) (0 0);
 Layer Top;
 
 # PCB-Pool/PCB-Train design rule is actually 0.006/0.006 for wires
@@ -51,10 +51,10 @@ AUTO ;
 
 ## Define power fills top and bottom over whole board area
 layer Top ; 
-polygon VSS 0.08 (0 0) (0 2.5) (3.15 2.5) (3.15 0) (0 0) ;
+polygon VSS 0.08 (0 0) (0 2.4) (3.15 2.4) (3.15 0) (0 0) ;
 
 layer Bottom ; 
-polygon VSS 0.08 (0 0) (0 2.5) (3.15 2.5) (3.15 0) (0 0) ;
+polygon VSS 0.08 (0 0) (0 2.4) (3.15 2.4) (3.15 0) (0 0) ;
 
 
 Ratsnest ;  ## Calculate and display polygons
