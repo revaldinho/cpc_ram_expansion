@@ -22,6 +22,7 @@ USE triac ;
 USE diode ;
 USE switch-dil ;
 USE resistor-sil;
+USE Teensy35;
 
 # # Examples of adding components and placing
 # ADD DIL14@ic-package IC1 R270 (10 20);

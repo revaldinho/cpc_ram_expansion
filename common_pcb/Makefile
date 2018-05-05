@@ -22,6 +22,7 @@ ARGS ?=
 	-l ${netlister_dir}/lib/diode.lib \
 	-l ${netlister_dir}/lib/74series.lib \
 	-l ${netlister_dir}/lib/switches.lib \
+	-l ${netlister_dir}/lib/teensy.lib \
 	-o $*.net \
 	-f net
 
@@ -37,6 +38,7 @@ ARGS ?=
 	-l ${netlister_dir}/lib/diode.lib \
 	-l ${netlister_dir}/lib/74series.lib \
 	-l ${netlister_dir}/lib/switches.lib \
+	-l ${netlister_dir}/lib/teensy.lib \
 	-o $*.scr \
 	-f scr \
 	-d ../../common_pcb/common.header \
