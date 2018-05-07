@@ -60,9 +60,9 @@
 </layers>
 <board>
 <plain>
-<wire x1="0" y1="0" x2="100.33" y2="0" width="0" layer="20"/>
-<wire x1="100.33" y1="0" x2="100.33" y2="81.28" width="0" layer="20"/>
-<wire x1="100.33" y1="81.28" x2="0" y2="81.28" width="0" layer="20"/>
+<wire x1="0" y1="0" x2="99.568" y2="0" width="0" layer="20"/>
+<wire x1="99.568" y1="0" x2="99.568" y2="81.28" width="0" layer="20"/>
+<wire x1="99.568" y1="81.28" x2="0" y2="81.28" width="0" layer="20"/>
 <wire x1="0" y1="81.28" x2="0" y2="0" width="0" layer="20"/>
 <text x="17.78" y="22.86" size="1.524" layer="21" rot="R90">CPC Expansion Backplane v1.00</text>
 <text x="20.32" y="22.86" size="1.016" layer="21" rot="R90">(C) 2018 Revaldinho</text>
@@ -1733,7 +1733,7 @@ design rules under a new name.</description>
 <wire x1="2.794" y1="37.338" x2="4.318" y2="35.814" width="1.778" layer="1"/>
 <wire x1="2.794" y1="72.39" x2="2.794" y2="37.338" width="1.778" layer="1"/>
 <wire x1="21.59" y1="72.39" x2="2.794" y2="72.39" width="1.778" layer="1"/>
-<wire x1="48.26" y1="72.39" x2="21.59" y2="72.39" width="1.778" layer="1"/>
+<wire x1="48.26" y1="72.39" x2="21.59" y2="72.39" width="2.032" layer="1"/>
 </signal>
 <signal name="A2">
 <contactref element="CONN1" pad="35"/>
@@ -2232,13 +2232,16 @@ design rules under a new name.</description>
 <contactref element="CONN2" pad="5"/>
 <contactref element="CONN3" pad="5"/>
 <wire x1="7.62" y1="12.7" x2="29.21" y2="12.7" width="0.381" layer="1"/>
-<wire x1="58.42" y1="11.43" x2="58.547" y2="11.557" width="0.381" layer="1"/>
-<wire x1="58.547" y1="11.557" x2="59.69" y2="12.7" width="0.381" layer="1"/>
-<wire x1="30.48" y1="11.43" x2="58.42" y2="11.43" width="0.381" layer="1"/>
+<wire x1="59.182" y1="12.192" x2="59.69" y2="12.7" width="0.381" layer="1"/>
+<wire x1="33.02" y1="12.192" x2="59.182" y2="12.192" width="0.381" layer="1"/>
+<wire x1="32.258" y1="11.43" x2="33.02" y2="12.192" width="0.381" layer="1"/>
+<wire x1="30.48" y1="11.43" x2="32.258" y2="11.43" width="0.381" layer="1"/>
 <wire x1="29.21" y1="12.7" x2="30.48" y2="11.43" width="0.381" layer="1"/>
 <wire x1="88.9" y1="11.43" x2="90.17" y2="12.7" width="0.381" layer="1"/>
-<wire x1="58.674" y1="11.43" x2="88.9" y2="11.43" width="0.381" layer="1"/>
-<wire x1="58.674" y1="11.43" x2="58.547" y2="11.557" width="0.381" layer="1"/>
+<wire x1="61.214" y1="11.43" x2="88.9" y2="11.43" width="0.381" layer="1"/>
+<wire x1="60.198" y1="12.446" x2="61.214" y2="11.43" width="0.381" layer="1"/>
+<wire x1="59.69" y1="12.446" x2="60.198" y2="12.446" width="0.381" layer="1"/>
+<wire x1="59.69" y1="12.446" x2="59.69" y2="12.7" width="0.381" layer="1"/>
 </signal>
 <signal name="VDD" class="1">
 <contactref element="CAP22UF_0" pad="+"/>
@@ -2402,12 +2405,14 @@ design rules under a new name.</description>
 <polygon width="2.032" layer="1">
 <vertex x="0" y="0"/>
 <vertex x="0" y="81.28"/>
+<vertex x="99.568" y="81.28"/>
 <vertex x="100.33" y="81.28"/>
 <vertex x="100.33" y="0"/>
 </polygon>
 <polygon width="2.032" layer="16">
 <vertex x="0" y="0"/>
 <vertex x="0" y="81.28"/>
+<vertex x="99.568" y="81.28"/>
 <vertex x="100.33" y="81.28"/>
 <vertex x="100.33" y="0"/>
 </polygon>
@@ -2433,9 +2438,9 @@ design rules under a new name.</description>
 <contactref element="PCONN" pad="2"/>
 <contactref element="PCONN" pad="1"/>
 <wire x1="48.26" y1="77.47" x2="78.74" y2="77.47" width="1.778" layer="1"/>
-<wire x1="15.24" y1="77.47" x2="17.78" y2="77.47" width="1.778" layer="1"/>
-<wire x1="17.78" y1="77.47" x2="21.59" y2="77.47" width="1.778" layer="1"/>
-<wire x1="21.59" y1="77.47" x2="48.26" y2="77.47" width="1.778" layer="1"/>
+<wire x1="15.24" y1="77.47" x2="17.78" y2="77.47" width="2.032" layer="1"/>
+<wire x1="17.78" y1="77.47" x2="21.59" y2="77.47" width="2.032" layer="1"/>
+<wire x1="21.59" y1="77.47" x2="48.26" y2="77.47" width="2.032" layer="1"/>
 </signal>
 <signal name="D6">
 <contactref element="CONN1" pad="31"/>
