@@ -12,17 +12,19 @@ CLASS 0 signal 0.015 0.010 ;
 CLASS 1 supply 0.040 0.015 ;
 
 ROTATE =R90 CONN0 ;
-MOVE CONN0         (2.95 2.1) ;
+MOVE CONN0         (2.95 1.40) ;
 ROTATE =R90 L1 ;
 MOVE L1            (2.95 1.00);
 ROTATE =R270 CAP22UF ; 
-MOVE CAP22UF       (2.75 0.95 ) ;
+MOVE CAP22UF       (2.7 0.95 ) ;
 
 ROTATE =R180 CONN1 ;
 MOVE CONN1         (1.45 0.25) ;
 
 ROTATE =R180 D0 ;
 MOVE D0         (2.20 0.55) ;
+ROTATE =R0 RES10K_0 ;
+MOVE RES10K_0         (0.3 1.35) ;
 
 ROTATE =R0 U0 ;
 MOVE U0          (1.35 1.90) ;

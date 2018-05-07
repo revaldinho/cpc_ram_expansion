@@ -42,6 +42,10 @@ module t35_romboard ();
 
   wire romdis_pre;
   wire dout0,dout1,dout2,dout3,dout4,dout5,dout6,dout7;
+  wire romvalid, bufoe_b, romdis_b, romen;
+  wire VSS_pulldown;
+  
+  
   
   // 3 pin header with link to use either CPC or external 5V power for the board
   hdr1x03      L1 (
@@ -95,60 +99,53 @@ module t35_romboard ();
 
 
   teensy35_noxpins    U0 (
-                  .gnd(VSS),       .vin(VDD),
-                  .b16(A8),        .agnd(VSS),
-                  .b17(A9),        .vdd_3v3_250ma(),
-                  .d0(A0),         .c2(dout2),
-                  .a12(),          .c1(dout1),
-                  .a13(),          .d6(A6),
-                  .d7(A7),         .d5(A5),
-                  .d4(A4),         .b2(WR_B),
-                  .d2(A2),         .b3(RAMRD_B),
-                  .d3(A3),         .b1(IOREQ_B),
-                  .c3(dout3),      .b0(MREQ_B),
-                  .c4(dout4),      .c0(dout0),
-                  .c6(dout6),      .d1(A1),
-                  .c7(dout7),      .c5(dout5),
-                  .vdd_3v3(),      .gnd2(VSS),
-                  .e26(),          .dac1(),
-                  .a5(),           .dac0(),
-                  .a14(),          .a17(),
-                  .a15(),          .c11(),
-                  .a16(),          .c10(),
-                  .b18(A10),       .c9(READY),
-                  .b19(A11),       .c8(romvalid),
-                  .b10(RD_B),      .e25(),
-                  .b11(CLK),       .e24(),
-
+                          .gnd(VSS),       .vin(VDD),
+                          .b16(A8),        .agnd(VSS),
+                          .b17(A9),        .vdd_3v3_250ma(),
+                          .d0(A0),         .c2(dout2),
+                          .a12(),          .c1(dout1),
+                          .a13(),          .d6(A6),
+                          .d7(A7),         .d5(A5),
+                          .d4(A4),         .b2(WR_B),
+                          .d2(A2),         .b3(RAMRD_B),
+                          .d3(A3),         .b1(IOREQ_B),
+                          .c3(dout3),      .b0(MREQ_B),
+                          .c4(dout4),      .c0(dout0),
+                          .c6(dout6),      .d1(A1),
+                          .c7(dout7),      .c5(dout5),
+                          .vdd_3v3(),      .gnd2(VSS),
+                          .e26(),          .dac1(),
+                          .a5(),           .dac0(),
+                          .a14(),          .a17(),
+                          .a15(),          .c11(),
+                          .a16(),          .c10(),
+                          .b18(A10),       .c9(READY),
+                          .b19(A11),       .c8(romvalid),
+                          .b10(RD_B),      .e25(),
+                          .b11(CLK),       .e24(),
+                          
 	                          .vusb(),         
 	                                                           
-	          .nc(),          .aref(),         
-	          .a26(),         .a10(),          
-	          .a25(),         .a11(),          
-	          .gnd1(VSS),     .e11(),          
-	          .gnd4(VSS),     .e10(),          
-	          .gnd5(VSS),     .d11(),          
+	          		  .aref(),         
+	          		  .a10(),          
+	          		  .a11(),          
+	          		  .e11(),          
+	                          .e10(),          
+	                          .d11(),          
 	                          .d15(D3),        
 	                                                   
-	          .a28(),         .d12(D0),        
-	          .a29(),         .d13(D1),        
-	          .a26(),         .d14(D2),        
-	          .b20(A12),      .b5(M1_B),       
-	          .b22(A14),      .b4(ROMEN_B),    
-	          .b23(A15),      .d9(),           
-	          .b21(A13),      .d8(),           
-	          .gnd(VSS),      .vdd_3v3_1(),
-                  .vdd_3v3_2(),    
-                  
-                  .reset(),
-                  .prog(),
-                  .gnd(),
-                  .vdd_3v3_2(),
-                  .vbat()
-                  );
+	                  .a28(),         .d12(D0),        
+	                  .a29(),         .d13(D1),        
+	                  .a26(),         .d14(D2),        
+	                  .b20(A12),      .b5(M1_B),       
+	                  .b22(A14),      .b4(ROMEN_B),    
+	                  .b23(A15),      .d9(),           
+	                  .b21(A13),      .d8(),           
+	                  .gnd5(VSS),      .vdd_3v3_1()
+                          );
 
   SN74245  U1 (
-               .dir(VDD),     .vdd(VDD),
+               .dir(VSS_pulldown), .vdd(VDD),
                .a0(D7),       .gb(bufoe_b),
                .a1(D6),       .b0(dout7),
                .a2(D5),       .b1(dout6),
@@ -172,6 +169,13 @@ module t35_romboard ();
                 .A(romdis_pre),
                 .C(ROMDIS)
                 );
+
+  // Pull down resistor to allow 74LS logic buffer
+  resistor  RES10K_0(
+                   .p0(VSS),
+                   .p1(VSS_pulldown)
+                   );
+  
 
    // Decoupling caps for 74 logic only - T35 has its own
    cap100nf CAP100N_1 (.p0( VSS ), .p1( VDD ));

@@ -1,6 +1,6 @@
 
 
-```
+```                                 A   B
  +-------------------+              +---+
  |  PC[7:0]/DOUT[7:0]|==============|245|==**====================== Data[7:0]
  |                   |           +--|oe |  ||
@@ -29,18 +29,18 @@
  |                   | || |                             JTAG|====== JTAG TDO/TMS/TDI/TCK
  |                   | || +---------------------------------+ 4
  |       PC[10]/gpio8| || 8          
- |       PC[11]/gpio9| ++========================================== Box conn 2: 10W (PMOD 12W ?)
+ |       PC[11]/gpio9| ++========================================== Box conn 2: 10W 
  |      PB[10]/gpio10|    
  |      PB[11]/gpio11|                                             
- |      PD[10]/gpio12|============================================= Box conn 2: 10W (PMOD 12W ? )
- |      PD[11]/gpio13|         
+ |       PD[8]/gpio12|============================================= Box conn 2: 10W 
+ |       PD[9]/gpio13|         
  |      PE[10]/gpio14|                                             
- |      PE[11]/gpio14|                                             
+ |      PE[11]/gpio15|                                             
  |                   |                                         
  |      PE[24]/gpio16|                                         
- |      PE[25]/gpio17|============================================= Conn 3: 4 pin I2C (PMOD 4W ?)
+ |      PE[25]/gpio17|============================================= Conn 3: 4 pin I2C 
  |                   |                                      ___
- |              DAC0 |--o pin                             o|o_o|  L1 [5V_CPC vs 5V_EXT]                                           
+ |              DAC0 |--o pin                             o|o_o|  L1 [5V_CPC vs 5V_EXT] 
  |              DAC1 |--o pin                             _____
  +-------------------+                                    o-o o  CONN0 5V_EXT     
 
@@ -98,7 +98,7 @@ ROMDIS    - !ROMENB & (ROMVALID + !A14)
 
 OEB       - !ROMDIS
 
-DIR       - 1'b1 - always T34-> CPC in this application
+DIR       - 1'b0 - always B->A T34-> CPC in this application
 
 Init
    ROMVALID = 0
