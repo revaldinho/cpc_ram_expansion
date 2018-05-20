@@ -15,23 +15,23 @@ ROTATE =R180 PCONN;
 MOVE PCONN         (0.6 3.05) ;
 
 ROTATE =R90 CONN0 ;
-MOVE CONN0         (0.25 1.5) ;
+MOVE CONN0         (0.25 1.45) ;
 ROTATE =R270 CONN1 ;
-MOVE CONN1         (1.2  1.5) ;
+MOVE CONN1         (1.25 1.45) ;
 ROTATE =R270 CONN2 ;
-MOVE CONN2         (2.4 1.5) ;
+MOVE CONN2         (2.4 1.45) ;
 ROTATE =R270 CONN3 ;
-MOVE CONN3         (3.6 1.5) ;
+MOVE CONN3         (3.6 1.45) ;
 
 ROTATE =R90 L0 ;
-MOVE L0            (0.85 2.95);
+MOVE L0            (0.90 2.95);
 ROTATE =R90 L1 ;
-MOVE L1            (1.90 2.95);
+MOVE L1            (1.95 2.95);
 ROTATE =R90 L2 ;
 MOVE L2            (3.10 2.95);
 
 ROTATE =R0 CAP22UF_0 ;
-MOVE CAP22UF_0            (1.65 2.95);
+MOVE CAP22UF_0            (1.70 2.95);
 ROTATE =R0 CAP22UF_1 ;
 MOVE CAP22UF_1            (2.85 2.95);
 ROTATE =R90 CAP22UF_2 ;
