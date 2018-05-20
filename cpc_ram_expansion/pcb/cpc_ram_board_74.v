@@ -137,6 +137,7 @@ module cpc_ram_board ();
               
   // Quad NAND2 74HCT00
   SN7400 U4 (
+             
              .i0_0(n27), .i0_1(ramblock_q0), .o0(n20),
              .i1_0(ramblock_q0), .i1_1(n23), .o1(n25),
              .i2_0(ramblock_q2), .i2_1(n22), .o2(n29),
