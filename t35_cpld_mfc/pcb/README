@@ -1,0 +1,24 @@
+#!/bin/tcsh -f
+
+
+
+
+
+# Need to have access to the Jython netlister program
+set netlister_dir = ~/Documents/Development/git/netlister
+which netlister.py > /dev/null
+if ($status != 0) then
+   setenv CLASSPATH ${netlister_dir}/src:$CLASSPATH
+   setenv PATH      ${netlister_dir}/src:$PATH
+   rehash
+endif
+
+setenv TERM xterm
+
+# Need general PLCC autorouter setup
+cp ../../common_pcb/autorouter.ctl /tmp
+
+make t35_cpld_mfc.scr  -f ../../common_pcb/Makefile
+make t35_cpld_mfc.net -f ../../common_pcb/Makefile
+
+
