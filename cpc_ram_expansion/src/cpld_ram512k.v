@@ -25,8 +25,6 @@
  *
  */
 
-`define DEFAULT_BANK 3'b011
-
 //`define one of these only
 `define X64   1
 //`define X128  1
@@ -35,7 +33,7 @@
 
 module cpld_ram512k(busreset_b,adr15,adr14,iorq_b,mreq_b,ramrd_b,reset_b,wr_b,rd_b,data,ramdis,ramcs_b,ramadrhi,ready, clk, ramoe_b, ramwe_b
 `ifdef UNIV
-,mode464
+, mode464,shadowhi
 `endif
 
 );
@@ -52,8 +50,10 @@ module cpld_ram512k(busreset_b,adr15,adr14,iorq_b,mreq_b,ramrd_b,reset_b,wr_b,rd
    input	    ready;
    input 	    clk;
 
-`ifdef UNIV    
-    input 	    mode464;
+`ifdef UNIV
+  // Switches select 464/6128 mode..
+  input 	    mode464;
+  input             shadowhi;  
 `endif
 
    output	    ramdis;
@@ -74,7 +74,7 @@ module cpld_ram512k(busreset_b,adr15,adr14,iorq_b,mreq_b,ramrd_b,reset_b,wr_b,rd
    assign ramoe_b = ramrd_b;		
    assign ramwe_b = wr_b ;     
    assign ramcs_b = ramcs_b_r | mreq_b;
-   assign ramdis  = !ramcs_b_r;    
+   assign ramdis  = !ramcs_b_r ;    
    assign ramadrhi = ramadrhi_r ;        
    always @ ( clk )
      if ( clk )
@@ -85,28 +85,29 @@ module cpld_ram512k(busreset_b,adr15,adr14,iorq_b,mreq_b,ramrd_b,reset_b,wr_b,rd
      else
        ramblock_q <= data[5:0];
 
-`ifdef X64
-  wire              mode464 = 1'b1;  
-`endif    
-    
-        
+       
 `ifndef X128
-   always @ (ramblock_q, adr15, adr14 )
+  `ifdef X64
+  wire              mode464 = 1'b1 ;
+  wire              shadowhi = 1'b0 ;  
+  `endif    
+  wire [2:0] shadow_bank = { shadowhi,2'b11};
+    
+    always @ (ramblock_q, adr15, adr14 )
      begin
        hibit_tmp_r = ramblock_q;
-       // pretend some banks aren't present and are aliased to others
-       if (ramblock_q[5:3] == 3'b011 )
-         hibit_tmp_r[5:3] = 3'b010;         
+       if (ramblock_q[5:3] == (shadow_bank) )
+           hibit_tmp_r[5:3] =   (shadow_bank) & 3'b110; // alias the even bank below shadow bank to the shadow bank
        case (hibit_tmp_r[2:0])
-	  3'b000: {ramcs_b_r, ramadrhi_r} = { !mode464, `DEFAULT_BANK, adr15, adr14 };
-	  3'b001: {ramcs_b_r, ramadrhi_r} = ( {adr15,adr14}==2'b11 ) ? {1'b0,hibit_tmp_r[5:3],2'b11} : { !mode464, `DEFAULT_BANK, adr15, adr14 };
+	  3'b000: {ramcs_b_r, ramadrhi_r} = { !mode464, shadow_bank, adr15, adr14 };
+	  3'b001: {ramcs_b_r, ramadrhi_r} = ( {adr15,adr14}==2'b11 ) ? {1'b0,hibit_tmp_r[5:3],2'b11} : { !mode464, shadow_bank, adr15, adr14 };
 	  3'b010: {ramcs_b_r, ramadrhi_r} = { 1'b0,hibit_tmp_r[5:3],adr15,adr14} ; 
-	  // Mode 3: Map 0b1100 to New 0b1100 _and_ 0b0100 to 0b1100 but in 'default' bank only (can't affect internal RAM without backdriving ADR15)
-	  3'b011: {ramcs_b_r, ramadrhi_r} = ( {adr15,adr14}==2'b11 ) ? {1'b0,hibit_tmp_r[5:3],2'b11} : {!mode464, `DEFAULT_BANK, (adr15|adr14), adr14 };
-	  3'b100: {ramcs_b_r, ramadrhi_r} = ( {adr15,adr14}==2'b01 ) ? {1'b0,hibit_tmp_r[5:3],hibit_tmp_r[1:0]} : {!mode464, `DEFAULT_BANK, adr15, adr14 };              
-	  3'b101: {ramcs_b_r, ramadrhi_r} = ( {adr15,adr14}==2'b01 ) ? {1'b0,hibit_tmp_r[5:3],hibit_tmp_r[1:0]} : {!mode464, `DEFAULT_BANK, adr15, adr14 };              
-	  3'b110: {ramcs_b_r, ramadrhi_r} = ( {adr15,adr14}==2'b01 ) ? {1'b0,hibit_tmp_r[5:3],hibit_tmp_r[1:0]} : {!mode464, `DEFAULT_BANK, adr15, adr14 };              
-	  3'b111: {ramcs_b_r, ramadrhi_r} = ( {adr15,adr14}==2'b01 ) ? {1'b0,hibit_tmp_r[5:3],hibit_tmp_r[1:0]} : {!mode464, `DEFAULT_BANK, adr15, adr14 };
+	  // Mode 3: Map 0b1100 to New 0b1100 _and_ 0b0100 to 0b1100 but in 'shadow' bank only (can't affect internal RAM without backdriving ADR15)
+	  3'b011: {ramcs_b_r, ramadrhi_r} = ( {adr15,adr14}==2'b11 ) ? {1'b0,hibit_tmp_r[5:3],2'b11} : {!mode464, shadow_bank, (adr15|adr14), adr14 };
+	  3'b100: {ramcs_b_r, ramadrhi_r} = ( {adr15,adr14}==2'b01 ) ? {1'b0,hibit_tmp_r[5:3],2'b00} : {!mode464, shadow_bank, adr15, adr14 };              
+	  3'b101: {ramcs_b_r, ramadrhi_r} = ( {adr15,adr14}==2'b01 ) ? {1'b0,hibit_tmp_r[5:3],2'b01} : {!mode464, shadow_bank, adr15, adr14 };              
+	  3'b110: {ramcs_b_r, ramadrhi_r} = ( {adr15,adr14}==2'b01 ) ? {1'b0,hibit_tmp_r[5:3],2'b10} : {!mode464, shadow_bank, adr15, adr14 };              
+	  3'b111: {ramcs_b_r, ramadrhi_r} = ( {adr15,adr14}==2'b01 ) ? {1'b0,hibit_tmp_r[5:3],2'b11} : {!mode464, shadow_bank, adr15, adr14 };
        endcase // case (hibit_tmp_r[2:0])
      end // always @ (hibit_tmp_r, adr15, adr14 )
 `else
@@ -117,10 +118,10 @@ module cpld_ram512k(busreset_b,adr15,adr14,iorq_b,mreq_b,ramrd_b,reset_b,wr_b,rd
 	   3'b001: {ramcs_b_r, ramadrhi_r} = ( {adr15,adr14}==2'b11 ) ? {1'b0,ramblock_q[5:3],2'b11} : { 1'b1, 5'bxxxxx};
 	   3'b010: {ramcs_b_r, ramadrhi_r} = { 1'b0,ramblock_q[5:3],adr15,adr14} ; 
 	   3'b011: {ramcs_b_r, ramadrhi_r} = ( {adr15,adr14}==2'b11 ) ? {1'b0,ramblock_q[5:3],2'b11} : {1'b1, 5'bxxxxx };
-	   3'b100: {ramcs_b_r, ramadrhi_r} = ( {adr15,adr14}==2'b01 ) ? {1'b0,ramblock_q[5:3],ramblock_q[1:0]} : {1'b1, 5'bxxxxx };              
-	   3'b101: {ramcs_b_r, ramadrhi_r} = ( {adr15,adr14}==2'b01 ) ? {1'b0,ramblock_q[5:3],ramblock_q[1:0]} : {1'b1, 5'bxxxxx };              
-	   3'b110: {ramcs_b_r, ramadrhi_r} = ( {adr15,adr14}==2'b01 ) ? {1'b0,ramblock_q[5:3],ramblock_q[1:0]} : {1'b1, 5'bxxxxx };              
-	   3'b111: {ramcs_b_r, ramadrhi_r} = ( {adr15,adr14}==2'b01 ) ? {1'b0,ramblock_q[5:3],ramblock_q[1:0]} : {1'b1, 5'bxxxxx };
+	   3'b100: {ramcs_b_r, ramadrhi_r} = ( {adr15,adr14}==2'b01 ) ? {1'b0,ramblock_q[5:3],2'b00} : {1'b1, 5'bxxxxx };              
+	   3'b101: {ramcs_b_r, ramadrhi_r} = ( {adr15,adr14}==2'b01 ) ? {1'b0,ramblock_q[5:3],2'b01} : {1'b1, 5'bxxxxx };              
+	   3'b110: {ramcs_b_r, ramadrhi_r} = ( {adr15,adr14}==2'b01 ) ? {1'b0,ramblock_q[5:3],2'b10} : {1'b1, 5'bxxxxx };              
+	   3'b111: {ramcs_b_r, ramadrhi_r} = ( {adr15,adr14}==2'b01 ) ? {1'b0,ramblock_q[5:3],2'b11} : {1'b1, 5'bxxxxx };
        endcase // case (ramblock_q[2:0])
      end // always @ (ramblock_q, adr15, adr14 )    
 `endif

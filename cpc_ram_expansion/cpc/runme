@@ -1,32 +1,11 @@
 #!/bin/tcsh -f
 
 
+iDSK ramtest_disk.dsk -n
 
-set in_disk  = ramtest.dsk
-set out_disk = release.dsk
-
-
-#
-# Commands to import code from  CPC dsk for editing on Mac
-#
-
-#rm *.B *.BIN *mac
-#if ( -e $out_disk) rm -rf $out_disk
-#iDSK $in_disk -g  RAMTEST.B
-#iDSK $in_disk -g  MINILIB.B  
-#iDSK $in_disk -g  RAMTEST.BIN
-#python cpc2mac.py RAMTEST.B > ramtest.b.mac
-#python cpc2mac.py MINILIB.B > minilib.b.mac
-  
-#
-# Create a dsk image and copy the source to it
-#
-
-iDSK $out_disk -n
-
-iDSK $out_disk -i  ramtest.b
-iDSK $out_disk -i  minilib.b
+foreach file ( `ls -1 *.ASC *.BAS *.BIN *.b` )
+        iDSK ramtest_disk.dsk -i ${file} -t 1
+end
 
 
-
-
+iDSK ramtest_disk.dsk -l
