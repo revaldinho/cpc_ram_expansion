@@ -56,13 +56,15 @@ ROTATE =R90 CAP100N_5 ;
 MOVE CAP100N_5     (1.40 2.80)  ; 
 ROTATE =R90 CAP100N_6 ; 
 MOVE CAP100N_6     (2.45 2.80)  ; 
-ROTATE =R270 CAP100N_7 ;
-MOVE CAP100N_7     (3.4 2.45)  ; 
+ROTATE =R180 CAP100N_7 ;
+MOVE CAP100N_7     (3.1 2.45)  ; 
+ROTATE =R90 CAP100N_8 ;
+MOVE CAP100N_7     (1.2 2.3)  ; 
 
 Layer tPlace ;
 CHANGE FONT PROPORTIONAL ; 
 CHANGE SIZE 0.06
-TEXT 'CPC 512K RAM Expansion, v2.10'            R90 (0.1 0.5) ;
+TEXT 'CPC 512K RAM Expansion, v2.10 (CPC6128)'            R90 (0.1 0.5) ;
 CHANGE SIZE 0.04
 TEXT '(C) 2018 Revaldinho. https://github.com/revaldinho/cpc_ram_expansion'  R90 (0.2 0.5) ;
 

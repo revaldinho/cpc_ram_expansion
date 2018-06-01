@@ -225,6 +225,7 @@ module cpc_ram_board ();
    cap100nf CAP100N_5 (.p0( VSS ), .p1( VDD ));
    cap100nf CAP100N_6 (.p0( VSS ), .p1( VDD ));  
    cap100nf CAP100N_7 (.p0( VSS ), .p1( VDD ));
+   cap100nf CAP100N_8 (.p0( VSS ), .p1( VDD ));  
                
 endmodule
 
