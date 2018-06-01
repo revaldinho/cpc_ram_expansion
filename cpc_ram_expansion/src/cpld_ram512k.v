@@ -101,7 +101,7 @@ module cpld_ram512k(busreset_b,adr15,adr14,iorq_b,mreq_b,ramrd_b,reset_b,wr_b,rd
        else
          begin
            hibit_tmp_r = ramblock_q;       
-           if (ramblock_q[5:3] == (shadow_bank) )
+           if ( (ramblock_q[5:3] == shadow_bank) & !mode464 ) // Shadow bank active only in the 464
              hibit_tmp_r[5:3] =   (shadow_bank) & 3'b110; // alias the even bank below shadow bank to the shadow bank
            case (hibit_tmp_r[2:0])
 	     3'b000: {ramcs_b_r, ramadrhi_r} = { !mode464, shadow_bank, adr15, adr14 };
