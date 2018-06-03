@@ -4,44 +4,40 @@
 Grid default;
 Set Wire_Bend 0;
 Layer Dimension;
-Wire 0  (0 0) (3.15 2.4) (0 0);
+Wire 0  (0 0) (3.15 2.5) (0 0);
 Layer Top;
 
 # PCB-Pool/PCB-Train design rule is actually 0.006/0.006 for wires
 CLASS 0 signal 0.015 0.010 ;
 CLASS 1 supply 0.040 0.015 ;
 
-ROTATE =R90 CONN0 ;
-MOVE CONN0         (2.95 1.40) ;
-ROTATE =R90 L1 ;
-MOVE L1            (2.95 1.00);
 ROTATE =R270 CAP22UF ; 
-MOVE CAP22UF       (2.7 0.95 ) ;
+MOVE CAP22UF       (2.8 0.95 ) ;
 
 ROTATE =R180 CONN1 ;
-MOVE CONN1         (1.45 0.25) ;
+MOVE CONN1         (1.55 0.25) ;
 
 ROTATE =R180 D0 ;
-MOVE D0         (2.20 0.55) ;
+MOVE D0         (2.30 0.55) ;
 ROTATE =R0 RES10K_0 ;
-MOVE RES10K_0         (0.3 1.35) ;
+MOVE RES10K_0         (0.4 1.35) ;
 
 ROTATE =R0 U0 ;
-MOVE U0          (1.35 1.90) ;
+MOVE U0          (1.45 1.90) ;
 ROTATE =R0 U1 ;
-MOVE U1          (1.05 0.95) ;
+MOVE U1          (1.15 0.95) ;
 ROTATE =R0 U2 ;
-MOVE U2          (2.20 0.95);
+MOVE U2          (2.30 0.95);
 
 ROTATE =R90 CAP100N_1 ;
-MOVE CAP100N_1     (0.45 1.0) ;
+MOVE CAP100N_1     (0.55 1.0) ;
 ROTATE =R90 CAP100N_2 ;
-MOVE CAP100N_2     (1.70  1.0)  ;
+MOVE CAP100N_2     (1.80  1.0)  ;
 
 Layer tPlace ;
 CHANGE FONT PROPORTIONAL ; 
 CHANGE SIZE 0.06
-TEXT 'CPC Teensy3.5 ROM Card, v1.00' R90 (0.10 0.5) ;
+TEXT 'CPC Teensy3.5 ROM Card, v1.10' R90 (0.10 0.5) ;
 CHANGE SIZE 0.04
 TEXT '(C) 2018 Revaldinho'  R0      (0.3 0.55) ;
 TEXT 'github.com/revaldinho/cpc_ram_expansion'  R0      (0.3 0.5) ;
@@ -53,10 +49,10 @@ AUTO ;
 
 ## Define power fills top and bottom over whole board area
 layer Top ; 
-polygon VSS 0.08 (0 0) (0 2.4) (3.15 2.4) (3.15 0) (0 0) ;
+polygon VSS 0.08 (0 0) (0 2.5) (3.15 2.5) (3.15 0) (0 0) ;
 
 layer Bottom ; 
-polygon VSS 0.08 (0 0) (0 2.4) (3.15 2.4) (3.15 0) (0 0) ;
+polygon VSS 0.08 (0 0) (0 2.5) (3.15 2.5) (3.15 0) (0 0) ;
 
 
 Ratsnest ;  ## Calculate and display polygons

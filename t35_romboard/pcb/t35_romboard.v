@@ -44,23 +44,7 @@ module t35_romboard ();
   wire dout0,dout1,dout2,dout3,dout4,dout5,dout6,dout7;
   wire romvalid, bufoe_b, romdis_b, romen;
   wire VSS_pulldown;
-  
-  
-  
-  // 3 pin header with link to use either CPC or external 5V power for the board
-  hdr1x03      L1 (
-                   .p1(VDD_CPC),
-                   .p2(VDD),
-                   .p3(VDD_EXT)
-                   );
-
-  // 3 pin Tabbed power connector for external 5V power
-  powerheader3   CONN0 (
-                        .vdd1(VDD_EXT),
-                        .vdd2(VDD_EXT),
-                        .gnd(VSS)
-                        );
-
+    
   // Radial electolytic, one per board on the main 5V supply
   cap22uf         CAP22UF(.minus(VSS),.plus(VDD));
 
@@ -82,7 +66,7 @@ module t35_romboard ();
                       .p30(D5),      .p29(D4),
                       .p28(D3),      .p27(D2),
                       .p26(D1),      .p25(D0),
-                      .p24(VDD_CPC), .p23(MREQ_B),
+                      .p24(VDD), .p23(MREQ_B),
                       .p22(M1_B),    .p21(RFSH_B),
                       .p20(IOREQ_B), .p19(RD_B),
                       .p18(WR_B),    .p17(HALT_B),
@@ -97,17 +81,16 @@ module t35_romboard ();
                       ) ;
 
 
-
   teensy35_noxpins    U0 (
                           .gnd(VSS),       .vin(VDD),
                           .b16(A8),        .agnd(VSS),
                           .b17(A9),        .vdd_3v3_250ma(),
                           .d0(A0),         .c2(dout2),
-                          .a12(),          .c1(dout1),
-                          .a13(),          .d6(A6),
+                          .a12(D0),          .c1(dout1),
+                          .a13(D1),          .d6(A6),
                           .d7(A7),         .d5(A5),
                           .d4(A4),         .b2(WR_B),
-                          .d2(A2),         .b3(RAMRD_B),
+                          .d2(A2),         .b3(RD_B),
                           .d3(A3),         .b1(IOREQ_B),
                           .c3(dout3),      .b0(MREQ_B),
                           .c4(dout4),      .c0(dout0),
@@ -116,13 +99,13 @@ module t35_romboard ();
                           .vdd_3v3(),      .gnd2(VSS),
                           .e26(),          .dac1(),
                           .a5(),           .dac0(),
-                          .a14(),          .a17(),
-                          .a15(),          .c11(),
-                          .a16(),          .c10(),
+                          .a14(D2),          .a17(D5),
+                          .a15(D3),          .c11(),
+                          .a16(D4),          .c10(),
                           .b18(A10),       .c9(READY),
                           .b19(A11),       .c8(romvalid),
-                          .b10(RD_B),      .e25(),
-                          .b11(CLK),       .e24(),
+                          .b10(ROMEN_B),      .e25(READY),
+                          .b11(M1_B),       .e24(CLK),
                           
 	                          .vusb(),         
 	                                                           
@@ -132,13 +115,13 @@ module t35_romboard ();
 	          		  .e11(),          
 	                          .e10(),          
 	                          .d11(),          
-	                          .d15(D3),        
+	                          .d15(),        
 	                                                   
-	                  .a28(),         .d12(D0),        
-	                  .a29(),         .d13(D1),        
-	                  .a26(),         .d14(D2),        
-	                  .b20(A12),      .b5(M1_B),       
-	                  .b22(A14),      .b4(ROMEN_B),    
+	                  .a28(),         .d12(),        
+	                  .a29(),         .d13(),        
+	                  .a26(),         .d14(),        
+	                  .b20(A12),      .b5(),       
+	                  .b22(A14),      .b4(),    
 	                  .b23(A15),      .d9(),           
 	                  .b21(A13),      .d8(),           
 	                  .gnd5(VSS),      .vdd_3v3_1()
