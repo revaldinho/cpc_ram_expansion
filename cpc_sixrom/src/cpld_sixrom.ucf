@@ -9,7 +9,7 @@ PIN "dip[2]"	LOC = P7 ; # GCK3
 PIN "dip[1]"	LOC = P8 ;
 PIN "dip[0]"	        LOC = P9 ;
 #PIN ""	        LOC = P11 ;
-PIN "skt01p27"	        LOC = P12 ;
+#PIN ""	        LOC = P12 ;
 
 PIN "romoe_b"  LOC = P13 ;
 PIN "mreq_b"  LOC = P14 ;
