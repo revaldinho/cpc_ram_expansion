@@ -50,7 +50,7 @@ module cpld_sixrom(dip, reset_b,adr15,adr14,adr13,ioreq_b,mreq_b,romen_b,wr_b,rd
 
   always @ ( clk )
     if ( clk )
-      clken_lat_qb <= !(!ioreq_b && !wr_b && !adr13);
+      clken_lat_qb <= !(!ioreq_b && !wr_b && !adr13 && adr15 && adr14);
 
    
   always @ (negedge reset_b or posedge wclk )
