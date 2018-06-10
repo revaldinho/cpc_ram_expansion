@@ -7,7 +7,7 @@ run
 -ofn cpld_fourrom
 -ofmt NGC
 -top cpld_fourrom
--opt_mode Area
+-opt_mode Speed
 -opt_level 2
 -iuc NO
 -lso cpld_fourrom.lso

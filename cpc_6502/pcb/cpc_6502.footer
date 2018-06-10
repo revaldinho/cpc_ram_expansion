@@ -1,0 +1,97 @@
+# Maximum Eagle freeware board size is 4.0x3.2" (100x80mm) 
+
+# better to work in inches for 0.1 inch pad pitch
+Grid default;
+Set Wire_Bend 0;
+Layer Dimension;
+Wire 0  (0 0) (3.1 3.05) (0 0);
+Layer Top;
+
+# PCB-Pool/PCB-Train design rule is actually 0.006/0.006 for wires
+CLASS 0 signal 0.015 0.010 ;
+CLASS 1 supply 0.028 0.010 ;
+
+
+ROTATE =R180 CONN1 ;
+MOVE CONN1         (1.55 0.25) ;
+ROTATE =R180 CONN2 ;
+MOVE CONN2         (1.3 2.75) ;
+ROTATE =R180 UART ;
+MOVE UART         (2.70 2.7);
+
+ROTATE =R90 JTAG;
+MOVE JTAG          (0.25 1.55);
+ROTATE =R90 L1;
+MOVE L1            (2.90 2.20);
+ROTATE =R0 REG3V3;
+MOVE REG3V3        (2.70 1.8);
+ROTATE =R180 reg_cap0;
+MOVE reg_cap0      (2.75 1.60);
+ROTATE =R180 reg_cap1;
+MOVE reg_cap1      (2.75 1.40);
+
+ROTATE =R180 CAP22UF ; 
+MOVE CAP22UF       (2.9 0.7 ) ;
+
+ROTATE =R270 CPLD ;
+MOVE CPLD          (1.1 1.15) ;
+
+
+ROTATE =R0 U0 ;
+MOVE U0          (2.4 1.1) ;
+ROTATE =R0 U1 ;
+MOVE U1          (1.25 2.05);
+
+ROTATE =R90 CAP100N_0 ;
+MOVE CAP100N_0     (0.55 0.85) ;
+ROTATE =R0 CAP100N_1 ;
+MOVE CAP100N_1     (0.8 1.7) ;
+ROTATE =R90 CAP100N_2 ;
+MOVE CAP100N_2     (0.65 2.10)  ;
+ROTATE =R90 CAP100N_3 ;
+MOVE CAP100N_3     (1.8 1.15)  ; 
+
+ROTATE =r0  res0 ;
+MOVE res0     (0.25 2.35)  ; 
+
+Layer tPlace ;
+CHANGE FONT PROPORTIONAL ; 
+CHANGE SIZE 0.05
+TEXT 'CPC-PiTubeDirect/6502 Bus Card, v1.00' R0 (0.2 0.6) ;
+CHANGE SIZE 0.04
+TEXT '(C) 2018 Revaldinho, github.com/revaldinho/cpc_ram_expansion'  R0 (0.2 0.5) ;
+
+CHANGE FONT FIXED ; 
+CHANGE SIZE 0.03 ;
+CHANGE WIDTH 0.01 ;
+WIRE  (0.1 0.78) (0.1 1.30 ) ( 0.25 1.30 ) (0.25 0.78) ( 0.1 0.78 ) ;
+TEXT 'GND  TDI  TCK  NC' R90 (0.15 0.82) ;
+TEXT 'GND  TMS  TDO  5V' R90 (0.19 0.82) ;
+
+# Preroute VDD and VSS rings
+layer top;
+wire  0.05;
+wire  'VDD' (0.07 0.07) ( 3.03 0.07) (3.03 2.98) (0.07 2.98) (0.07 0.07) ;
+layer bottom;
+wire  0.05;
+wire  'VSS' (0.07 0.07) ( 3.03 0.07) (3.03 2.98) (0.07 2.98) (0.07 0.07) ;
+
+
+# Autorouter
+# AUTO VDD VDD_CPC VDD_EXT VDD3V3 CLK VSS;   # Route clock and supplies first
+AUTO load /tmp/autorouter_74.ctl;
+AUTO ;
+
+# Define power fills top and bottom over whole board area
+layer Top ; 
+polygon VSS 0.08 (0 0) (0 3.05) (3.1 3.05) (3.1 0) (0 0) ;
+
+layer Bottom ; 
+polygon VSS 0.08 (0 0) (0 3.05) (3.1 3.05) (3.1 0) (0 0) ;
+
+
+Ratsnest ;  ## Calculate and display polygons
+
+
+Window Fit;
+

@@ -30,11 +30,11 @@ module cpld_fourrom(dip, reset_b,adr15,adr14,adr13,ioreq_b,mreq_b,romen_b,wr_b,r
   assign rom23cs_b = !(rom16k_cs_r[2] | rom16k_cs_r[3]) ;
   assign roma14    =   rom16k_cs_r[1] | rom16k_cs_r[3];
 
-  assign skt01p27  = (!dip[6])?1'b1: roma14; 
-  assign skt23p27  = (!dip[7])?1'b1: roma14; 
+  assign skt01p27  = 1'b1 ; //(!dip[6])?1'b1: roma14; 
+  assign skt23p27  = 1'b1 ; //(!dip[7])?1'b1: roma14; 
 
-  assign romoe_b  = romen_b;
-  assign romdis = | rom16k_cs_r ;
+  assign romoe_b  =   romen_b | !rom16k_cs_r;
+  assign romdis   = | rom16k_cs_r ;
 
   // DIP switches and numbered 1-8 on the board, but 0-7 in the Verilog code  
   // DIP 0 = enable lower ROM SKT01
@@ -42,9 +42,9 @@ module cpld_fourrom(dip, reset_b,adr15,adr14,adr13,ioreq_b,mreq_b,romen_b,wr_b,r
   // DIP 2 = enable lower ROM SKT23    
   // DIP 3 = enable upper ROM SKT23
   // DIP 54 =  00 : LOW ROM + ROMS 0-2
-  // DIP 54 =  01 : ROMS 3-6
-  // DIP 54 =  10 : ROMS 8-11
-  // DIP 54 =  11 : ROMS 12-15
+  // DIP 54 =  01 : ROMS 1-4
+  // DIP 54 =  10 : ROMS 5,6,9,14
+  // DIP 54 =  11 : ROMS 10-13  [FutureOS]
   // DIP 6  = select 32K EPROM in Skt01 - Care will wipe EEPROM if present 
   // DIP 7  = select 32K EPROM in Skt02 - Care will wipe EEPROM if present 
   
@@ -52,7 +52,7 @@ module cpld_fourrom(dip, reset_b,adr15,adr14,adr13,ioreq_b,mreq_b,romen_b,wr_b,r
   // but if the pulse is allowed through use the trailing (rising) edge to capture data
   wire      wclk    = !(clk|clken_lat_qb); 
 
-  always @ ( clk )
+  always @ ( * )
     if ( clk )
       clken_lat_qb <= !(!ioreq_b && !wr_b && !adr13);
 
@@ -72,27 +72,27 @@ module cpld_fourrom(dip, reset_b,adr15,adr14,adr13,ioreq_b,mreq_b,romen_b,wr_b,r
       else
         if ( dip[5:4]== 2'h0 ) begin
           rom16k_cs_r[0] = 1'b0;          
-          rom16k_cs_r[1] = dip[1] & ( romsel_q == 8'h0 ) ;
-          rom16k_cs_r[2] = dip[2] & ( romsel_q == 8'h1 ) ;
-          rom16k_cs_r[3] = dip[3] & ( romsel_q == 8'h2 ) ;
+          rom16k_cs_r[1] = dip[1] & ( romsel_q == 8'h00 ) ;
+          rom16k_cs_r[2] = dip[2] & ( romsel_q == 8'h01 ) ;
+          rom16k_cs_r[3] = dip[3] & ( romsel_q == 8'h02 ) ;
         end
         else if ( dip[5:4]== 2'h1 ) begin
-          rom16k_cs_r[0] = dip[0] & ( romsel_q == 8'h3 ) ;
-          rom16k_cs_r[1] = dip[1] & ( romsel_q == 8'h4 ) ;
-          rom16k_cs_r[2] = dip[2] & ( romsel_q == 8'h5 ) ;
-          rom16k_cs_r[3] = dip[3] & ( romsel_q == 8'h6 ) ;
+          rom16k_cs_r[0] = dip[0] & ( romsel_q == 8'h01 ) ;
+          rom16k_cs_r[1] = dip[1] & ( romsel_q == 8'h02 ) ;
+          rom16k_cs_r[2] = dip[2] & ( romsel_q == 8'h03 ) ;
+          rom16k_cs_r[3] = dip[3] & ( romsel_q == 8'h04 ) ;
         end
         else if ( dip[5:4]== 2'h2 ) begin
-          rom16k_cs_r[0] = dip[0] & ( romsel_q == 8'h8 ) ;
-          rom16k_cs_r[1] = dip[1] & ( romsel_q == 8'h9 ) ;
-          rom16k_cs_r[2] = dip[2] & ( romsel_q == 8'hA ) ;
-          rom16k_cs_r[3] = dip[3] & ( romsel_q == 8'hB ) ;
+          rom16k_cs_r[0] = dip[0] & ( romsel_q == 8'h05 ) ;
+          rom16k_cs_r[1] = dip[1] & ( romsel_q == 8'h06 ) ;
+          rom16k_cs_r[2] = dip[2] & ( romsel_q == 8'h09 ) ;
+          rom16k_cs_r[3] = dip[3] & ( romsel_q == 8'h0E ) ;
         end
         else if ( dip[5:4]== 2'h3 ) begin
-          rom16k_cs_r[0] = dip[0] & ( romsel_q == 8'hC ) ;
-          rom16k_cs_r[1] = dip[1] & ( romsel_q == 8'hD ) ;
-          rom16k_cs_r[2] = dip[2] & ( romsel_q == 8'hE ) ;
-          rom16k_cs_r[3] = dip[3] & ( romsel_q == 8'hF ) ;
+          rom16k_cs_r[0] = dip[0] & ( romsel_q == 8'h0A ) ;
+          rom16k_cs_r[1] = dip[1] & ( romsel_q == 8'h0B ) ;
+          rom16k_cs_r[2] = dip[2] & ( romsel_q == 8'h0C ) ;
+          rom16k_cs_r[3] = dip[3] & ( romsel_q == 8'h0D ) ;
         end
     end // always @ ( * )
   

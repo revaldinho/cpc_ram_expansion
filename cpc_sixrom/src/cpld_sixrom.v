@@ -40,9 +40,8 @@ module cpld_sixrom(dip, reset_b,adr15,adr14,adr13,ioreq_b,mreq_b,romen_b,wr_b,rd
   // DIP 3 = enable upper ROM SKT23
   // DIP 4 = enable lower ROM SKT45    
   // DIP 5 = enable upper ROM SKT45
-  // DIP 6 =  0 : ROMS 1-6
-  //       =  1 : ROMS 9-14
-  // DIP 7 = unused.
+  // DIP 6 = }__ ROM number selection - see table below
+  // DIP 7 = }
   
   // Create neg edge clock on IO write event - clock low pulse will be suppressed if not an IOWR* event
   // but if the pulse is allowed through use the trailing (rising) edge to capture data
@@ -51,7 +50,6 @@ module cpld_sixrom(dip, reset_b,adr15,adr14,adr13,ioreq_b,mreq_b,romen_b,wr_b,rd
   always @ ( clk )
     if ( clk )
       clken_lat_qb <= !(!ioreq_b && !wr_b && !adr13 && adr15 && adr14);
-
    
   always @ (negedge reset_b or posedge wclk )
     if ( !reset_b)
@@ -61,23 +59,46 @@ module cpld_sixrom(dip, reset_b,adr15,adr14,adr13,ioreq_b,mreq_b,romen_b,wr_b,rd
 
   always @ ( * ) 
     begin
-      rom16k_cs_r = 6'b0;      
-      if ( dip[6]== 1'b0 ) begin
-        rom16k_cs_r[0] = dip[0] & ( romsel_q == 8'h1 ) ;
-        rom16k_cs_r[1] = dip[1] & ( romsel_q == 8'h2 ) ;
-        rom16k_cs_r[2] = dip[2] & ( romsel_q == 8'h3 ) ;
-        rom16k_cs_r[3] = dip[3] & ( romsel_q == 8'h4 ) ;
-        rom16k_cs_r[4] = dip[4] & ( romsel_q == 8'h5 ) ;
-        rom16k_cs_r[5] = dip[5] & ( romsel_q == 8'h6 ) ;        
-      end
-      else begin
-        rom16k_cs_r[0] = dip[0] & ( romsel_q == 8'h9 ) ;
-        rom16k_cs_r[1] = dip[1] & ( romsel_q == 8'hA ) ;
-        rom16k_cs_r[2] = dip[2] & ( romsel_q == 8'hB ) ;
-        rom16k_cs_r[3] = dip[3] & ( romsel_q == 8'hC ) ;
-        rom16k_cs_r[4] = dip[4] & ( romsel_q == 8'hD ) ;
-        rom16k_cs_r[5] = dip[5] & ( romsel_q == 8'hE ) ;                
-      end
+      rom16k_cs_r = 6'b0;   
+      if (!adr14)
+        rom16k_cs_r[0] = ( dip[0] & (dip[7]==1'b0));
+      else   
+        if ( dip[7:6]== 2'b00 ) begin
+          // Firmware and BASIC replacement in SKT01, ROMS 1-4 in others
+          rom16k_cs_r[0] = 1'b0 ;          
+          rom16k_cs_r[1] = dip[1] & ( romsel_q == 8'h0 ) ;
+          rom16k_cs_r[2] = dip[2] & ( romsel_q == 8'h1 ) ;
+          rom16k_cs_r[3] = dip[3] & ( romsel_q == 8'h2 ) ;
+          rom16k_cs_r[4] = dip[4] & ( romsel_q == 8'h3 ) ;
+          rom16k_cs_r[5] = dip[5] & ( romsel_q == 8'h4 ) ;        
+        end
+        else if ( dip[7:6]== 2'b01 ) begin
+          // FutureOS autoboot configuration - replacement lower ROM + FOS in slots 10-13
+          rom16k_cs_r[0] = 1'b0 ;          
+          rom16k_cs_r[1] = dip[1] & ( romsel_q == 8'h1 ) ;
+          rom16k_cs_r[2] = dip[2] & ( romsel_q == 8'hA ) ;
+          rom16k_cs_r[3] = dip[3] & ( romsel_q == 8'hB ) ;
+          rom16k_cs_r[4] = dip[4] & ( romsel_q == 8'hC ) ;
+          rom16k_cs_r[5] = dip[5] & ( romsel_q == 8'hD ) ;                
+        end
+        else if ( dip[7:6]== 2'b10 ) begin
+          // ROMS 1-6
+          rom16k_cs_r[0] = dip[0] & ( romsel_q == 8'h1 ) ;
+          rom16k_cs_r[1] = dip[1] & ( romsel_q == 8'h2 ) ;
+          rom16k_cs_r[2] = dip[2] & ( romsel_q == 8'h3 ) ;
+          rom16k_cs_r[3] = dip[3] & ( romsel_q == 8'h4 ) ;
+          rom16k_cs_r[4] = dip[4] & ( romsel_q == 8'h5 ) ;
+          rom16k_cs_r[5] = dip[5] & ( romsel_q == 8'h6 ) ;                
+        end
+        else if ( dip[7:6]== 2'b11 ) begin
+          // ROMS 8-13
+          rom16k_cs_r[0] = dip[0] & ( romsel_q == 8'h8 ) ;
+          rom16k_cs_r[1] = dip[1] & ( romsel_q == 8'h9 ) ;
+          rom16k_cs_r[2] = dip[2] & ( romsel_q == 8'hA ) ;
+          rom16k_cs_r[3] = dip[3] & ( romsel_q == 8'hB ) ;
+          rom16k_cs_r[4] = dip[4] & ( romsel_q == 8'hC ) ;
+          rom16k_cs_r[5] = dip[5] & ( romsel_q == 8'hD ) ;                
+        end
     end // always @ ( * )
   
           
