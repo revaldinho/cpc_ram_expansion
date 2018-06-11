@@ -8,74 +8,73 @@ Wire 0  (0 0) (3.1 3.05) (0 0);
 Layer Top;
 
 # PCB-Pool/PCB-Train design rule is actually 0.006/0.006 for wires
-CLASS 0 signal 0.015 0.010 ;
+CLASS 0 signal 0.010 0.010 ;
 CLASS 1 supply 0.028 0.010 ;
 
 
 ROTATE =R180 CONN1 ;
 MOVE CONN1         (1.55 0.25) ;
-ROTATE =R180 CONN2 ;
-MOVE CONN2         (1.3 2.75) ;
-ROTATE =R180 UART ;
-MOVE UART         (2.70 2.7);
+ROTATE =R0 CONN2 ;
+MOVE CONN2         (1.8 2.75) ;
+ROTATE =R270 UART ;
+MOVE UART         (0.50 2.75);
 
 ROTATE =R90 JTAG;
-MOVE JTAG          (0.25 1.55);
-ROTATE =R90 L1;
-MOVE L1            (2.90 2.20);
-ROTATE =R0 REG3V3;
-MOVE REG3V3        (2.70 1.8);
-ROTATE =R180 reg_cap0;
-MOVE reg_cap0      (2.75 1.60);
+MOVE JTAG          (0.2 2.70);
+ROTATE =R180 L1;
+MOVE L1            (2.8 2.35);
 ROTATE =R180 reg_cap1;
-MOVE reg_cap1      (2.75 1.40);
+MOVE reg_cap1      (2.8 1.45);
+ROTATE =R0 REG3V3;
+MOVE REG3V3        (2.85 1.2);
+ROTATE =R180 reg_cap0;
+MOVE reg_cap0      (2.8 1.00);
 
 ROTATE =R180 CAP22UF ; 
 MOVE CAP22UF       (2.9 0.7 ) ;
 
 ROTATE =R270 CPLD ;
-MOVE CPLD          (1.1 1.15) ;
+MOVE CPLD          (0.9 1.15) ;
 
 
 ROTATE =R0 U0 ;
-MOVE U0          (2.4 1.1) ;
+MOVE U0          (2.1 1.9) ;
 ROTATE =R0 U1 ;
-MOVE U1          (1.25 2.05);
+MOVE U1          (1.0 1.9);
 
 ROTATE =R90 CAP100N_0 ;
-MOVE CAP100N_0     (0.55 0.85) ;
-ROTATE =R0 CAP100N_1 ;
-MOVE CAP100N_1     (0.8 1.7) ;
+MOVE CAP100N_0     (0.4 0.85) ;
+ROTATE =R270 CAP100N_1 ;
+MOVE CAP100N_1     (1.4 1.45) ;
 ROTATE =R90 CAP100N_2 ;
-MOVE CAP100N_2     (0.65 2.10)  ;
+MOVE CAP100N_2     (0.4 1.95)  ;
 ROTATE =R90 CAP100N_3 ;
-MOVE CAP100N_3     (1.8 1.15)  ; 
+MOVE CAP100N_3     (2.8 1.85)  ; 
 
 ROTATE =r0  res0 ;
-MOVE res0     (0.25 2.35)  ; 
+MOVE res0     (1.6 2.15)  ; 
 
 Layer tPlace ;
 CHANGE FONT PROPORTIONAL ; 
 CHANGE SIZE 0.05
-TEXT 'CPC-PiTubeDirect/6502 Bus Card, v1.00' R0 (0.2 0.6) ;
+TEXT 'CPC-PiTubeDirect/6502 Bus Card, v1.00' R90 (0.15 0.45) ;
 CHANGE SIZE 0.04
-TEXT '(C) 2018 Revaldinho, github.com/revaldinho/cpc_ram_expansion'  R0 (0.2 0.5) ;
+TEXT '(C) 2018 Revaldinho, github.com/revaldinho/cpc_ram_expansion'  R0 (0.25 0.6) ;
 
 CHANGE FONT FIXED ; 
 CHANGE SIZE 0.03 ;
 CHANGE WIDTH 0.01 ;
-WIRE  (0.1 0.78) (0.1 1.30 ) ( 0.25 1.30 ) (0.25 0.78) ( 0.1 0.78 ) ;
-TEXT 'GND  TDI  TCK  NC' R90 (0.15 0.82) ;
-TEXT 'GND  TMS  TDO  5V' R90 (0.19 0.82) ;
+WIRE  (0.1 1.95) (0.1 2.5 ) ( 0.25 2.5 ) (0.25 1.95) ( 0.1 1.95 ) ;
+TEXT 'GND  TDI  TCK  NC' R90 (0.15 2.01) ;
+TEXT 'GND  TMS  TDO  5V' R90 (0.19 2.01) ;
 
 # Preroute VDD and VSS rings
 layer top;
-wire  0.05;
-wire  'VDD' (0.07 0.07) ( 3.03 0.07) (3.03 2.98) (0.07 2.98) (0.07 0.07) ;
+wire  0.04;
+wire  'VDD' (0.06 0.06) ( 3.04 0.06) (3.04 2.99) (0.06 2.99) (0.06 0.06) ;
 layer bottom;
-wire  0.05;
-wire  'VSS' (0.07 0.07) ( 3.03 0.07) (3.03 2.98) (0.07 2.98) (0.07 0.07) ;
-
+wire  0.04;
+wire  'VSS' (0.06 0.06) ( 3.04 0.06) (3.04 2.99) (0.06 2.99) (0.06 0.06) ;
 
 # Autorouter
 # AUTO VDD VDD_CPC VDD_EXT VDD3V3 CLK VSS;   # Route clock and supplies first
