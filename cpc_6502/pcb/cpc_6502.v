@@ -64,14 +64,6 @@ module cpc_6502 ();
   wire T_HD0;
   wire T_PHI2 ;
   wire T_HIRQ_B ;
-  wire cpld_ha0 ;
-  wire cpld_ha1 ;
-  wire cpld_ha2 ;
-  wire cpld_irq_b;
-  wire cpld_hcs_b;
-  wire cpld_hrst_b;
-  wire cpld_phi2 ;
-  wire cpld_rnw ;
   wire buf_oe_b ;
   wire buf_atob ;
 
@@ -177,17 +169,17 @@ module cpc_6502 ();
   xc9572pc44  CPLD (
 	            .p1(buf_oe_b),                    
 	            .p2(buf_atob),
-                    .p3(cpld_irq_b),                    
-	            .p4(cpld_ha2),
+                    .p3(T_HIRQ_B),                    
+	            .p4(MREQ_B),
 	            .gck1(CLK),
-	            .gck2(cpld_ha1),
-	            .gck3(cpld_ha0),
-	            .p8(cpld_rnw),
-	            .p9(cpld_hrst_b),
+	            .gck2(T_HCS_B),
+	            .gck3(T_HA0),
+	            .p8(T_RNW),
+	            .p9(T_HRST_B),
 	            .gnd1(VSS),
-	            .p11(cpld_hcs_b),
-	            .p12(cpld_phi2),
-	            .p13(MREQ_B),
+	            .p11(T_HA1),
+	            .p12(T_PHI2),
+	            .p13(T_HA2),
 	            .p14(A15),
 	            .tdi(TDI),
 	            .tms(TMS),
@@ -206,7 +198,7 @@ module cpc_6502 ();
 	            .p29(A5),
 	            .tdo(TDO),
 	            .gnd3(VSS),
-	            .vccio(VDD),
+	            .vccio(VDD_3V3),
 	            .p33(A4),
 	            .p34(A3),
 	            .p35(A2),
@@ -217,8 +209,8 @@ module cpc_6502 ();
 	            .gts2(IOREQ_B),
 	            .vccint2(VDD),
 	            .gts1(WR_B),
-	            .p43(M1_B),            
-	            .p44(RD_B),
+	            .p43(RD_B),            
+	            .p44(M1_B),
                     );
 
   // Use LVC245 for both instances for level shifting
@@ -235,24 +227,10 @@ module cpc_6502 ();
              .vss(VSS),   .b7(T_HD1)
               );
 
-  // Unidirectional signals A->B, always enabled
-  SN74245 U1 (
-             .dir(VDD_3V3),     .vdd(VDD_3V3),
-             .a0(cpld_phi2),    .gb(VSS),
-             .a1(cpld_hcs_b),   .b0(T_PHI2),
-             .a2(cpld_hrst_b),  .b1(T_HCS_B),
-             .a3(cpld_rnw),     .b2(T_HRST_B),
-             .a4(cpld_ha0),     .b3(T_RNW),
-             .a5(cpld_ha1),     .b4(T_HA0),
-             .a6(cpld_ha2),     .b5(T_HA1),
-             .a7(T_HIRQ_B),     .b6(T_HA2),
-             .vss(VSS),         .b7(cpld_irq_b)
-              );    
 
    // Decoupling caps
    cap100nf CAP100N_0 (.p0( VSS ), .p1( VDD ));
-   cap100nf CAP100N_1 (.p0( VSS ), .p1( VDD ));
+   cap100nf CAP100N_1 (.p0( VSS ), .p1( VDD_3V3 ));
    cap100nf CAP100N_2 (.p0( VSS ), .p1( VDD_3V3 ));
-   cap100nf CAP100N_3 (.p0( VSS ), .p1( VDD_3V3 ));
 
 endmodule
