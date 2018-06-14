@@ -12,6 +12,7 @@ module cpc_6502 ();
   supply0 VSS;
   supply1 VDD;
   supply1 VDD_3V3;
+  supply1 VDD_IO;  
   supply1 VDD_3V3_REG;
   supply1 VDD_3V3_EXT;      
 
@@ -46,26 +47,41 @@ module cpc_6502 ();
   wire TDO;
   wire TCK;
 
-  wire T_UART_RX;
-  wire T_UART_TX;  
-  wire T_HA0;
-  wire T_HA1 ;
-  wire T_HA2 ;
-  wire T_HRST_B ;
-  wire T_HCS_B ;
-  wire T_RNW;
-  wire T_HD7;
-  wire T_HD6;
-  wire T_HD5;
-  wire T_HD4;
-  wire T_HD3;
-  wire T_HD2;
-  wire T_HD1;
-  wire T_HD0;
-  wire T_PHI2 ;
-  wire T_HIRQ_B ;
-  wire buf_oe_b ;
-  wire buf_atob ;
+  wire PMOD_GPIO_0;
+  wire PMOD_GPIO_1;
+  wire PMOD_GPIO_2;
+  wire PMOD_GPIO_3;
+  wire PMOD_GPIO_4;
+  wire PMOD_GPIO_5;
+  wire PMOD_GPIO_6;
+  wire PMOD_GPIO_7;
+  wire PI_GPIO_02;
+  wire PI_GPIO_03;
+  wire PI_GPIO_04;
+  wire PI_GPIO_05;
+  wire PI_GPIO_06;
+  wire PI_GPIO_07;
+  wire PI_GPIO_08;
+  wire PI_GPIO_09;
+  wire PI_GPIO_10;  
+  wire PI_GPIO_11;
+  wire PI_GPIO_12;
+  wire PI_GPIO_13;
+  wire PI_GPIO_14;
+  wire PI_GPIO_15;
+  wire PI_GPIO_16;
+  wire PI_GPIO_17;
+  wire PI_GPIO_18;
+  wire PI_GPIO_19;
+  wire PI_GPIO_20;
+  wire PI_GPIO_21;
+  wire PI_GPIO_22;
+  wire PI_GPIO_23;
+  wire PI_GPIO_24;
+  wire PI_GPIO_25;
+  wire PI_GPIO_26;
+  wire PI_GPIO_27;
+
 
   
   // 3 pin header with link to use either regulator or external 3V3 power for the board
@@ -75,6 +91,13 @@ module cpc_6502 ();
                    .p3(VDD_3V3_EXT)
                    );
 
+  // Select 5V or 3V3 for CPLD IO voltage 
+  hdr1x03      L2 (
+                   .p1(VDD),
+                   .p2(VDD_IO),
+                   .p3(VDD_3V3)
+                   );
+
 
   MCP1700_3302E   REG3V3 (
                             .vin(VDD),
@@ -82,9 +105,9 @@ module cpc_6502 ();
                             .vout(VDD_3V3_REG)
                             );
 
-
-  // Radial electolytic, one per board on the main 5V supply
-  cap22uf         CAP22UF(.minus(VSS),.plus(VDD));
+  // Radial electolytic, one each on the main 5V and incoming 3V3 supply
+  cap22uf         CAP22UF_5V(.minus(VSS),.plus(VDD));
+  cap22uf         CAP22UF_IO(.minus(VSS),.plus(VDD_3V3_EXT));
 
   // Two ceramic caps to be placed v. close to regulator pins
   cap1uf          reg_cap0 (.p0(VDD), .p1(VSS));
@@ -130,107 +153,142 @@ module cpc_6502 ();
                 .p7(VDD),  .p8(),
                 );
 
-
   // 3 pin header for PI Debug UART pins
   hdr1x03  UART (
                  .p1(VSS),
-                 .p2(T_UART_TX),
-                 .p3(T_UART_RX)
+                 .p2(PI_GPIO_14), // UART TX
+                 .p3(PI_GPIO_15)  // UART RX
                  );
-  
- idc_hdr_40w CONN2 ( 
-		     .p1(VDD_3V3_EXT),  .p2(VDD),
-		     .p3(T_HA1),        .p4(VDD),
-		     .p5(T_HA2),        .p6(VSS),
-		     .p7(T_HRST_B),     .p8(T_UART_TX),
-		     .p9(VSS),          .p10(T_UART_RX),
-		     .p11(T_HCS_B),     .p12(T_RNW),
-		     .p13(T_HA0),       .p14(VSS),
-		     .p15(T_HD4),       .p16(T_HD5),
-		     .p17(VDD_3V3_EXT), .p18(T_HD6),
-		     .p19(T_HD2),       .p20(VSS),
-		     .p21(T_HD1),       .p22(T_HD7),
-		     .p23(T_HD3),       .p24(T_HD0),
-		     .p25(VSS),         .p26(T_PHI2),
-                     .p27(),            .p28(),
-		     .p29(T_HIRQ_B),     .p30(VSS),
-                     .p31(),            .p32(),
-		     .p33(),            .p34(VSS),
-		     .p35(),            .p36(),
-                     .p37(),            .p38(),
-		     .p39(VSS),         .p40(),
+
+  // 12 pin PMOD port
+  hdr2x06 PMOD0 (
+                     .p1(VDD_IO), .p2(VDD_IO),
+		     .p3(VSS), .p4(VSS),
+		     .p5(PMOD_GPIO_0), .p6(PMOD_GPIO_1),
+		     .p7(PMOD_GPIO_2), .p8(PMOD_GPIO_3),
+		     .p9(PMOD_GPIO_4), .p10(PMOD_GPIO_5),
+		     .p11(PMOD_GPIO_6), .p12(PMOD_GPIO_7)               
                      );
-
-  // Pull up the host IRQ in case not connected externally (e.g. PTD)
-  r10k        res0 ( .p0(T_HIRQ_B), .p1(VDD_3V3));
   
   
-  // 9572 CPLD - 5V core and IO
-  xc9572pc44  CPLD (
-	            .p1(buf_oe_b),                    
-	            .p2(buf_atob),
-                    .p3(T_HIRQ_B),                    
-	            .p4(MREQ_B),
-	            .gck1(CLK),
-	            .gck2(T_HCS_B),
-	            .gck3(T_PHI2),
-	            .p8(T_RNW),
-	            .p9(T_HRST_B),
-	            .gnd1(VSS),
-	            .p11(T_HA0),
-	            .p12(T_HA1),
-	            .p13(T_HA2),
-	            .p14(A15),
-	            .tdi(TDI),
-	            .tms(TMS),
-	            .tck(TCK),
-	            .p18(A14),
-	            .p19(A13),
-	            .p20(A12),
-	            .vccint1(VDD),
-	            .p22(A11),
-	            .gnd2(VSS),
-	            .p24(A10),
-	            .p25(A9),
-	            .p26(A8),
-	            .p27(A7),
-	            .p28(A6),
-	            .p29(A5),
-	            .tdo(TDO),
-	            .gnd3(VSS),
-	            .vccio(VDD_3V3),
-	            .p33(A4),
-	            .p34(A3),
-	            .p35(A2),
-	            .p36(A1),
-	            .p37(A0),
-	            .p38(INT_B),
-	            .gsr(RESET_B),
-	            .gts2(IOREQ_B),
-	            .vccint2(VDD),
-	            .gts1(WR_B),
-	            .p43(RD_B),            
-	            .p44(M1_B),
-                    );
+  idc_hdr_40w CONN2 (
+                     .p1(VDD_3V3_EXT), .p2(VDD),
+                     .p3(PI_GPIO_02),  .p4(VDD),
+		     .p5(PI_GPIO_03),  .p6(VSS),
+		     .p7(PI_GPIO_04),  .p8(PI_GPIO_14),
+		     .p9(VSS),         .p10(PI_GPIO_15),
+		     .p11(PI_GPIO_17), .p12(PI_GPIO_18),
+		     .p13(PI_GPIO_27), .p14(VSS),
+		     .p15(PI_GPIO_22), .p16(PI_GPIO_23),
+		     .p17(VDD_3V3_EXT),.p18(PI_GPIO_24),
+		     .p19(PI_GPIO_10), .p20(VSS),
+		     .p21(PI_GPIO_09), .p22(PI_GPIO_25),
+		     .p23(PI_GPIO_11), .p24(PI_GPIO_08),
+		     .p25(VSS),        .p26(PI_GPIO_07),
+		     .p27(),           .p28(),
+		     .p29(PI_GPIO_05), .p30(VSS),
+		     .p31(PI_GPIO_06), .p32(PI_GPIO_12),
+		     .p33(PI_GPIO_13), .p34(VSS),
+		     .p35(PI_GPIO_19), .p36(PI_GPIO_16),
+		     .p37(PI_GPIO_26), .p38(PI_GPIO_20),
+		     .p39(VSS),        .p40(PI_GPIO_21)
+                     );
+                  
 
-  // Use LVC245 for both instances for level shifting
-  SN74245 U0 (
-             .dir(buf_atob), .vdd(VDD_3V3),
-             .a0(D6),     .gb(buf_oe_b),
-             .a1(D7),     .b0(T_HD6),
-             .a2(D4),     .b1(T_HD7),
-             .a3(D5),     .b2(T_HD4),
-             .a4(D2),     .b3(T_HD5),
-             .a5(D3),     .b4(T_HD2),
-             .a6(D0),     .b5(T_HD3),
-             .a7(D1),     .b6(T_HD0),
-             .vss(VSS),   .b7(T_HD1)
-              );
+  // 95108/72 CPLD - 5V core and switchable 5V or 3V3 IO
+  xc95108_pc84  CPLD (
+		     .p1(PI_GPIO_21),
+		     .p2(PI_GPIO_20),
+		     .p3(PI_GPIO_26),
+		     .p4(PI_GPIO_16),
+		     .p5(PI_GPIO_19),
+		     .p6(PI_GPIO_13),
+		     .p7(PI_GPIO_12),
+		     .gnd1(VSS),
+		     .gck1(CLK),
+		     .gck2(PI_GPIO_06),
+		     .p11(PI_GPIO_05),
+		     .gck3(PI_GPIO_07),
+		     .p13(PI_GPIO_08),
+		     .p14(PI_GPIO_11),
+		     .p15(PI_GPIO_25),
+		     .gnd2(VSS),
+		     .p17(PI_GPIO_09),
+		     .p18(PI_GPIO_10),
+		     .p19(PI_GPIO_24),
+		     .p20(PI_GPIO_23),
+		     .p21(PI_GPIO_22),
+		     .vccio1(VDD_IO),
+		     .p23(PI_GPIO_27),
+		     .p24(PI_GPIO_18),
+		     .p25(PI_GPIO_17),
+		     .p26(PI_GPIO_15),
+		     .gnd3(VSS),
+		     .tdi(TDI),
+		     .tms(TMS),
+		     .tck(TCK),
+		     .p31(PI_GPIO_14),
+		     .p32(PI_GPIO_04),
+		     .p33(PI_GPIO_03),
+		     .p34(PI_GPIO_02),
+		     .p35(PMOD_GPIO_0),
+		     .p36(PMOD_GPIO_1),
+		     .p37(PMOD_GPIO_2),
+		     .vccint1(VDD),
+		     .p39(PMOD_GPIO_3),
+		     .p40(PMOD_GPIO_4),
+		     .p41(PMOD_GPIO_5),
+		     .gnd4(VSS),
+		     .p43(PMOD_GPIO_6),
+		     .p44(PMOD_GPIO_7),
+		     .p45(A15),
+		     .p46(A14),
+		     .p47(A13),
+		     .p48(A12),
+		     .gnd5(VSS),
+		     .p50(A11),
+		     .p51(A10),
+		     .p52(A9),
+		     .p53(A8),
+		     .p54(A7),
+		     .p55(A6),
+		     .p56(A5),
+		     .p57(A4),
+		     .p58(A3),
+		     .tdo(TDO),
+		     .gnd6(VSS),
+		     .p61(A2),
+		     .p62(A1),
+		     .p63(A0),
+		     .vccio2(VDD_IO),
+		     .p65(D7),
+		     .p66(D6),
+		     .p67(D5),
+		     .p68(D4),
+		     .p69(D3),
+		     .p70(D2),
+		     .p71(D1),
+		     .p72(D0),
+		     .vccint2(VDD),
+		     .gsr(RESET_B),
+		     .p75(BUSRESET_B),
+		     .gts1(IOREQ_B),
+		     .gts2(RD_B),
+		     .vccint3(VDD),
+		     .p79(WR_B),
+		     .p80(INT_B),
+		     .p81(BUSRQ_B),
+		     .p82(BUSACK_B),
+		     .p83(READY),
+		     .p84(EXP_B)
+                     );
+  
 
 
    // Decoupling caps
    cap100nf CAP100N_0 (.p0( VSS ), .p1( VDD ));
-   cap100nf CAP100N_1 (.p0( VSS ), .p1( VDD_3V3 ));
-   cap100nf CAP100N_2 (.p0( VSS ), .p1( VDD_3V3 ));
+   cap100nf CAP100N_1 (.p0( VSS ), .p1( VDD ));  
+   cap100nf CAP100N_2 (.p0( VSS ), .p1( VDD_IO ));
+   cap100nf CAP100N_3 (.p0( VSS ), .p1( VDD_IO ));
 
 endmodule

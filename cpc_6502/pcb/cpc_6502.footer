@@ -18,6 +18,9 @@ ROTATE =R0 CONN2 ;
 MOVE CONN2         (1.8 2.55) ;
 ROTATE =R270 UART ;
 MOVE UART         (0.20 2.45);
+ROTATE =R90 PMOD0 ;
+MOVE PMOD0         (0.20 1.0) ;
+
 
 
 
@@ -25,6 +28,9 @@ ROTATE =R90 JTAG;
 MOVE JTAG          (0.2 1.90);
 ROTATE =R180 L1;
 MOVE L1            (2.8 2.2);
+ROTATE =R180 L2;
+MOVE L2            (2.8 2.0);
+
 ROTATE =R180 reg_cap1;
 MOVE reg_cap1      (2.8 1.25);
 ROTATE =R0 REG3V3;
@@ -32,39 +38,37 @@ MOVE REG3V3        (2.8 1.0);
 ROTATE =R180 reg_cap0;
 MOVE reg_cap0      (2.8 0.8);
 
-ROTATE =R90 CAP22UF ; 
-MOVE CAP22UF       (2.9 0.6 ) ;
+ROTATE =R90 CAP22UF_5V ; 
+MOVE CAP22UF_5V       (2.9 0.6 ) ;
+ROTATE =R180 CAP22UF_IO ; 
+MOVE CAP22UF_IO       (0.65 2.25 ) ;
 
-ROTATE =R270 CPLD ;
-MOVE CPLD          (0.9 1.25) ;
+ROTATE =R0 CPLD ;
+MOVE CPLD          (1.5 1.35) ;
 
 
-ROTATE =R270 U0 ;
-MOVE U0          (2.2 1.15) ;
-
-ROTATE =R180 CAP100N_0 ;
-MOVE CAP100N_0     (0.6 1.8) ;
+ROTATE =R90 CAP100N_0 ;
+MOVE CAP100N_0     (0.65 0.80) ;
 ROTATE =R270 CAP100N_1 ;
-MOVE CAP100N_1     (0.35 0.95) ;
-ROTATE =R0 CAP100N_2 ;
-MOVE CAP100N_2     (2.25 1.85)  ;
-
-ROTATE =r270  res0 ;
-MOVE res0     (2.5 1.8)  ; 
+MOVE CAP100N_1     (2.35 1.90) ;
+ROTATE =R270 CAP100N_2 ;
+MOVE CAP100N_2     (0.65 1.90)  ;
+ROTATE =R270 CAP100N_3 ;
+MOVE CAP100N_3     (2.35 0.80)  ;
 
 Layer tPlace ;
 CHANGE FONT PROPORTIONAL ; 
 CHANGE SIZE 0.05
-TEXT 'CPC-PiTubeDirect/6502 Bus Card, v1.00' R0 (0.55 2.20) ;
+TEXT 'CPC-PiTubeDirect/6502 Bus Card, v1.00' R0 (0.85 2.20) ;
 CHANGE SIZE 0.04
-TEXT '(C) 2018 Revaldinho, github.com/revaldinho/cpc_ram_expansion'  R0 (0.55 2.10) ;
+TEXT '(C) 2018 Revaldinho, github.com/revaldinho/cpc_ram_expansion'  R0 (0.85 2.10) ;
 
 CHANGE FONT FIXED ; 
 CHANGE SIZE 0.03 ;
 CHANGE WIDTH 0.01 ;
-WIRE  (0.1 1.05) (0.1 1.6 ) ( 0.25 1.6 ) (0.25 1.05) ( 0.1 1.05 ) ;
-TEXT 'GND  TDI  TCK  NC' R90 (0.15 1.11) ;
-TEXT 'GND  TMS  TDO  5V' R90 (0.19 1.11) ;
+WIRE  (0.4 1.65) (0.4 2.2 ) ( 0.55 2.2 ) (0.55 1.65) ( 0.4 1.65 ) ;
+TEXT 'GND  TDI  TCK  NC' R90 (0.45 1.71) ;
+TEXT 'GND  TMS  TDO  5V' R90 (0.49 1.71) ;
 
 WIRE  (0.35 2.3) (0.35 2.65 ) ( 0.45 2.65 ) (0.45 2.3) ( 0.35 2.3 ) ;
 TEXT 'RX TX GND' R90 (0.4 2.35) ;
