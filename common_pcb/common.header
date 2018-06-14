@@ -18,6 +18,7 @@ USE ic-package;
 # SMD caps
 USE wuerth-elektronik ;
 # regulator
+USE holes ;
 USE triac ;
 USE diode ;
 USE switch-dil ;

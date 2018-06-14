@@ -12,20 +12,20 @@ CLASS 0 signal 0.010 0.010 ;
 CLASS 1 supply 0.028 0.010 ;
 
 
+ADD 2,8@holes H1 R0 (2.94 2.55); # hdr1x03
+ADD 2,8@holes H2 R0 (0.66 2.55); # hdr1x03
+
 ROTATE =R180 CONN1 ;
 MOVE CONN1         (1.55 0.25) ;
 ROTATE =R0 CONN2 ;
 MOVE CONN2         (1.8 2.55) ;
-ROTATE =R270 UART ;
-MOVE UART         (0.20 2.45);
-ROTATE =R90 PMOD0 ;
-MOVE PMOD0         (0.20 1.0) ;
-
-
-
+ROTATE =R0 UART ;
+MOVE UART         (0.25 2.60);
+ROTATE =R270 PMOD0 ;
+MOVE PMOD0         (0.20 1.35) ;
 
 ROTATE =R90 JTAG;
-MOVE JTAG          (0.2 1.90);
+MOVE JTAG          (0.2 2.1);
 ROTATE =R180 L1;
 MOVE L1            (2.8 2.2);
 ROTATE =R180 L2;
@@ -46,15 +46,22 @@ MOVE CAP22UF_IO       (0.65 2.25 ) ;
 ROTATE =R0 CPLD ;
 MOVE CPLD          (1.5 1.35) ;
 
+# SMD components go on the bottom layer so place them first
+# and then mirror them
+ROTATE =R180   CAP100N_1;
+ROTATE =R180   CAP100N_2;
+ROTATE =R180   CAP100N_3;
+ROTATE =R180   CAP100N_4;
 
-ROTATE =R90 CAP100N_0 ;
-MOVE CAP100N_0     (0.65 0.80) ;
-ROTATE =R270 CAP100N_1 ;
-MOVE CAP100N_1     (2.35 1.90) ;
-ROTATE =R270 CAP100N_2 ;
-MOVE CAP100N_2     (0.65 1.90)  ;
-ROTATE =R270 CAP100N_3 ;
-MOVE CAP100N_3     (2.35 0.80)  ;
+MOVE CAP100N_1    (1.75 1.0)  ;
+MOVE CAP100N_2    (1.25 1.0)  ;
+MOVE CAP100N_3    (1.25 1.70)  ;
+MOVE CAP100N_4    (1.75 1.70)  ;
+
+MIRROR CAP100N_1    ;
+MIRROR CAP100N_2    ;
+MIRROR CAP100N_3    ;
+MIRROR CAP100N_4    ;
 
 Layer tPlace ;
 CHANGE FONT PROPORTIONAL ; 
@@ -66,21 +73,23 @@ TEXT '(C) 2018 Revaldinho, github.com/revaldinho/cpc_ram_expansion'  R0 (0.85 2.
 CHANGE FONT FIXED ; 
 CHANGE SIZE 0.03 ;
 CHANGE WIDTH 0.01 ;
-WIRE  (0.4 1.65) (0.4 2.2 ) ( 0.55 2.2 ) (0.55 1.65) ( 0.4 1.65 ) ;
-TEXT 'GND  TDI  TCK  NC' R90 (0.45 1.71) ;
-TEXT 'GND  TMS  TDO  5V' R90 (0.49 1.71) ;
+WIRE  (0.4 1.75) (0.4 2.3 ) ( 0.55 2.23 ) (0.55 1.75) ( 0.4 1.75 ) ;
+TEXT 'GND  TDI  TCK  NC' R90 (0.45 1.81) ;
+TEXT 'GND  TMS  TDO  5V' R90 (0.49 1.81) ;
 
-WIRE  (0.35 2.3) (0.35 2.65 ) ( 0.45 2.65 ) (0.45 2.3) ( 0.35 2.3 ) ;
-TEXT 'RX TX GND' R90 (0.4 2.35) ;
+WIRE  (0.15 2.4) (0.45 2.4 ) ( 0.45 2.5 ) (0.15 2.5) ( 0.15 2.4 ) ;
+TEXT 'GND TX RX' R0 (0.2 2.45) ;
 
 
 # Preroute VDD and VSS rings
 layer top;
 wire  0.04;
-wire  'VDD' (0.06 0.06) ( 3.04 0.06) (3.04 2.74) (0.06 2.74) (0.06 0.06) ;
+wire  'VDD' (0.06 0.06) ( 3.04 0.06) (3.04 2.0) ;
+wire  'VDD' (0.85 2.74) (0.06 2.74) (0.06 0.06) ;
 layer bottom;
 wire  0.04;
-wire  'VSS' (0.06 0.06) ( 3.04 0.06) (3.04 2.74) (0.06 2.74) (0.06 0.06) ;
+wire  'VSS' (0.06 0.06) ( 3.04 0.06) (3.04 2.35) (2.8 2.35) 
+wire  'VSS' (2.6 2.74) (0.06 2.74) (0.06 0.06) ;
 
 # Autorouter
 # AUTO VDD VDD_CPC VDD_EXT VDD3V3 CLK VSS;   # Route clock and supplies first

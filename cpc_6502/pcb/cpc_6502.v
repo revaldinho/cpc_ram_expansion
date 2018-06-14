@@ -164,14 +164,14 @@ module cpc_6502 ();
   hdr2x06 PMOD0 (
                      .p1(VDD_IO), .p2(VDD_IO),
 		     .p3(VSS), .p4(VSS),
-		     .p5(PMOD_GPIO_0), .p6(PMOD_GPIO_1),
-		     .p7(PMOD_GPIO_2), .p8(PMOD_GPIO_3),
-		     .p9(PMOD_GPIO_4), .p10(PMOD_GPIO_5),
-		     .p11(PMOD_GPIO_6), .p12(PMOD_GPIO_7)               
+		     .p5(PMOD_GPIO_6), .p6(PMOD_GPIO_7),
+		     .p7(PMOD_GPIO_4), .p8(PMOD_GPIO_5),
+		     .p9(PMOD_GPIO_2), .p10(PMOD_GPIO_3),
+		     .p11(PMOD_GPIO_0), .p12(PMOD_GPIO_1)               
                      );
   
   
-  idc_hdr_40w CONN2 (
+  hdr2x20 CONN2 (
                      .p1(VDD_3V3_EXT), .p2(VDD),
                      .p3(PI_GPIO_02),  .p4(VDD),
 		     .p5(PI_GPIO_03),  .p6(VSS),
@@ -231,16 +231,16 @@ module cpc_6502 ();
 		     .p32(PI_GPIO_04),
 		     .p33(PI_GPIO_03),
 		     .p34(PI_GPIO_02),
-		     .p35(PMOD_GPIO_0),
-		     .p36(PMOD_GPIO_1),
-		     .p37(PMOD_GPIO_2),
+		     .p35(PMOD_GPIO_7),
+		     .p36(PMOD_GPIO_6),
+		     .p37(PMOD_GPIO_5),
 		     .vccint1(VDD),
-		     .p39(PMOD_GPIO_3),
-		     .p40(PMOD_GPIO_4),
-		     .p41(PMOD_GPIO_5),
+		     .p39(PMOD_GPIO_4),
+		     .p40(PMOD_GPIO_3),
+		     .p41(PMOD_GPIO_2),
 		     .gnd4(VSS),
-		     .p43(PMOD_GPIO_6),
-		     .p44(PMOD_GPIO_7),
+		     .p43(PMOD_GPIO_1),
+		     .p44(PMOD_GPIO_0),
 		     .p45(A15),
 		     .p46(A14),
 		     .p47(A13),
@@ -283,12 +283,10 @@ module cpc_6502 ();
 		     .p84(EXP_B)
                      );
   
-
-
-   // Decoupling caps
-   cap100nf CAP100N_0 (.p0( VSS ), .p1( VDD ));
-   cap100nf CAP100N_1 (.p0( VSS ), .p1( VDD ));  
-   cap100nf CAP100N_2 (.p0( VSS ), .p1( VDD_IO ));
-   cap100nf CAP100N_3 (.p0( VSS ), .p1( VDD_IO ));
-
+  // SMD caps on the back of the CPLD footprint 
+   cap100nf_smd CAP100N_1 (.p0( VSS ), .p1( VDD ));
+   cap100nf_smd CAP100N_2 (.p0( VSS ), .p1( VDD_IO ));  
+   cap100nf_smd CAP100N_3 (.p0( VSS ), .p1( VDD ));
+   cap100nf_smd CAP100N_4 (.p0( VSS ), .p1( VDD_IO ));  
+  
 endmodule
