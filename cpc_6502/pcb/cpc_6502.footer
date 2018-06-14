@@ -32,7 +32,7 @@ MOVE REG3V3        (2.8 1.0);
 ROTATE =R180 reg_cap0;
 MOVE reg_cap0      (2.8 0.8);
 
-ROTATE =R180 CAP22UF ; 
+ROTATE =R90 CAP22UF ; 
 MOVE CAP22UF       (2.9 0.6 ) ;
 
 ROTATE =R270 CPLD ;
@@ -67,7 +67,7 @@ TEXT 'GND  TDI  TCK  NC' R90 (0.15 1.11) ;
 TEXT 'GND  TMS  TDO  5V' R90 (0.19 1.11) ;
 
 WIRE  (0.35 2.3) (0.35 2.65 ) ( 0.45 2.65 ) (0.45 2.3) ( 0.35 2.3 ) ;
-TEXT 'TX RX GND' R90 (0.4 2.35) ;
+TEXT 'RX TX GND' R90 (0.4 2.35) ;
 
 
 # Preroute VDD and VSS rings

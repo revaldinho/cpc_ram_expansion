@@ -134,8 +134,8 @@ module cpc_6502 ();
   // 3 pin header for PI Debug UART pins
   hdr1x03  UART (
                  .p1(VSS),
-                 .p2(T_UART_RX),
-                 .p3(T_UART_TX)
+                 .p2(T_UART_TX),
+                 .p3(T_UART_RX)
                  );
   
  idc_hdr_40w CONN2 ( 
@@ -173,12 +173,12 @@ module cpc_6502 ();
 	            .p4(MREQ_B),
 	            .gck1(CLK),
 	            .gck2(T_HCS_B),
-	            .gck3(T_HA0),
+	            .gck3(T_PHI2),
 	            .p8(T_RNW),
 	            .p9(T_HRST_B),
 	            .gnd1(VSS),
-	            .p11(T_HA1),
-	            .p12(T_PHI2),
+	            .p11(T_HA0),
+	            .p12(T_HA1),
 	            .p13(T_HA2),
 	            .p14(A15),
 	            .tdi(TDI),
