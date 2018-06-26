@@ -6,9 +6,7 @@ This is a small project which contains three different implementations of a DK'T
   2. An XC9572/36 CPLD based version of 1 (the original prototype), also for the 6128 and Plus machines
   3. A slightly modified version of 2. with more limited compatibility but supporting the older 464 and 664 machines
 
-## Current status
-
-All variants have been built and tested on both 464 and 6128 as appropriate.
+All variants have been built and tested on either CPC464 or CPC6128 as appropriate.
 
 ## The 'Old School' 74 Series card
 
@@ -16,13 +14,13 @@ This board uses only standard 74 Series logic ICs and a single SRAM chip. There 
 
 This card supports all 6128, 464 Plus and 6128 Plus machines but is _not_ suitable for the older 464 and 664 computers. 
 
-The card is available directly from me - pm me via the (http://www.cpcwiki.eu/forum "CPC Wiki Forum") - or directly from SeeedStudio via their (https://www.seeedstudio.com/gallery-index.html "Seed Gallery") pages.
+The card is available directly from me - pm me via the [CPC Wiki Forum](http://www.cpcwiki.eu/forum) - or directly from SeeedStudio via their [Seeed Gallery](https://www.seeedstudio.com/gallery-index.html) pages.
 
-The card has a (http://www.cpcwiki.eu/forum/amstrad-cpc-hardware/mother-x4-board/ "Mother X4") standard box connector rather than an edge connector. So to use the board you will need a Mother X4 or compatible expansion card. One possibility is to use my own (https://github.com/revaldinho/cpc_ram_expansion/blob/master/cpc_backplane/README.md "CPC 3 slot expansion backplane"): again it's easily assembled and the PCBs are available directly from me or via (https://www.seeedstudio.com/gallery-index.html "Seeed's Gallery"). Other options are (https://oshpark.com/shared_projects/3yA33GYO "CPCCONMX4") - a single slot card which plugs directly into the CPC edge connector - or (http://www.cpcwiki.eu/forum/amstrad-cpc-hardware/motherx4-alternative-for-cpc-464-users "LambdaMikel's Expansion") - a 4 slot version which replicates the edge connector.
+The card has a [Mother MX4](http://www.cpcwiki.eu/forum/amstrad-cpc-hardware/mother-x4-board/) standard box connector rather than an edge connector. So to use the board you will need a Mother X4 or compatible expansion card. One possibility is to use my own [CPC 3 slot expansion backplane](https://github.com/revaldinho/cpc_ram_expansion/blob/master/cpc_backplane/README.md): again it's easily assembled and the PCBs are available directly from me or via [Seeed's Gallery](https://www.seeedstudio.com/gallery-index.html). Other options are [CPCCONMX4](https://oshpark.com/shared_projects/3yA33GYO) - a single slot card which plugs directly into the CPC edge connector - or [LambdaMikel's Expansion](http://www.cpcwiki.eu/forum/amstrad-cpc-hardware/motherx4-alternative-for-cpc-464-users) - a 4 slot version which replicates the edge connector.
 
-##DK'Tronics Compatibility
+## DK'Tronics Compatibility
 
-The board is fully compatible with the DK'Tronics/Amstrad bank switching schemes described in the (http://www.cpcwiki.eu/imgs/8/83/DK%27Tronics_Peripheral_-_Technical_Manual_%28Edition_1%29.pdf DK'Tronics Peripheral Technical Manual).
+The board is fully compatible with the DK'Tronics/Amstrad bank switching schemes described in the [DK'Tronics Peripheral Technical Manual](http://www.cpcwiki.eu/imgs/8/83/DK%27Tronics_Peripheral_-_Technical_Manual_%28Edition_1%29.pdf).
 
 In this scheme there are 8 possible 64K banks, and each bank is split into 4 16K blocks.
 
@@ -36,20 +34,18 @@ The bank switching schemes for the 6128 and Plus machines are illustrated in the
   * '-' indicates access to internal RAM
   * 0-3 indicate access to the relevant block in the selected external bank
   
- |-------------|----|-----|-----|-----|-----|-----|-----|-----|
- | Address\bbb |000 | 001 | 010 | 011 | 100 | 101 | 110 | 011 |
- |-------------|----|-----|-----|-----|-----|-----|-----|-----|
- | 1100-1111   | -  |  3  |  3  |  3  |  -  |  -  |  -  |  -  |
- | 1000-1011   | -  |  -  |  2  |  -  |  -  |  -  |  -  |  -  |
- | 0100-0111   | -  |  -  |  1  | *** |  0  |  1  |  2  |  3  |
- | 0000-0011   | -  |  -  |  0  |  -  |  -  |  -  |  -  |  -  |
- |-------------|----|-----|-----|-----|-----|-----|-----|-----|
-
+  |  Address\bbb  | 000  |  001  |  010  |  011  |  100  |  101  |  110  |  011  |
+  | ------------- | ---- | ----- | ----- | ----- | ----- | ----- | ----- | ----- |
+  |  1100-1111    |  -   |   3   |   3   |   3   |   -   |   -   |   -   |   -   |
+  |  1000-1011    |  -   |   -   |   2   |   -   |   -   |   -   |   -   |   -   |
+  |  0100-0111    |  -   |   -   |   1   |  **   |   0   |   1   |   2   |   3   |
+  |  0000-0011    |  -   |   -   |   0   |   -   |   -   |   -   |   -   |   -   |
+ 
 Note that bank 0 would normally select the single 64K expansion bank already in a 6128, but when the card is attached this bank is disabled and the first bank in the external expansion is accessed instead. In any case the total memory available with the card fitted is 576KBytes: the 64K internal RAM and the 512K external.
 
-In the special case '***' marked in column '011' internal memory at 0x4000-0x7FFF is remapped to 0xC000-0xFFFF. This is handled internally in the CPC6128 and plus machines. The 464 and 664 don't perform this remapping. Further, the 464 and 664 do not write protect internal RAM when external memory is accessed. On the original DK-Tronics expansions these two issues were handled by backdriving the A15 and MREQ* signals on the bus, overdriving the values from the Z80 CPU in an electrical conflict. The Old School card doesn't do this, in common with most of the modern RAM expansions. So the card is compatible only with 6128 and the later CPC Plus machines. See later for a special 464 (CPLD based) expansion card. 
+In the special case '**' marked in column '011' internal memory at 0x4000-0x7FFF is remapped to 0xC000-0xFFFF. This is handled internally in the CPC6128 and plus machines. The 464 and 664 don't perform this remapping. Further, the 464 and 664 do not write protect internal RAM when external memory is accessed. On the original DK-Tronics expansions these two issues were handled by backdriving the A15 and MREQ* signals on the bus, overdriving the values from the Z80 CPU in an electrical conflict. The Old School card doesn't do this, in common with most of the modern RAM expansions. So the card is compatible only with 6128 and the later CPC Plus machines. See later for a special 464 (CPLD based) expansion card. 
 
-Testing on the 6128
+## Testing on the 6128
 
 Both the 'Old School' card and the CPLD based prototype have been tested on an Amstrad 6128 using a number of programs.
 
@@ -74,13 +70,13 @@ To build the RAM card you will need only the most basic of equipment
   * small wire cutters
   * small long nosed pliers
 
-Bill of Materials
+## Bill of Materials
 
 PCBs are available directly from me - pm me via the (http://www.cpcwiki.eu/forum "CPC Wiki Forum") - or from SeeedStudio via their (https://www.seeedstudio.com/gallery-index.html "Seed Gallery") pages. 
 
 The following is a complete bill of materials for all other components from the supplier DigiKey in the UK, all prices in GBP.
 
-|-------|---------|--------------|---------------------------------|----------------------|----------|--------------|
+
 |Index	|Quantity |Part Number	 |Description	                   |Customer Reference	  |Unit Price|Extended Price|
 |-------|---------|--------------|---------------------------------|----------------------|----------|--------------|
 |1	|1	  |1450-1027-ND	 |IC SRAM 4M PARALLEL 32DIP	   |512K x 8 SRAM	  |3.6	     |3.6           |
@@ -96,11 +92,46 @@ The following is a complete bill of materials for all other components from the 
 |11	|6	  |609-4712-ND	 |CONN IC DIP SOCKET 14POS TIN	   |IC Sockets	          |0.2	     |1.2           |
 |12	|2	  |609-4713-ND	 |CONN IC DIP SOCKET 16POS TIN	   |IC Sockets	          |0.22	     |0.44          |
 |13	|7	  |BC1154CT-ND	 |CAP CER 0.1UF 25V Y5V RADIAL	   |Decoupling Caps	  |0.19	     |1.33          |
-|-------|---------|--------------|---------------------------------|----------------------|----------|--------------|
 |       |         |              |                                 |                      |Total     |11.33         |
-|-------|---------|--------------|---------------------------------|----------------------|----------|--------------|
 
 
+## The CPC464 RAM Expansion Card
+
+A third variant of the card provides some support for the CPC464. This is basically the same CPLD based card used to prototype the CPC6128 version but with a different CPLD firmware.
+
+The issues affecting the 464 and 664 are described above in the compatiblity section. It's not possible to work around the remapping of internal CPC RAM from block 2 to block 4 (video memory) without some motherboard modifications or backdriving signals against the Z80 CPU. So with this limitation in mind the 464 expansion can't support all modes perfectly.
+
+The other issue affecting these older machines is that the internal RAM isn't write protected when external RAM is accessed. The 'RAMDIS' only controls the output enables of the internal RAM.
+
+The CPC464 version of the card uses one 64K Bank of the expansion to provide a 'shadow' memory which all but replaces the CPC's internal memory.  Whenever internal RAM is written, the corresponding byte in the shadow area is written too. All memory read which would normally be from internal RAM are taken from the shadow RAM. So, normally corresponding internal memory and shadow memory locations will hold the same values. The difference comes when external RAM is accessed. When an external bank is accessed, the shadow memory contents are write protected while the actual internal memory becomes corrupt. Since all reads are now taken from the shadow RAM it doesn't usually matter that internal RAM has been altered. 
+
+This scheme works well, providing a perfect implementation of the RAM banking schemes 4-7.
+
+What works less well are the schemes 1-3. In these modes any writes to the external RAM banks in block 3 (0xC000-0xFFFF) overlay the internal screen memory. So, although it doesn't usually matter than internal RAM is corrupted now by external memory writes thanks to the shadow memory, in this case corruption can produce artifacts on screen. 
+
+Note that in mode 3 the shadow memory does perform the expected remapping from block 1 to block 3.
+
+So, a perfect implementation of modes 4-7 and imperfections in modes 1-3. How does this work in practice?
+
+The following programs/features work perfectly
+
+  * DK'Tronics silicon disk (in AMSDOS and CP/M 2.2)
+  * DK'Tronics bank switching software
+  * Robocop and ChaseHQ both run perfectly with digitized speech (normally a 6128 only feature)
+  * A 6128 only version of Gryzor runs with music playing
+  * Masterfile 128
+  
+These next few programs run, but with varying amounts of 'snow' on screen
+
+  * CPM Plus (needing to use the DK'Tronics |Emulate RSX to get started)
+  * CPM 2.2 with expanded TPA
+  * Hard Drivin' detects the expanded memory, loads the 128K version and play music during the game but exhibits a small amount of snow.
+  
+The following programs don't run at all
+
+  * Double Dragon produces garbage on screen and is unresponsive/crashed
+
+All in all then a mixed result. Having the Silicon Disk in AMSDOS and particularly CP/M 2.2 though is possibly worth building the board for some.
 
 
 ## Images
