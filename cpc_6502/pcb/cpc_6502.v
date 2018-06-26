@@ -12,7 +12,8 @@ module cpc_6502 ();
   supply0 VSS;
   supply1 VDD;
   supply1 VDD_3V3;
-  supply1 VDD_IO;  
+  supply1 VDD_IO;
+  supply1 VDD_PI;    
   supply1 VDD_3V3_REG;
   supply1 VDD_3V3_EXT;      
 
@@ -98,6 +99,12 @@ module cpc_6502 ();
                    .p3(VDD_3V3)
                    );
 
+  // 5V Power jumper for 40W socket
+  hdr1x02      L3 (
+                   .p1(VDD_PI),
+                   .p2(VDD)
+                   );
+
 
   MCP1700_3302E   REG3V3 (
                             .vin(VDD),
@@ -172,8 +179,8 @@ module cpc_6502 ();
   
   
   hdr2x20 CONN2 (
-                     .p1(VDD_3V3_EXT), .p2(VDD),
-                     .p3(PI_GPIO_02),  .p4(VDD),
+                     .p1(VDD_3V3_EXT), .p2(VDD_PI),
+                     .p3(PI_GPIO_02),  .p4(VDD_PI),
 		     .p5(PI_GPIO_03),  .p6(VSS),
 		     .p7(PI_GPIO_04),  .p8(PI_GPIO_14),
 		     .p9(VSS),         .p10(PI_GPIO_15),

@@ -11,7 +11,7 @@ ARGS ?=
 %.footer_cpp: %.footer
 	grep -v '^# ' $*.footer | cpp -E ${ARGS} | grep -v '^# ' > $*.footer_cpp
 
-%.net : %.v_cpp ${ALLLIBS}
+%.net : %.v_cpp ${ALLLIBS} 
 	netlister.py -i $*.v_cpp \
 	-l ${netlister_dir}/lib/memory.lib \
 	-l ${netlister_dir}/lib/idc_connectors.lib \
@@ -21,6 +21,7 @@ ARGS ?=
 	-l ${netlister_dir}/lib/triac.lib \
 	-l ${netlister_dir}/lib/diode.lib \
 	-l ${netlister_dir}/lib/74series.lib \
+	-l ${netlister_dir}/lib/74series_soic.lib \
 	-l ${netlister_dir}/lib/switches.lib \
 	-l ${netlister_dir}/lib/i2c.lib \
 	-l ${netlister_dir}/lib/teensy.lib \
@@ -38,6 +39,7 @@ ARGS ?=
 	-l ${netlister_dir}/lib/triac.lib \
 	-l ${netlister_dir}/lib/diode.lib \
 	-l ${netlister_dir}/lib/74series.lib \
+	-l ${netlister_dir}/lib/74series_soic.lib \
 	-l ${netlister_dir}/lib/switches.lib \
 	-l ${netlister_dir}/lib/i2c.lib \
 	-l ${netlister_dir}/lib/teensy.lib \
