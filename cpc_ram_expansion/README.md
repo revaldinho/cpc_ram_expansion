@@ -8,7 +8,7 @@ This is a small project which contains three different implementations of a DK'T
 
 All variants have been built and tested on either CPC464 or CPC6128 as appropriate.
 
-Project files are split in 
+Project files are split into 6 directories
 
   * cpc/ - collection of RAM test programs in BASIC and BCPL to run on the Amstrad and utilities for converting files to/from MacOS text formats
   * gates/ - Verilog testbench and libraries for simulation
