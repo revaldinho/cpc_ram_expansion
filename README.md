@@ -19,4 +19,4 @@ Additionally there are several projects in varying stages of development
 * [CPC to Teensy3.5 Microcontroller Card for general use](https://github.com/revaldinho/cpc_ram_expansion/blob/master/t35_cpld_mfc/README.md )
 * [CPC to Teensy3.5 Microcontroller specifically for use as a software ROM box](https://github.com/revaldinho/cpc_ram_expansion/blob/master/t35_cpld_mfc/README.md )        
 
-For more information on all projects see the [Project Wiki Pages](http://www.github.com/revaldinho/wiki)
+For more information on all projects see the [Project Wiki Pages](http://www.github.com/revaldinho/cpc_ram_expansion/wiki)
