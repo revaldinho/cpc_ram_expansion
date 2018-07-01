@@ -16,7 +16,15 @@ Project files are split into 6 directories
   * pcb/ - all PCB netlist and layout script source files (building PCBs requires installation of my other netlister.py project)
   * src/ - Verilog source code for the CPLD versions of the boards
   * xc9572/ - Xilinx ISE project and Makefiles for the CPLD versions of the boards
-  
+
+NB  In the pcb directory there are two versions of the 74 Series Board. Both have been tested with the CPC6128 and show no real difference in operation.
+
+  * v2.01 - the orignal 74 series board with IC footprint corrections
+  * v2.10 - a revised design which prefers to use the 6128 internal expansion for bank 1 rather than the one on the expansion card.
+
+Both designs have been tested on a 6128 and both work well, so since the v2.01 is slightly simpler and has 1 fewer IC, that is considered the
+'production' version.
+
 Full information on the project are on the [Project Wiki Page](https://github.com/revaldinho/cpc_ram_expansion/wiki/CPC-512K-RAM-Expansion)
 
 

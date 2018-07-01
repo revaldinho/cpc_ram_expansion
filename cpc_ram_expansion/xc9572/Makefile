@@ -1,5 +1,6 @@
 project_name = cpld_ram512k
-target ?= xc9572-10-PC44
+#target ?= xc9572-10-PC44
+target ?= xc9536-10-PC44
 
 # Alternative target xc9536-10-PC44
 # Alternative target xc9572xl-10-PC44
@@ -43,6 +44,7 @@ tsim:
 # Generate the JEDEC file for programming
 jedec: 
 	hprep6  -s IEEE1149 -n ${project_name} -i ${project_name}
+	mv ${project_name}.jed ${project_name}_${target}.jed
 # dump a verilog netlist
 netgen:
 	netgen -w -ofmt verilog  -aka ${project_name}.ngd

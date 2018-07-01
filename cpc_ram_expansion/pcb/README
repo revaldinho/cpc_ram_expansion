@@ -22,11 +22,11 @@ make cpc_ram_board_9572xl.scr -f ../../common_pcb/Makefile
 
 cp ../../common_pcb/autorouter_74.ctl /tmp
 
-#make cpc_ram_board_74.scr ARGS='"-D ALT_POWER=1"' -f ../../common_pcb/Makefile
-#make cpc_ram_board_74.net ARGS='"-D ALT_POWER=1"' -f ../../common_pcb/Makefile
+#make cpc_ram_board_74_v2.01.scr ARGS='"-D ALT_POWER=1"' -f ../../common_pcb/Makefile
+#make cpc_ram_board_74_v2.01.net ARGS='"-D ALT_POWER=1"' -f ../../common_pcb/Makefile
 
-make cpc_ram_board_74.scr -f ../../common_pcb/Makefile
-make cpc_ram_board_74.net -f ../../common_pcb/Makefile
+make cpc_ram_board_74_v2.01.scr -f ../../common_pcb/Makefile
+make cpc_ram_board_74_v2.01.net -f ../../common_pcb/Makefile
 
 
 

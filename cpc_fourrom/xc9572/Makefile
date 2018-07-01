@@ -1,5 +1,6 @@
 project_name = cpld_fourrom
-target ?= xc9572-10-PC44
+# target ?= xc9572-10-PC44
+target ?= xc9536-10-PC44
 
 # Alternative target xc9536-10-PC44
 # Alternative target xc9572xl-10-PC44

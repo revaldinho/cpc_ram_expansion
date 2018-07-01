@@ -30,8 +30,8 @@ module cpld_fourrom(dip, reset_b,adr15,adr14,adr13,ioreq_b,mreq_b,romen_b,wr_b,r
   assign rom23cs_b = !(rom16k_cs_r[2] | rom16k_cs_r[3]) ;
   assign roma14    =   rom16k_cs_r[1] | rom16k_cs_r[3];
 
-  assign skt01p27  = 1'b1 ; //(!dip[6])?1'b1: roma14; 
-  assign skt23p27  = 1'b1 ; //(!dip[7])?1'b1: roma14; 
+  assign skt01p27  = (!dip[6])?1'b1: roma14; 
+  assign skt23p27  = (!dip[7])?1'b1: roma14; 
 
   assign romoe_b  =   romen_b | !rom16k_cs_r;
   assign romdis   = | rom16k_cs_r ;

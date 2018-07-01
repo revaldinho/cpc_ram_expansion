@@ -26,10 +26,12 @@
  */
 
 //`define one of these only
-`define X64   1
-//`define X128  1
+//`define X64   1
+`define X128  1
 //`define UNIV    1
 
+
+//`define USE6128FIRSTBANK 1
 
 module cpld_ram512k(busreset_b,adr15,adr14,iorq_b,mreq_b,ramrd_b,reset_b,wr_b,rd_b,data,ramdis,ramcs_b,ramadrhi,ready, clk, ramoe_b, ramwe_b
 `ifdef UNIV
@@ -118,11 +120,13 @@ module cpld_ram512k(busreset_b,adr15,adr14,iorq_b,mreq_b,ramrd_b,reset_b,wr_b,rd
     end // always @ (hibit_tmp_r, adr15, adr14 )
 `else
     always @ (ramblock_q, adr15, adr14 )
-      begin        
+      begin
+`ifdef USE6128FIRSTBANK         
         if ( ramblock_q[5:3] == 3'b000 )
           // Use internal RAM for first bank in a 6128
     	  {ramcs_b_r, ramadrhi_r} = { 1'b1, 5'bxxxxx };         
         else
+`endif          
           case (ramblock_q[2:0])
     	    3'b000: {ramcs_b_r, ramadrhi_r} = { 1'b1, 5'bxxxxx };
     	    3'b001: {ramcs_b_r, ramadrhi_r} = ( {adr15,adr14}==2'b11 ) ? {1'b0,ramblock_q[5:3],2'b11} : { 1'b1, 5'bxxxxx};
