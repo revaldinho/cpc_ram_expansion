@@ -26,8 +26,8 @@
  */
 
 //`define one of these only
-//`define X64   1
-`define X128  1
+`define X64   1
+//`define X128  1
 //`define UNIV    1
 
 
@@ -93,31 +93,24 @@ module cpld_ram512k(busreset_b,adr15,adr14,iorq_b,mreq_b,ramrd_b,reset_b,wr_b,rd
   wire              mode464 = 1'b1 ;
   wire              shadowhi = 1'b0 ;  
   `endif    
-  wire [2:0] shadow_bank = { shadowhi,2'b11};
-    
-    always @ (ramblock_q, adr15, adr14 )
-      begin
-       if ( (ramblock_q[5:3] == 3'b000) & !mode464 )
-          // Use internal RAM for first bank in a 6128
-    	  {ramcs_b_r, ramadrhi_r} = { 1'b1, 5'bxxxxx };         
-       else
-         begin
-           hibit_tmp_r = ramblock_q;       
-           if ( (ramblock_q[5:3] == shadow_bank) & !mode464 ) // Shadow bank active only in the 464
-             hibit_tmp_r[5:3] =   (shadow_bank) & 3'b110; // alias the even bank below shadow bank to the shadow bank
-           case (hibit_tmp_r[2:0])
-	     3'b000: {ramcs_b_r, ramadrhi_r} = { !mode464, shadow_bank, adr15, adr14 };
-	     3'b001: {ramcs_b_r, ramadrhi_r} = ( {adr15,adr14}==2'b11 ) ? {1'b0,hibit_tmp_r[5:3],2'b11} : { !mode464, shadow_bank, adr15, adr14 };
-	     3'b010: {ramcs_b_r, ramadrhi_r} = { 1'b0,hibit_tmp_r[5:3],adr15,adr14} ; 
-	     // Mode 3: Map 0b1100 to New 0b1100 _and_ 0b0100 to 0b1100 but in 'shadow' bank only (can't affect internal RAM without backdriving ADR15)
-	     3'b011: {ramcs_b_r, ramadrhi_r} = ( {adr15,adr14}==2'b11 ) ? {1'b0,hibit_tmp_r[5:3],2'b11} : {!mode464, shadow_bank, (adr15|adr14), adr14 };
-	     3'b100: {ramcs_b_r, ramadrhi_r} = ( {adr15,adr14}==2'b01 ) ? {1'b0,hibit_tmp_r[5:3],2'b00} : {!mode464, shadow_bank, adr15, adr14 };              
-	     3'b101: {ramcs_b_r, ramadrhi_r} = ( {adr15,adr14}==2'b01 ) ? {1'b0,hibit_tmp_r[5:3],2'b01} : {!mode464, shadow_bank, adr15, adr14 };              
-	     3'b110: {ramcs_b_r, ramadrhi_r} = ( {adr15,adr14}==2'b01 ) ? {1'b0,hibit_tmp_r[5:3],2'b10} : {!mode464, shadow_bank, adr15, adr14 };              
-	     3'b111: {ramcs_b_r, ramadrhi_r} = ( {adr15,adr14}==2'b01 ) ? {1'b0,hibit_tmp_r[5:3],2'b11} : {!mode464, shadow_bank, adr15, adr14 };
-           endcase // case (hibit_tmp_r[2:0])
-         end // else: !if( ramblock_q[5:3] == 3'b000 & !mode464 )        
-    end // always @ (hibit_tmp_r, adr15, adr14 )
+  wire [2:0]        shadow_bank = { shadowhi,2'b11};    
+  always @ (ramblock_q, adr15, adr14 )
+    begin
+      hibit_tmp_r = ramblock_q;       
+      if ( (ramblock_q[5:3] == shadow_bank) & mode464 ) // Shadow bank active only in the 464
+        hibit_tmp_r[5:3] =   (shadow_bank) & 3'b110; // alias the even bank below shadow bank to the shadow bank
+      case (hibit_tmp_r[2:0])
+	3'b000: {ramcs_b_r, ramadrhi_r} = { !mode464, shadow_bank, adr15, adr14 };
+	3'b001: {ramcs_b_r, ramadrhi_r} = ( {adr15,adr14}==2'b11 ) ? {1'b0,hibit_tmp_r[5:3],2'b11} : { !mode464, shadow_bank, adr15, adr14 };
+	3'b010: {ramcs_b_r, ramadrhi_r} = { 1'b0,hibit_tmp_r[5:3],adr15,adr14} ; 
+	// Mode 3: Map 0b1100 to New 0b1100 _and_ 0b0100 to 0b1100 but in 'shadow' bank only (can't affect internal RAM without backdriving ADR15)
+	3'b011: {ramcs_b_r, ramadrhi_r} = ( {adr15,adr14}==2'b11 ) ? {1'b0,hibit_tmp_r[5:3],2'b11} : {!mode464, shadow_bank, (adr15|adr14), adr14 };
+	3'b100: {ramcs_b_r, ramadrhi_r} = ( {adr15,adr14}==2'b01 ) ? {1'b0,hibit_tmp_r[5:3],2'b00} : {!mode464, shadow_bank, adr15, adr14 };              
+	3'b101: {ramcs_b_r, ramadrhi_r} = ( {adr15,adr14}==2'b01 ) ? {1'b0,hibit_tmp_r[5:3],2'b01} : {!mode464, shadow_bank, adr15, adr14 };              
+	3'b110: {ramcs_b_r, ramadrhi_r} = ( {adr15,adr14}==2'b01 ) ? {1'b0,hibit_tmp_r[5:3],2'b10} : {!mode464, shadow_bank, adr15, adr14 };              
+	3'b111: {ramcs_b_r, ramadrhi_r} = ( {adr15,adr14}==2'b01 ) ? {1'b0,hibit_tmp_r[5:3],2'b11} : {!mode464, shadow_bank, adr15, adr14 };
+      endcase // case (hibit_tmp_r[2:0])
+    end 
 `else
     always @ (ramblock_q, adr15, adr14 )
       begin
