@@ -287,7 +287,7 @@ module cpc_6502 ();
 		     .p81(BUSRQ_B),
 		     .p82(BUSACK_B),
 		     .p83(READY),
-		     .p84(EXP_B)
+		     .p84()
                      );
   
   // SMD caps on the back of the CPLD footprint 
