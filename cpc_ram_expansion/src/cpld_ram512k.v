@@ -115,9 +115,11 @@ module cpld_ram512k(busreset_b,adr15,adr14,iorq_b,mreq_b,ramrd_b,reset_b,wr_b,rd
         overdrive_hi_q <= 1'b0;         
         overdrive_lo_q <= 1'b0;
       end
-      else if (mreq_b_q) begin // sample when mreq inactive or first cycle of active        
-        overdrive_hi_q <= ((ramblock_q[2:0] == 3'b011) & ({adr15_q,adr14_q}==2'b01));                   // Redirect bank &8000 -> &C000 (screen)  only in mode 3 block 01 access
-        overdrive_lo_q <= ((!ramblock_q[2] & (ramblock_q[1] ^ ramblock_q[0])) & (adr15_q & adr14_q)) ;  // Redirect bank &C000 -> &0000  to avoid screen corruption in mode C1,3
+      else if (mreq_b_q) begin // sample when mreq inactive or first cycle of active
+        // Redirect bank &8000 -> &C000 (screen)  only in mode 3 block 01 access        
+        overdrive_hi_q <= ((ramblock_q[2:0] == 3'b011) & ({adr15_q,adr14_q}==2'b01));                   
+        // Redirect bank &C000 -> &0000  to avoid screen corruption in mode C1,3 and from &4000 -> &0000 in modes C4-7 (ie if screen relocated and overlaps extension RAM)!        
+        overdrive_lo_q <= ((!ramblock_q[2] & (ramblock_q[1] ^ ramblock_q[0])) & (adr15_q & adr14_q)) |  (ramblock_q[2] & ( !adr15_q & adr14_q)) ; 
       end
     end  
 `else
