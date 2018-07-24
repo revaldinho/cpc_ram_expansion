@@ -25,11 +25,17 @@
  */
 
 //`define one of these only
-//`define X64   1
-`define X128  1
-//`define OVERDRIVE 1
+`define X64   1
+//`define X128  1
 //`define UNIV    1
+
+// Additional options
+// OVERDRIVE should be used only with X64
+`define OVERDRIVE 1
+// USE6128FIRSTBANK should be used only with X128 
 //`define USE6128FIRSTBANK 1
+
+
 
 module cpld_ram512k(busreset_b,adr15,adr14,iorq_b,mreq_b,ramrd_b,reset_b,wr_b,rd_b,data,ramdis,ramcs_b,ramadrhi,ready, clk, ramoe_b, ramwe_b, adr15_out,
 `ifdef UNIV
@@ -39,7 +45,7 @@ module cpld_ram512k(busreset_b,adr15,adr14,iorq_b,mreq_b,ramrd_b,reset_b,wr_b,rd
 );
   input            busreset_b;
   inout            adr15;    
-  input            adr14;
+  inout            adr14;
   input            iorq_b;
   input            mreq_b;
   input            ramrd_b;
@@ -69,11 +75,17 @@ module cpld_ram512k(busreset_b,adr15,adr14,iorq_b,mreq_b,ramrd_b,reset_b,wr_b,rd
   reg              clken_lat_qb;
   reg [5:0]        hibit_tmp_r;
   reg              adr15_q;
+  reg              adr14_q;  
   reg              mreq_b_q;
 
+`ifdef X64  
+  wire              mode464 = 1'b1 ;
+  wire              shadowhi = 1'b0 ;  
+`endif    
+    
 `ifdef OVERDRIVE  
-  reg              adr15_overdrive_hi_q ;  
-  reg              adr15_overdrive_lo_q ;
+  reg              overdrive_hi_q ;  
+  reg              overdrive_lo_q ;
 `endif
   
   // Create negedge clock on IO write event - clock low pulse will be suppressed if not an IOWR* event
@@ -85,46 +97,51 @@ module cpld_ram512k(busreset_b,adr15,adr14,iorq_b,mreq_b,ramrd_b,reset_b,wr_b,rd
   assign ramcs_b = ramcs_b_r | mreq_b ;
   assign ramdis  = !ramcs_b_r ;    
   assign ramadrhi = ramadrhi_r ;
+
 `ifdef OVERDRIVE
-  assign {adr15, adr15_out}  = (adr15_overdrive_hi_q ) ?3'b111: (adr15_overdrive_lo_q ) ?3'b000: 3'bzzz ;  
+  assign {adr15, adr15_out}  = (overdrive_hi_q & !mreq_b_q & !mreq_b ) ?3'b111: 
+                               (overdrive_lo_q & !mreq_b_q & !mreq_b ) ?3'b000: 
+                               3'bzzz ;  
+  assign adr14               = (overdrive_lo_q & !mreq_b_q & !mreq_b  ) ?1'b0: 
+                               1'bz ;  
+
   always @ (negedge reset_b or posedge clk ) 
     if ( !reset_b ) begin
-      adr15_overdrive_hi_q <= 1'b0;       
-      adr15_overdrive_lo_q <= 1'b0;       
+      overdrive_hi_q <= 1'b0;       
+      overdrive_lo_q <= 1'b0;
     end
     else begin
-      if ( !mreq_b & mreq_b_q) begin
-        adr15_overdrive_hi_q <= ((ramblock_q[2:0] == 3'b011) & ({adr15,adr14}==2'b01)) ;                      // Redirect bank &8000 -> &C000 (screen)                           
-        adr15_overdrive_lo_q <= ((!ramblock_q[2]) & (ramblock_q[1]|ramblock_q[0])) & ({adr15,adr14}==2'b11) ; // Redirect screen &C000 -> anywhere!
+      if ( mreq_b) begin
+        overdrive_hi_q <= 1'b0;         
+        overdrive_lo_q <= 1'b0;
       end
-      else if ( mreq_b) begin
-        adr15_overdrive_hi_q <= 1'b0;         
-        adr15_overdrive_lo_q <= 1'b0;
+      else if (mreq_b_q) begin // sample when mreq inactive or first cycle of active        
+        overdrive_hi_q <= ((ramblock_q[2:0] == 3'b011) & ({adr15_q,adr14_q}==2'b01));                   // Redirect bank &8000 -> &C000 (screen)  only in mode 3 block 01 access
+        overdrive_lo_q <= ((!ramblock_q[2] & (ramblock_q[1] ^ ramblock_q[0])) & (adr15_q & adr14_q)) ;  // Redirect bank &C000 -> &0000  to avoid screen corruption in mode C1,3
       end
     end  
 `else
-  assign {adr15, adr15_out} = 3'bzzz;  
+  assign {adr15, adr15_out} = 3'bzzz;
+  assign adr14 = 1'b0;  
 `endif
 
-  
    always @ (negedge reset_b or posedge clk ) 
      if ( !reset_b ) begin
-       mreq_b_q <= 1'b1;      
+       mreq_b_q <= 1'b1;
      end
      else begin
-       mreq_b_q <= mreq_b;       
+       mreq_b_q <= mreq_b;
      end
 
-   always @ (negedge reset_b or posedge clk ) 
+   always @ (negedge reset_b or negedge mreq_b ) 
      if ( !reset_b ) begin
        adr15_q <= 1'b0;
+       adr14_q <= 1'b0;       
      end
      else begin
-       if (!mreq_b & mreq_b_q) 
-         adr15_q <= adr15 ;
+       adr15_q <= adr15;
+       adr14_q <= adr14;       
      end
-  
-
   
   always @ ( clk )
     if ( clk ) begin
@@ -139,27 +156,23 @@ module cpld_ram512k(busreset_b,adr15,adr14,iorq_b,mreq_b,ramrd_b,reset_b,wr_b,rd
   
   
 `ifndef X128
-  `ifdef X64
-  wire              mode464 = 1'b1 ;
-  wire              shadowhi = 1'b0 ;  
-  `endif    
   wire [2:0]        shadow_bank = { shadowhi,2'b11};    
-  always @ (ramblock_q, adr15_q, adr15, adr14 )
+  always @ (ramblock_q, adr15_q, adr15, adr14_q )
     begin
       hibit_tmp_r = ramblock_q;       
       if ( (ramblock_q[5:3] == shadow_bank) & mode464 ) // Shadow bank active only in the 464
         hibit_tmp_r[5:3] =   (shadow_bank) & 3'b110; // alias the even bank below shadow bank to the shadow bank
       case (hibit_tmp_r[2:0])
-	3'b000: {ramcs_b_r, ramadrhi_r} = { !mode464, shadow_bank, adr15, adr14 };
+	3'b000: {ramcs_b_r, ramadrhi_r} = { !mode464, shadow_bank, adr15, adr14_q };
         // Modes 1 and 2 also overdrive A15 but only to prevent screen corruption
-	3'b001: {ramcs_b_r, ramadrhi_r} = ( {adr15,adr14}==2'b11 ) ? {1'b0,hibit_tmp_r[5:3],2'b11} : { !mode464, shadow_bank, adr15_q, adr14 };
-	3'b010: {ramcs_b_r, ramadrhi_r} = { 1'b0,hibit_tmp_r[5:3],adr15_q,adr14} ; 
+	3'b001: {ramcs_b_r, ramadrhi_r} = ( {adr15_q,adr14_q}==2'b11 ) ? {1'b0, hibit_tmp_r[5:3],2'b11} : { !mode464, shadow_bank, adr15_q, adr14_q };
+	3'b010: {ramcs_b_r, ramadrhi_r} = { 1'b0,hibit_tmp_r[5:3],adr15_q,adr14_q} ; 
 	// Mode 3: Map 0b1100 to New 0b1100 _and_ 0b0100 to 0b1100 but in 'shadow' bank only (can't affect internal RAM without backdriving ADR15_Q)
-	3'b011: {ramcs_b_r, ramadrhi_r} = ( {adr15_q,adr14}==2'b11 ) ? {1'b0,hibit_tmp_r[5:3],2'b11} : {!mode464, shadow_bank, (adr15_q|adr14), adr14 };
-	3'b100: {ramcs_b_r, ramadrhi_r} = ( {adr15,adr14}==2'b01 ) ? {1'b0,hibit_tmp_r[5:3],2'b00} : {!mode464, shadow_bank, adr15, adr14 };              
-	3'b101: {ramcs_b_r, ramadrhi_r} = ( {adr15,adr14}==2'b01 ) ? {1'b0,hibit_tmp_r[5:3],2'b01} : {!mode464, shadow_bank, adr15, adr14 };              
-	3'b110: {ramcs_b_r, ramadrhi_r} = ( {adr15,adr14}==2'b01 ) ? {1'b0,hibit_tmp_r[5:3],2'b10} : {!mode464, shadow_bank, adr15, adr14 };              
-	3'b111: {ramcs_b_r, ramadrhi_r} = ( {adr15,adr14}==2'b01 ) ? {1'b0,hibit_tmp_r[5:3],2'b11} : {!mode464, shadow_bank, adr15, adr14 };
+	3'b011: {ramcs_b_r, ramadrhi_r} = ( {adr15_q,adr14_q}==2'b11 ) ? {1'b0,hibit_tmp_r[5:3],2'b11} : {!mode464, shadow_bank, (adr15_q|adr14_q), adr14_q };
+	3'b100: {ramcs_b_r, ramadrhi_r} = ( {adr15_q,adr14_q}==2'b01 ) ? {1'b0,hibit_tmp_r[5:3],2'b00} : {!mode464, shadow_bank, adr15_q, adr14_q };              
+	3'b101: {ramcs_b_r, ramadrhi_r} = ( {adr15_q,adr14_q}==2'b01 ) ? {1'b0,hibit_tmp_r[5:3],2'b01} : {!mode464, shadow_bank, adr15_q, adr14_q };              
+	3'b110: {ramcs_b_r, ramadrhi_r} = ( {adr15_q,adr14_q}==2'b01 ) ? {1'b0,hibit_tmp_r[5:3],2'b10} : {!mode464, shadow_bank, adr15_q, adr14_q };              
+	3'b111: {ramcs_b_r, ramadrhi_r} = ( {adr15_q,adr14_q}==2'b01 ) ? {1'b0,hibit_tmp_r[5:3],2'b11} : {!mode464, shadow_bank, adr15_q, adr14_q };
       endcase // case (hibit_tmp_r[2:0])
     end 
 `else
