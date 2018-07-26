@@ -99,10 +99,10 @@ module cpld_ram512k(busreset_b,adr15,adr14,iorq_b,mreq_b,ramrd_b,reset_b,wr_b,rd
   assign ramadrhi = ramadrhi_r ;
 
 `ifdef OVERDRIVE
-  assign {adr15, adr15_out}  = (overdrive_hi_q & !mreq_b_q & !mreq_b ) ?3'b111: 
-                               (overdrive_lo_q & !mreq_b_q & !mreq_b ) ?3'b000: 
+  assign {adr15, adr15_out}  = (overdrive_hi_q & !mreq_b ) ?3'b111: 
+                               (overdrive_lo_q & !mreq_b ) ?3'b000: 
                                3'bzzz ;  
-  assign adr14               = (overdrive_lo_q & !mreq_b_q & !mreq_b  ) ?1'b0: 
+  assign adr14               = (overdrive_lo_q & !mreq_b  ) ?1'b0: 
                                1'bz ;  
 
   always @ (negedge reset_b or posedge clk ) 
@@ -116,15 +116,18 @@ module cpld_ram512k(busreset_b,adr15,adr14,iorq_b,mreq_b,ramrd_b,reset_b,wr_b,rd
         overdrive_lo_q <= 1'b0;
       end
       else if (mreq_b_q) begin // sample when mreq inactive or first cycle of active
-        // Redirect bank &8000 -> &C000 (screen)  only in mode 3 block 01 access        
-        overdrive_hi_q <= ((ramblock_q[2:0] == 3'b011) & ({adr15_q,adr14_q}==2'b01));                   
-        // Redirect bank &C000 -> &0000  to avoid screen corruption in mode C1,3 and from &4000 -> &0000 in modes C4-7 (ie if screen relocated and overlaps extension RAM)!        
-        overdrive_lo_q <= ((!ramblock_q[2] & (ramblock_q[1] ^ ramblock_q[0])) & (adr15_q & adr14_q)) |  (ramblock_q[2] & ( !adr15_q & adr14_q)) ; 
+        // Redirect bank &4000 -> &C000 (screen)  only in mode 3 block 01 access        
+        overdrive_hi_q <= (ramblock_q[2:0] == 3'b011) & ({adr15_q,adr14_q}==2'b01);                   
+        // Redirect bank &C000 -> &0000  to avoid screen corruption in mode C1,2&3 and from &4000 -> &0000 in modes C4-7 (ie if screen relocated and overlaps extension RAM)!        
+        overdrive_lo_q <= ((ramblock_q[2:0] == 3'b011) & (adr15_q & adr14_q)) | // Map all internal access to &C000 to &0000 in mode 3
+                          ((ramblock_q[2:0] == 3'b001) & (adr15_q & adr14_q)) | // Map all internal access to &C000 to &0000 in mode 1
+                          (ramblock_q[2:0] == 3'b010) |              // Map all internal access to &0000 in mode 2    
+                          (ramblock_q[2] & ( !adr15_q & adr14_q)) ;  // Map &4000 -> &0000 in modes 4-7, protect screen if at &4000 when accessing external bank
       end
     end  
 `else
   assign {adr15, adr15_out} = 3'bzzz;
-  assign adr14 = 1'b0;  
+  assign adr14 = 1'bz;  
 `endif
 
    always @ (negedge reset_b or posedge clk ) 
@@ -159,7 +162,7 @@ module cpld_ram512k(busreset_b,adr15,adr14,iorq_b,mreq_b,ramrd_b,reset_b,wr_b,rd
   
 `ifndef X128
   wire [2:0]        shadow_bank = { shadowhi,2'b11};    
-  always @ (ramblock_q, adr15_q, adr15, adr14_q )
+  always @ ( * )
     begin
       hibit_tmp_r = ramblock_q;       
       if ( (ramblock_q[5:3] == shadow_bank) & mode464 ) // Shadow bank active only in the 464
@@ -178,7 +181,7 @@ module cpld_ram512k(busreset_b,adr15,adr14,iorq_b,mreq_b,ramrd_b,reset_b,wr_b,rd
       endcase // case (hibit_tmp_r[2:0])
     end 
 `else
-    always @ (ramblock_q, adr15, adr14 )
+    always @ ( * )
       begin
 `ifdef USE6128FIRSTBANK         
         if ( ramblock_q[5:3] == 3'b000 )
