@@ -20,7 +20,7 @@ MOVE CONN1         (1.55 0.25) ;
 ROTATE =R0 CONN2 ;
 MOVE CONN2         (1.8 2.55) ;
 ROTATE =R0 UART ;
-MOVE UART         ( 0.65  2.30);
+MOVE UART         ( 0.25  2.40);
 ROTATE =R90 PMOD0 ;
 MOVE PMOD0         (0.20 1.30) ;
 
@@ -36,7 +36,7 @@ MOVE L3            (0.2 2.6);
 ROTATE =R180 reg_cap1;
 MOVE reg_cap1      (2.8 1.05);
 ROTATE =R0 REG3V3;
-MOVE REG3V3        (2.8 0.85);
+MOVE REG3V3        (2.8 0.80);
 ROTATE =R180 reg_cap0;
 MOVE reg_cap0      (2.8 0.6);
 
@@ -47,6 +47,13 @@ MOVE CAP22UF_IO       (2.8 2.25 ) ;
 
 ROTATE =R0 CPLD ;
 MOVE CPLD          (1.5 1.35) ;
+
+ROTATE =R270 R10K_0;
+ROTATE =R270 R10K_1;
+ROTATE =R270 R10K_2;
+MOVE R10K_0          (2.35 1.400) ;
+MOVE R10K_1          (2.45 1.400) ;
+MOVE R10K_2          (2.55 1.400) ;
 
 # SMD components go on the bottom layer so place them first
 # and then mirror them
@@ -74,13 +81,15 @@ TEXT '(C) 2018 Revaldinho, github.com/revaldinho/cpc_ram_expansion'  R0 (0.85 0.
 
 CHANGE FONT FIXED ; 
 CHANGE SIZE 0.03 ;
-CHANGE WIDTH 0.01 ;
-WIRE  (0.35 1.75) (0.35 2.24 ) ( 0.48 2.24 ) (0.48 1.75) ( 0.35 1.75 ) ;
-TEXT 'GND  TDI  TCK  NC' R90 (0.4 1.81) ;
-TEXT 'GND  TMS  TDO  5V' R90 (0.44 1.81) ;
+CHANGE WIDTH 0.005 ;
+TEXT 'EXT 3V3 INT' R0 (2.68 2.1);
+TEXT '3V3 VDDIO 5V' R0 (2.65 1.6);
+WIRE  (0.35 1.78) (0.35 2.18 ) ( 0.45 2.18 ) (0.45 1.78) ( 0.35 1.78 ) ;
+TEXT 'GND TDI TCK NC' R90 (0.4 1.81) ;
+TEXT 'GND TMS TDO 5V' R90 (0.44 1.81) ;
 
-WIRE  (0.52 2.1) (0.8 2.1 ) ( 0.8 2.2 ) (0.52 2.2) ( 0.52 2.1 ) ;
-TEXT 'GND TX RX' R0 (0. 2.15) ;
+WIRE  (0.10 2.25) (0.4 2.25 ) ( 0.4 2.32 ) (0.10 2.32) ( 0.10 2.25 ) ;
+TEXT 'GND TX RX' R0 (0.13 2.28) ;
 
 
 # Preroute VDD and VSS rings

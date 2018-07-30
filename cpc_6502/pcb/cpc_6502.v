@@ -119,7 +119,7 @@ module cpc_6502 ();
   // Two ceramic caps to be placed v. close to regulator pins
   cap1uf          reg_cap0 (.p0(VDD), .p1(VSS));
   cap1uf          reg_cap1 (.p0(VDD_3V3_REG), .p1(VSS));
-  
+    
   // Amstrad CPC Edge Connector
   //
   // V1.01 Corrected upper and lower rows
@@ -169,12 +169,12 @@ module cpc_6502 ();
 
   // 12 pin PMOD port
   hdr2x06 PMOD0 (
-                     .p1(VDD_IO), .p2(VDD_IO),
-		     .p3(VSS), .p4(VSS),
-		     .p5(PMOD_GPIO_6), .p6(PMOD_GPIO_7),
-		     .p7(PMOD_GPIO_4), .p8(PMOD_GPIO_5),
-		     .p9(PMOD_GPIO_2), .p10(PMOD_GPIO_3),
-		     .p11(PMOD_GPIO_0), .p12(PMOD_GPIO_1)               
+		     .p1(PMOD_GPIO_0), .p2(PMOD_GPIO_1),
+		     .p3(PMOD_GPIO_2), .p4(PMOD_GPIO_3),
+		     .p5(PMOD_GPIO_4), .p6(PMOD_GPIO_5),
+		     .p7(PMOD_GPIO_6), .p8(PMOD_GPIO_7)
+		     .p9(VSS), .p10(VSS),                                  
+                     .p11(VDD_IO), .p12(VDD_IO),
                      );
   
   
@@ -278,7 +278,7 @@ module cpc_6502 ();
 		     .p72(D0),
 		     .vccint2(VDD),
 		     .gsr(RESET_B),
-		     .p75(BUSRESET_B),
+		     .p75(MREQ_B),
 		     .gts1(IOREQ_B),
 		     .gts2(RD_B),
 		     .vccint3(VDD),
@@ -287,8 +287,13 @@ module cpc_6502 ();
 		     .p81(BUSRQ_B),
 		     .p82(BUSACK_B),
 		     .p83(READY),
-		     .p84()
+		     .p84(M1_B)
                      );
+
+  // Optional pull ups on PI connector for open collector behaviour
+  resistor R10K_0(.p0(VDD_IO), .p1(PI_GPIO_13));
+  resistor R10K_1(.p0(VDD_IO), .p1(PI_GPIO_19));
+  resistor R10K_2(.p0(VDD_IO), .p1(PI_GPIO_26));                                    
   
   // SMD caps on the back of the CPLD footprint 
    cap100nf_smd CAP100N_1 (.p0( VSS ), .p1( VDD ));
