@@ -28,14 +28,11 @@
 `define X64   1
 //`define X128  1
 //`define UNIV    1
-
 // Additional options
 // OVERDRIVE should be used only with X64
 `define OVERDRIVE 1
 // USE6128FIRSTBANK should be used only with X128 
 //`define USE6128FIRSTBANK 1
-
-
 
 module cpld_ram512k(busreset_b,adr15,adr14,iorq_b,mreq_b,ramrd_b,reset_b,wr_b,rd_b,data,ramdis,ramcs_b,ramadrhi,ready, clk, ramoe_b, ramwe_b, adr15_out,
 `ifdef UNIV
