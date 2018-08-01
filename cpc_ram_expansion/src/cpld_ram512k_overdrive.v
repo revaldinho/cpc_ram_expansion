@@ -33,7 +33,7 @@ module cpld_ram512k_overdrive(rfsh_b,adr15,adr14,iorq_b,mreq_b,ramrd_b,reset_b,w
   inout            adr15;    
   input            adr14;
   input            iorq_b;
-  inout            mreq_b;
+  input            mreq_b;
   input            ramrd_b;
   input            reset_b;
   input            wr_b;
@@ -48,27 +48,15 @@ module cpld_ram512k_overdrive(rfsh_b,adr15,adr14,iorq_b,mreq_b,ramrd_b,reset_b,w
   output [4:0]     ramadrhi;
   output           ramoe_b;
   output           ramwe_b;
-  inout [1:0]       adr15_out;
+  inout [1:0]      adr15_out;
   inout [2:0]      mreq_b_out;  
   
   reg [5:0]        ramblock_q;
   reg [4:0]        ramadrhi_r;
   reg              ramcs_b_r;
   reg              clken_lat_qb;
-  reg [5:0]        hibit_tmp_r;
   reg              adr15_q;
-  reg              adr14_q;  
   reg              mreq_b_q;
-  reg              rd_b_q;
-  reg              wr_b_q;
-  reg              mcyc_valid_q;
-  reg              mcyc_valid_f_q;  
-  reg              mreq_overdrive_q;    
-  reg              ready_q;
-              
-
-  reg              overdrive_hi_q ;  
-  reg              overdrive_lo_q ;
   reg [1:0]        state_q;	
   reg              mwr_cyc_q;
   reg              mrd_cyc_q;  
@@ -77,46 +65,42 @@ module cpld_ram512k_overdrive(rfsh_b,adr15,adr14,iorq_b,mreq_b,ramrd_b,reset_b,w
   wire             overdrive_q = 1'b1;  
 
   parameter IDLE=2'b00, WM0=2'b11, WM1=2'b10, END=2'b01;
-    
   // Create negedge clock on IO write event - clock low pulse will be suppressed if not an IOWR* event
   // but if the pulse is allowed through use the trailing (rising) edge to capture data
   wire             wclk    = !(clk|clken_lat_qb); 
   // Combination of RAMCS and RAMRD determine whether RAM output is enabled
   assign ramoe_b = ramrd_b ;		
-
   assign ramdis  = !ramcs_b_r &  (!mreq_b|(state_q==END));    
   assign ramadrhi = ramadrhi_r ;
 
-//          ____      ____      ____      ____      ____      ____
-// CLK     /    \____/    \____/    \____/    \____/    \____/    \_
-//         _____     :    .         .         .         .   ________
-// MREQ*        \__________________________________________/ :    .
-//         _________________________________________________________
-// RFSH*   1         :    .         .         .         .    :    .
-//         _________________        .         .         .  _________
-// WR*               :    . \_____________________________/  :    .    
-//         _____________       _____________________________________
-// READY             :  \_____/      
-//                   :    .         .         .         .    :    .
-//                   :_______________________________________:    .        
-// MWR_CYC    _______/    .         .         .         .    \______
-//         _____ _________._________._________._________._________.
-// STATE   IDLE_X__IDLE___X__WM0____X__WM0____X__WM1____X_END____X
-//        
-// MREQ_OD  zzzzzzzzz11111111111111111111111111111111111111111zzzzzz
-// 
-// Notes
-// - 1 wait state shown above (WM0->WM0)
-
-
+  //          ____      ____      ____      ____      ____  
+  // CLK     /    \____/    \____/    \____/    \____/    \_
+  //         _____     :    .         .         .   ________
+  // MREQ*        \________________________________/ :    .
+  //         _______________________________________________
+  // RFSH*   1         :    .         .         .    :    .
+  //         _________________        .         .  _________
+  // WR*               :    . \___________________/  :    .    
+  //         _____________       ___________________________
+  // READY             :  \_____/      
+  //                   :    .         .         .    :    .
+  //                   :_____________________________:    .        
+  // MWR_CYC    _______/    .         .         .    \______
+  //         _____ _________._________._________._________.
+  // STATE   IDLE_X__IDLE___X__WM0____X__WM1____X_END____X
+  //        
+  // MREQ_OD  zzzzzzzzz11111111111111111111111111111111111111111zzzzzz
+  // 
+  // Notes
+  // - 1 wait state shown above (WM0->WM0)
    
   assign ramcs_b = ramcs_b_r  | mreq_b ;  
   assign ramwe_b = wr_b ;
   // overdrive A15 HIGH only in mode 3 when address is 0x4000-0x0x7FFF and valid mcycle
-  assign adr15 = (mode464_q & overdrive_q ) ? (((ramblock_q[2:0]==3'b011) & adr14 & (!mreq_b) ) ? 1'b1 : 1'bz ): 1'bz;
+  assign adr15 = (mode464_q & overdrive_q ) ? (((ramblock_q[2:0]==3'b011) & !adr15_q & adr14 & (!mreq_b | state_q==END) ) ? 1'b1 : 1'bz ): 1'bz;
   // Gate array does not use the mreq signal but instead uses rd_b as a read-not-write signal, so overdrive this to protect internal RAM !
-  assign rd_b  = (mode464_q & overdrive_q ) ? ( !ramcs_b_r &  (!mreq_b|(state_q==END))  ) ? 1'b0 : 1'bz : 1'bz;
-  assign { mreq_b, mreq_b_out }  = 4'bzzzz;  
+  assign rd_b  = (mode464_q & overdrive_q ) ? ( !ramcs_b_r &  (!mreq_b|mwr_cyc_q)  ) ? 1'b0 : 1'bz : 1'bz;
+  assign { mreq_b_out }  = 3'bzzz;  
   assign { adr15_out}  = 2'bzz; 
   
   always @ ( negedge reset_b or negedge clk) 
@@ -124,8 +108,8 @@ module cpld_ram512k_overdrive(rfsh_b,adr15,adr14,iorq_b,mreq_b,ramrd_b,reset_b,w
       state_q <= IDLE;
     else
       case ( state_q )
-        END: state_q <= ( mwr_cyc_q ) ? ((ready) ? WM1 : WM0 ) : IDLE; // intentional half-cycle path from mwr_cyc_q        
-        IDLE: state_q <= ( mwr_cyc_q ) ? ((ready) ? WM1 : WM0 ) : IDLE; // intentional half-cycle path from mwr_cyc_q
+        END:  state_q <= ( mwr_cyc_q | mrd_cyc_q) ? ((ready) ? WM1 : WM0 ) : IDLE; // intentional half-cycle path from mwr_cyc_q        
+        IDLE: state_q <= ( mwr_cyc_q | mrd_cyc_q) ? ((ready) ? WM1 : WM0 ) : IDLE; // intentional half-cycle path from mwr_cyc_q
         WM0:  state_q <= ( ready ) ? WM1 : WM0;      // -ve edge FSM can sample 'ready' directly
         WM1:  state_q <=  END ;
         default: state_q <= IDLE;
@@ -149,19 +133,16 @@ module cpld_ram512k_overdrive(rfsh_b,adr15,adr14,iorq_b,mreq_b,ramrd_b,reset_b,w
       end
     end // else: !if(!reset_b)
   
-  
   //   // Pin straps read on startup to set appropriate modes and can be used out of reset as GPIO
   //   assign dip   = (!reset_b) ? 4'bz: 4'bz; 
   //   always @ ( posedge reset_b )
   //     {mode464_q, overdrive_q, ram_id0_q, ram_id1_q} < = dip;
   //     
-  
   always @ (negedge reset_b or negedge mreq_b ) 
     if ( !reset_b ) 
       adr15_q <= 1'b0;
     else
       adr15_q <= adr15;
-  
   
   always @ ( * )
     if ( clk ) 
