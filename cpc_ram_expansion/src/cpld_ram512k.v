@@ -44,7 +44,7 @@ module cpld_ram512k(busreset_b,adr15,adr14,iorq_b,mreq_b,ramrd_b,reset_b,wr_b,rd
   inout            adr15;    
   inout            adr14;
   input            iorq_b;
-  input            mreq_b;
+  inout            mreq_b;
   input            ramrd_b;
   input            reset_b;
   input            wr_b;
@@ -91,15 +91,17 @@ module cpld_ram512k(busreset_b,adr15,adr14,iorq_b,mreq_b,ramrd_b,reset_b,wr_b,rd
   // Combination of RAMCS and RAMRD determine whether RAM output is enabled
   assign ramoe_b = ramrd_b;		
   assign ramwe_b = wr_b ;  
-  assign ramcs_b = ramcs_b_r | mreq_b ;
+  assign ramcs_b = ramcs_b_r | mreq_b  ;
   assign ramdis  = !ramcs_b_r ;    
   assign ramadrhi = ramadrhi_r ;
 
 `ifdef OVERDRIVE
-  assign {adr15, adr15_out}  = (overdrive_hi_q & !mreq_b ) ?3'b111: 
-                               (overdrive_lo_q & !mreq_b ) ?3'b000: 
+
+//  assign mreq_b = ( overdrive_lo_q  )? 1'b1 : 1'bz;  
+  assign {adr15, adr15_out}  = (overdrive_hi_q & (!mreq_b|!wr_b) ) ?3'b111: 
+                               (overdrive_lo_q & (!mreq_b|!wr_b) ) ?3'b000: 
                                3'bzzz ;  
-  assign adr14               = (overdrive_lo_q & !mreq_b  ) ?1'b0: 
+  assign adr14               = (overdrive_lo_q & (!mreq_b|!wr_b)  ) ?1'b0: 
                                1'bz ;  
 
   always @ (negedge reset_b or posedge clk ) 
@@ -122,7 +124,8 @@ module cpld_ram512k(busreset_b,adr15,adr14,iorq_b,mreq_b,ramrd_b,reset_b,wr_b,rd
                           (ramblock_q[2] & ( !adr15_q & adr14_q)) ;  // Map &4000 -> &0000 in modes 4-7, protect screen if at &4000 when accessing external bank
       end
     end  
-`else
+`else // !`ifdef OVERDRIVE
+  assign mreq_b = 1'bz;  
   assign {adr15, adr15_out} = 3'bzzz;
   assign adr14 = 1'bz;  
 `endif
@@ -132,7 +135,8 @@ module cpld_ram512k(busreset_b,adr15,adr14,iorq_b,mreq_b,ramrd_b,reset_b,wr_b,rd
        mreq_b_q <= 1'b1;
      end
      else begin
-       mreq_b_q <= mreq_b;
+       if ( ready ) 
+         mreq_b_q <= mreq_b & wr_b;
      end
 
    always @ (negedge reset_b or negedge mreq_b ) 
@@ -145,7 +149,7 @@ module cpld_ram512k(busreset_b,adr15,adr14,iorq_b,mreq_b,ramrd_b,reset_b,wr_b,rd
        adr14_q <= adr14;       
      end
   
-  always @ ( clk )
+  always @ ( * )
     if ( clk ) begin
       clken_lat_qb <= !(!iorq_b && !wr_b && !adr15 && data[6] && data[7]);
     end
