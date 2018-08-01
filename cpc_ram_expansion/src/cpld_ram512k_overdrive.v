@@ -97,9 +97,9 @@ module cpld_ram512k_overdrive(rfsh_b,adr15,adr14,iorq_b,mreq_b,ramrd_b,reset_b,w
   assign ramcs_b = ramcs_b_r  | mreq_b ;  
   assign ramwe_b = wr_b ;
   // overdrive A15 HIGH only in mode 3 when address is 0x4000-0x0x7FFF and valid mcycle
-  assign adr15 = (mode464_q & overdrive_q ) ? (((ramblock_q[2:0]==3'b011) & !adr15_q & adr14 & (!mreq_b | state_q==END) ) ? 1'b1 : 1'bz ): 1'bz;
+  assign adr15 = (mode464_q & overdrive_q ) ? (((ramblock_q[2:0]==3'b011) & adr14 & !mreq_b ) ? 1'b1 : 1'bz ): 1'bz;
   // Gate array does not use the mreq signal but instead uses rd_b as a read-not-write signal, so overdrive this to protect internal RAM !
-  assign rd_b  = (mode464_q & overdrive_q ) ? ( !ramcs_b_r &  (!mreq_b|mwr_cyc_q)  ) ? 1'b0 : 1'bz : 1'bz;
+  assign rd_b  = (mode464_q & overdrive_q ) ? ( !ramcs_b_r &  (!mreq_b|(state_q==END))  ) ? 1'b0 : 1'bz : 1'bz;
   assign { mreq_b_out }  = 3'bzzz;  
   assign { adr15_out}  = 2'bzz; 
   
@@ -108,8 +108,8 @@ module cpld_ram512k_overdrive(rfsh_b,adr15,adr14,iorq_b,mreq_b,ramrd_b,reset_b,w
       state_q <= IDLE;
     else
       case ( state_q )
-        END:  state_q <= ( mwr_cyc_q | mrd_cyc_q) ? ((ready) ? WM1 : WM0 ) : IDLE; // intentional half-cycle path from mwr_cyc_q        
-        IDLE: state_q <= ( mwr_cyc_q | mrd_cyc_q) ? ((ready) ? WM1 : WM0 ) : IDLE; // intentional half-cycle path from mwr_cyc_q
+        END:  state_q <= ( mwr_cyc_q ) ? ((ready) ? WM1 : WM0 ) : IDLE; // intentional half-cycle path from mwr_cyc_q        
+        IDLE: state_q <= ( mwr_cyc_q ) ? ((ready) ? WM1 : WM0 ) : IDLE; // intentional half-cycle path from mwr_cyc_q
         WM0:  state_q <= ( ready ) ? WM1 : WM0;      // -ve edge FSM can sample 'ready' directly
         WM1:  state_q <=  END ;
         default: state_q <= IDLE;
@@ -127,7 +127,7 @@ module cpld_ram512k_overdrive(rfsh_b,adr15,adr14,iorq_b,mreq_b,ramrd_b,reset_b,w
         mwr_cyc_q <= rd_b;
         mrd_cyc_q <= !rd_b;        
       end
-      else if ( state_q == END) begin
+      else if ( !iorq_b | (state_q==END)) begin
           mwr_cyc_q <= 1'b0;
           mrd_cyc_q <= 1'b0;
       end
