@@ -169,7 +169,7 @@ module cpld_ram512k(busreset_b,adr15,adr14,iorq_b,mreq_b,ramrd_b,reset_b,wr_b,rd
       if ( (ramblock_q[5:3] == shadow_bank) & mode464 ) // Shadow bank active only in the 464
         hibit_tmp_r[5:3] =   (shadow_bank) & 3'b110; // alias the even bank below shadow bank to the shadow bank
       case (hibit_tmp_r[2:0])
-	3'b000: {ramcs_b_r, ramadrhi_r} = { !mode464, shadow_bank, adr15, adr14_q };
+	3'b000: {ramcs_b_r, ramadrhi_r} = { !mode464, shadow_bank, adr15_q, adr14_q };
         // Modes 1 and 2 also overdrive A15 but only to prevent screen corruption
 	3'b001: {ramcs_b_r, ramadrhi_r} = ( {adr15_q,adr14_q}==2'b11 ) ? {1'b0, hibit_tmp_r[5:3],2'b11} : { !mode464, shadow_bank, adr15_q, adr14_q };
 	3'b010: {ramcs_b_r, ramadrhi_r} = { 1'b0,hibit_tmp_r[5:3],adr15_q,adr14_q} ; 
