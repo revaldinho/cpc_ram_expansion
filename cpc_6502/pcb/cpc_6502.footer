@@ -22,16 +22,16 @@ MOVE CONN2         (1.8 2.55) ;
 ROTATE =R0 UART ;
 MOVE UART         ( 0.25  2.40);
 ROTATE =R90 PMOD0 ;
-MOVE PMOD0         (0.20 1.30) ;
+MOVE PMOD0         (0.20 1.15) ;
 
 ROTATE =R90 JTAG;
-MOVE JTAG          (0.2 2.0);
+MOVE JTAG          (0.2 1.90);
 ROTATE =R180 L1;
 MOVE L1            (2.8 2.0);
 ROTATE =R180 L2;
 MOVE L2            (2.8 1.8);
 ROTATE =R180 L3;
-MOVE L3            (0.2 2.6);
+MOVE L3            (0.2 2.65);
 
 ROTATE =R180 reg_cap1;
 MOVE reg_cap1      (2.8 1.05);
