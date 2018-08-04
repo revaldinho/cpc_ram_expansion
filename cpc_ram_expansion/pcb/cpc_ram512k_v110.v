@@ -42,9 +42,8 @@ module cpc_ram512k_v110 ();
   wire EXP_B;
   wire CLK;
   wire RAMCS_B;
-  wire HIADR4,HIADR3,HIADR2,HIADR1,HIADR0;
 
-  wire GPIO0, GPIO1;  
+  wire HIADR4,HIADR3,HIADR2,HIADR1,HIADR0;
   wire RAMOE_B;
   wire RAMWE_B;
 
@@ -54,52 +53,47 @@ module cpc_ram512k_v110 ();
   wire TCK;
 
   wire dip0, dip1;
-  wire dip0_pu, dip1_pu;  
+  wire dip0_pu, dip1_pu, dip2_pu, dip3_pu;  
   
 
   // Radial electolytic, one per board on the main 5V supply
   cap22uf         CAP22UF(.minus(VSS),.plus(VDD));
 
-
   // DIP8 switches for CPLD config
-  DIP2        dipsw0(
+  DIP4        dipsw0(
                      .sw0_a(dip0), .sw0_b(dip0_pu),
                      .sw1_a(dip1), .sw1_b(dip1_pu),
+                     .sw2_a(HIADR3), .sw2_b(dip2_pu),
+                     .sw3_a(HIADR4), .sw3_b(dip3_pu),                     
                      );
 
   // High value pull down to be overridden by pull up when switch closed
   // and allow  IO to be used for driving probes
-  resistor  RES47K_0(
-                   .p0(dip0),
-                   .p1(VSS)
-                   );
-  resistor  RES47K_1(
-                   .p0(dip1),
-                   .p1(VSS)
-                   );  
-  resistor  RES10K_0(
-                   .p0(dip0_pu),
-                   .p1(VDD)
-                   );
-  resistor  RES10K_1(
-                   .p0(dip1_pu),
-                   .p1(VDD)
-                   );
 
+  r47k_sil5   sil0 (
+                    .common(VSS),
+                    .p0(dip0),
+                    .p1(dip1),
+                    .p2(HIADR3),
+                    .p3(HIADR4),
+                    );
+  r10k_sil5   sil1 (
+                    .common(VDD),
+                    .p0(dip3_pu),
+                    .p1(dip2_pu),
+                    .p2(dip1_pu),
+                    .p3(dip0_pu),
+                    );
   // Make DIP signals available for probes
-  hdr1x05      L1 (
+  hdr1x03      L1 (
                    .p1(VSS),
                    .p2(dip1),
                    .p3(dip0),
-                   .p4(GPIO1),
-                   .p5(GPIO0)                   
                    );
 
-  
   // Amstrad CPC Edge Connector
   //
   // V1.01 Corrected upper and lower rows
-
   idc_hdr_50w  CONN1 (
                       .p50(Sound),   .p49(VSS),
                       .p48(A15),     .p47(A14),
@@ -135,6 +129,7 @@ module cpc_ram512k_v110 ();
                 .p5(TDO),  .p6(TCK),
                 .p7(VDD),  .p8(),
                 );
+
   // 9572 CPLD 
   xc9572pc44  CPLD (
                     .p1(MREQ_B),
@@ -145,25 +140,25 @@ module cpc_ram512k_v110 ();
 	            .gck2(RAMDIS),
 	            .gck3(dip0),
 	            .p8(dip1),
-	            .p9(GPIO0),
+	            .p9(M1_B),
 	            .gnd1(VSS),
-	            .p11(A9),
+	            .p11(HIADR4),
 	            .p12(RFSH_B),
-	            .p13(HIADR4),
-	            .p14(M1_B),
+	            .p13(HIADR3),
+	            .p14(A14),
 	            .tdi(TDI),
 	            .tms(TMS),
 	            .tck(TCK),
 	            .p18(HIADR2),
 	            .p19(HIADR1),
-	            .p20(HIADR3),
+	            .p20(A8),
 	            .vccint1(VDD),
 	            .p22(RAMWE_B),
 	            .gnd2(VSS),
 	            .p24(HIADR0),
 	            .p25(A15),
-	            .p26(A14),
-	            .p27(A10),
+	            .p26(A15),
+	            .p27(RAMOE_B),
 	            .p28(RAMCS_B),
 	            .p29(D7),
 	            .tdo(TDO),
@@ -176,10 +171,10 @@ module cpc_ram512k_v110 ();
 	            .p37(D2),
 	            .p38(D1),
 	            .gsr(RESET_B),
-	            .gts2(GPIO1),
+	            .gts2(WR_B),
 	            .vccint2(VDD),
-	            .gts1(WR_B),
-	            .p43(D0),
+	            .gts1(D0),
+	            .p43(RD_B),
 	            .p44(RD_B),
                     );
 
@@ -194,7 +189,7 @@ module cpc_ram512k_v110 ();
                     .a6(A7),  .a8(A2),
                     .a5(A8),  .a9(A3),
                     .a4(A9),  .a11(A1),
-                    .a3(A10),  .oeb(RAMRD_B),
+                    .a3(A10),  .oeb(RAMOE_B),
                     .a2(A11),  .a10(A0),
                     .a1(A13),  .csb(RAMCS_B),
                     .a0(A12),  .d7(D7),
