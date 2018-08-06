@@ -50,14 +50,15 @@ module cpld_ram512k_overdrive(rfsh_b,adr15,adr14,iorq_b,mreq_b,ramrd_b,reset_b,w
   output           ramwe_b;
   
   reg [5:0]        ramblock_q;
-  reg [5:0]        hibit_tmp_r;  
+  reg [2:0]        hibit_tmp_r;  
   reg [4:0]        ramadrhi_r;
   reg              ramcs_b_r;
   reg              clken_lat_qb;
   reg              adr15_q;
   reg              mreq_b_q;
   reg              mwr_cyc_q;
-  reg              exp_ram_r;               
+  reg              exp_ram_r;   
+  reg              shadow_en_b_r;
 
   wire             overdrive_mode = 1'b1; // (aka  464 mode) enable only on 464/664
   wire             shadow_mode = 1'b1;    // enable only on 464/664
@@ -92,7 +93,7 @@ module cpld_ram512k_overdrive(rfsh_b,adr15,adr14,iorq_b,mreq_b,ramrd_b,reset_b,w
 
   // overdrive A15 HIGH only in mode 3 when address is 0x4000-0x0x7FFF and valid WRITE mcycle -> write will go to RAM
   // For read cycles dont overdrive A15 as the remapping for the RAM read will come from shadow memory to avoid clash with enabled upper ROM
-  assign adr15 = ( overdrive_mode ) ? ((ramblock_q[2:0]==3'b011) & !adr15_q & adr14 & mwr_cyc_q ? 1'b1 : 1'bz) : 1'bz;  
+  assign adr15 = ( overdrive_mode ) ? (((ramblock_q[2:0]==3'b011) & adr14 & mwr_cyc_q) ? 1'b1 : 1'bz) : 1'bz;  
   assign rd_b  = ( overdrive_mode ) ? ( exp_ram_r & mwr_cyc_q & !mreq_b) ? 1'b0 : 1'bz : 1'bz;
 
   always @ ( negedge reset_b or posedge clk )
@@ -104,7 +105,7 @@ module cpld_ram512k_overdrive(rfsh_b,adr15,adr14,iorq_b,mreq_b,ramrd_b,reset_b,w
       mreq_b_q <= mreq_b;                                     
       if ( !mreq_b & mreq_b_q & rfsh_b & rd_b)
         mwr_cyc_q <= 1'b1;
-      else if ( mreq_b )
+      else if ( mreq_b  )
         mwr_cyc_q <= 1'b0;
     end // else: !if( !reset_b)
   
@@ -124,40 +125,38 @@ module cpld_ram512k_overdrive(rfsh_b,adr15,adr14,iorq_b,mreq_b,ramrd_b,reset_b,w
     else
       ramblock_q <= data[5:0];
   
-  // trial 3 - reserve half bank but only ever use one block for shadow, should end up with 512K-32K = 480K expansion.
-  //
+
   always @ ( * ) begin
     if ( shadow_mode ) begin  
-      hibit_tmp_r = ramblock_q ;        
-      if ( ramblock_q[5:3] == shadow_bank )  
-        hibit_tmp_r[3] = 1'b0; // alias the even bank below shadow bank to the shadow bank
+      // _write_ shadow RAM only at &Cxxx-&Fxxx in all modes except C3 which is handled in the case statement (and may need to read also)
+      shadow_en_b_r = !((!wr_b) & adr15_q & adr14);
+      hibit_tmp_r = ramblock_q[5:3] ;
+      if ( (ramblock_q[5:3] == shadow_bank))
+        hibit_tmp_r[0] = 1'b0;        
       case (ramblock_q[2:0])
- 	3'b000: {exp_ram_r, ramcs_b_r, ramadrhi_r} = { 1'b0,  !({adr15_q,adr14}==2'b11 ), shadow_bank, 2'b11 };
- 	3'b001: {exp_ram_r, ramcs_b_r, ramadrhi_r} = ( {adr15_q,adr14}==2'b11 ) ? {1'b1, 1'b0, hibit_tmp_r[5:3],2'b11} : { 1'b0, 1'b1, 5'bxxxxx} ;
- 	3'b010: {exp_ram_r, ramcs_b_r, ramadrhi_r} = { 1'b1, 1'b0,hibit_tmp_r[5:3],adr15_q,adr14} ; 
- 	// Mode 3: Map 0b1100 to New 0b1100 _and_ 0b0100 to 0b1100 in 'shadow' bank for both reads and writes
- 	3'b011: {exp_ram_r, ramcs_b_r, ramadrhi_r} = ( {adr15_q,adr14}==2'b11 ) ? {2'b10,hibit_tmp_r[5:3],2'b11} : {1'b0,  !({adr15_q,adr14}==2'b01 ), shadow_bank, 2'b11 };              
- 	3'b100: {exp_ram_r, ramcs_b_r, ramadrhi_r} = ( {adr15_q,adr14}==2'b01 ) ? {2'b10,hibit_tmp_r[5:3],2'b00} : {1'b0,  !({adr15_q,adr14}==2'b11 ), shadow_bank, 2'b11 };              
- 	3'b101: {exp_ram_r, ramcs_b_r, ramadrhi_r} = ( {adr15_q,adr14}==2'b01 ) ? {2'b10,hibit_tmp_r[5:3],2'b01} : {1'b0,  !({adr15_q,adr14}==2'b11 ), shadow_bank, 2'b11 };              
- 	3'b110: {exp_ram_r, ramcs_b_r, ramadrhi_r} = ( {adr15_q,adr14}==2'b01 ) ? {2'b10,hibit_tmp_r[5:3],2'b10} : {1'b0,  !({adr15_q,adr14}==2'b11 ), shadow_bank, 2'b11 };              
- 	3'b111: {exp_ram_r, ramcs_b_r, ramadrhi_r} = ( {adr15_q,adr14}==2'b01 ) ? {2'b10,hibit_tmp_r[5:3],2'b11} : {1'b0,  !({adr15_q,adr14}==2'b11 ), shadow_bank, 2'b11 };
+ 	3'b000: {exp_ram_r, ramcs_b_r, ramadrhi_r} = { 1'b0, shadow_en_b_r , shadow_bank, 2'b11 };
+ 	3'b001: {exp_ram_r, ramcs_b_r, ramadrhi_r} = ( {adr15_q,adr14}==2'b11 ) ? {1'b1, 1'b0, hibit_tmp_r,2'b11} : { 2'b01, 5'bxxxxx };
+ 	3'b010: {exp_ram_r, ramcs_b_r, ramadrhi_r} = { 1'b1, 1'b0,hibit_tmp_r,adr15_q,adr14} ; 
+ 	3'b011: {exp_ram_r, ramcs_b_r, ramadrhi_r} = ( {adr15_q,adr14}==2'b11 ) ? {2'b10,hibit_tmp_r,2'b11} : ({adr15_q,adr14}==2'b01) ? {2'b00,shadow_bank,2'b11} : {2'b01, 5'bxxxxx};
+ 	3'b100: {exp_ram_r, ramcs_b_r, ramadrhi_r} = ( {adr15_q,adr14}==2'b01 ) ? {2'b10,hibit_tmp_r,2'b00} : { 1'b0, shadow_en_b_r , shadow_bank, 2'b11 };              
+ 	3'b101: {exp_ram_r, ramcs_b_r, ramadrhi_r} = ( {adr15_q,adr14}==2'b01 ) ? {2'b10,hibit_tmp_r,2'b01} : { 1'b0, shadow_en_b_r , shadow_bank, 2'b11 };              
+ 	3'b110: {exp_ram_r, ramcs_b_r, ramadrhi_r} = ( {adr15_q,adr14}==2'b01 ) ? {2'b10,hibit_tmp_r,2'b10} : { 1'b0, shadow_en_b_r , shadow_bank, 2'b11 };              
+ 	3'b111: {exp_ram_r, ramcs_b_r, ramadrhi_r} = ( {adr15_q,adr14}==2'b01 ) ? {2'b10,hibit_tmp_r,2'b11} : { 1'b0, shadow_en_b_r , shadow_bank, 2'b11 };
       endcase // case (hibit_tmp_r[2:0])
-    end // if ( shadow_mode )    
+
+    end
     else begin
-      exp_ram_r = !ramcs_b_r;
       case (ramblock_q[2:0])
- 	3'b000: {ramcs_b_r, ramadrhi_r} = { 1'b1, 5'bxxxxx };
- 	3'b001: {ramcs_b_r, ramadrhi_r} = ( {adr15_q,adr14}==2'b11 ) ? {1'b0,ramblock_q[5:3],2'b11} : { 1'b1, 5'bxxxxx};
- 	3'b010: {ramcs_b_r, ramadrhi_r} = { 1'b0,ramblock_q[5:3],adr15_q,adr14} ; 
- 	3'b011: {ramcs_b_r, ramadrhi_r} = ( {adr15_q,adr14}==2'b11 ) ? {1'b0,ramblock_q[5:3],2'b11} : {1'b1, 5'bxxxxx };
- 	3'b100: {ramcs_b_r, ramadrhi_r} = ( {adr15_q,adr14}==2'b01 ) ? {1'b0,ramblock_q[5:3],2'b00} : {1'b1, 5'bxxxxx };              
- 	3'b101: {ramcs_b_r, ramadrhi_r} = ( {adr15_q,adr14}==2'b01 ) ? {1'b0,ramblock_q[5:3],2'b01} : {1'b1, 5'bxxxxx };              
- 	3'b110: {ramcs_b_r, ramadrhi_r} = ( {adr15_q,adr14}==2'b01 ) ? {1'b0,ramblock_q[5:3],2'b10} : {1'b1, 5'bxxxxx };              
- 	3'b111: {ramcs_b_r, ramadrhi_r} = ( {adr15_q,adr14}==2'b01 ) ? {1'b0,ramblock_q[5:3],2'b11} : {1'b1, 5'bxxxxx };
-      endcase // case (ramblock_q[2:0])
+ 	3'b000: {exp_ram_r, ramcs_b_r, ramadrhi_r} = { 2'b01, 5'bxxxxx };
+ 	3'b001: {exp_ram_r, ramcs_b_r, ramadrhi_r} = ( {adr15,adr14}==2'b11 ) ? {2'b10,ramblock_q[5:3],2'b11} : {2'b01, 5'bxxxxx};
+ 	3'b010: {exp_ram_r, ramcs_b_r, ramadrhi_r} = { 2'b10,ramblock_q[5:3],adr15,adr14} ; 
+ 	3'b011: {exp_ram_r, ramcs_b_r, ramadrhi_r} = ( {adr15,adr14}==2'b11 ) ? {2'b10,ramblock_q[5:3],2'b11} : {2'b01, 5'bxxxxx };
+ 	3'b100: {exp_ram_r, ramcs_b_r, ramadrhi_r} = ( {adr15,adr14}==2'b01 ) ? {2'b10,ramblock_q[5:3],2'b00} : {2'b01, 5'bxxxxx };              
+ 	3'b101: {exp_ram_r, ramcs_b_r, ramadrhi_r} = ( {adr15,adr14}==2'b01 ) ? {2'b10,ramblock_q[5:3],2'b01} : {2'b01, 5'bxxxxx };              
+ 	3'b110: {exp_ram_r, ramcs_b_r, ramadrhi_r} = ( {adr15,adr14}==2'b01 ) ? {2'b10,ramblock_q[5:3],2'b10} : {2'b01, 5'bxxxxx };              
+ 	3'b111: {exp_ram_r, ramcs_b_r, ramadrhi_r} = ( {adr15,adr14}==2'b01 ) ? {2'b10,ramblock_q[5:3],2'b11} : {2'b01, 5'bxxxxx };
+      endcase 
     end	    
   end
   
-
-
 endmodule

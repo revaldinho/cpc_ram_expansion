@@ -36,5 +36,5 @@ PIN "data[0]"  LOC = P43 ;
 PIN "rd_b"	LOC = P44 ;
 
 
-NET "clk" TNM_NET = clk;
-TIMESPEC TS_clk = PERIOD "clk"  8.0ns HIGH 50%;
+#NET "clk" TNM_NET = clk;
+#TIMESPEC TS_clk = PERIOD "clk"  70.0ns HIGH 50%;
