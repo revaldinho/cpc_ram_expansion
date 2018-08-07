@@ -24,9 +24,14 @@
  *
  */
 
-`define OVERDRIVE 1
-
-
+// Enable shadow mode for use at least in mode C3
+`define SHADOW_MODE  1
+// Enable full shadow mode where all RW accesses are from/to shadow bank in all modes (incl. mode C0)
+`define FULL_SHADOW_MODE 1
+// Enable partial shadow mode where all W accesses are to shadow bank in all modes (incl. mode C0), but only block 3 is read
+//`define PARTIAL_SHADOW_MODE 1
+// Enable old shadow mode 
+//`define OLD_SHADOW_MODE 1
 
 module cpld_ram512k_overdrive(rfsh_b,adr15,adr14,iorq_b,mreq_b,ramrd_b,reset_b,wr_b,rd_b,data,ramdis,ramcs_b,ramadrhi,ready, clk, ramoe_b, ramwe_b);
   input            rfsh_b;
@@ -61,7 +66,11 @@ module cpld_ram512k_overdrive(rfsh_b,adr15,adr14,iorq_b,mreq_b,ramrd_b,reset_b,w
   reg              shadow_en_b_r;
 
   wire             overdrive_mode = 1'b1; // (aka  464 mode) enable only on 464/664
+`ifdef SHADOW_MODE  
   wire             shadow_mode = 1'b1;    // enable only on 464/664
+`else  
+  wire             shadow_mode = 1'b0;    // enable only on 464/664
+`endif  
   wire [2:0]       shadow_bank = 3'b111; // use 3'b111 or 3'b011
 
   parameter IDLE=2'b00, WM0=2'b11, WM1=2'b10, END=2'b01;
@@ -71,9 +80,7 @@ module cpld_ram512k_overdrive(rfsh_b,adr15,adr14,iorq_b,mreq_b,ramrd_b,reset_b,w
 
   // Combination of RAMCS and RAMRD determine whether RAM output is enabled
   assign ramoe_b = ramrd_b ;		
-  assign ramdis  = !ramcs_b_r ;  
   assign ramadrhi = ramadrhi_r ;
-  assign ramcs_b = ramcs_b_r  | (mreq_b & ramrd_b);  
   assign ramwe_b = wr_b ;
 
   //          ____      ____      ____      ____      ____  
@@ -91,11 +98,23 @@ module cpld_ram512k_overdrive(rfsh_b,adr15,adr14,iorq_b,mreq_b,ramrd_b,reset_b,w
   // MWR_CYC    _______/    .         .         .    \______
   // 
 
+  // overdrive rd_b for all expansion write accesses only 
+  assign rd_b  = ( overdrive_mode ) ? ( exp_ram_r & mwr_cyc_q & !mreq_b) ? 1'b0 : 1'bz : 1'bz;
+  
+`ifdef FULL_SHADOW_MODE  
+  // overdrive adr15 only for writes as otherwise it will cause a ROM access for reads
+  assign adr15 = ( overdrive_mode ) ? (((ramblock_q[2:0]==3'b011) & adr14 & mwr_cyc_q)  ? 1'b1 : 1'bz) : 1'bz;
+  // Never use internal RAM for reads in shadow mode!
+  assign ramdis = shadow_mode | !ramcs_b_r ;  
+  // In shadow mode SRAM is always enabled for all RAM accesses
+  assign ramcs_b = (shadow_mode) ? mreq_b : ramcs_b_r | mreq_b ;
+`else
+  assign ramdis  = !ramcs_b_r ;  
+  assign ramcs_b = (shadow_mode) ? ramcs_b_r | (mreq_b & !mwr_cyc_q & ramrd_b) : ramcs_b_r | mreq_b ;  
   // overdrive A15 HIGH only in mode 3 when address is 0x4000-0x0x7FFF and valid WRITE mcycle -> write will go to RAM
   // For read cycles dont overdrive A15 as the remapping for the RAM read will come from shadow memory to avoid clash with enabled upper ROM
-  assign adr15 = ( overdrive_mode ) ? (((ramblock_q[2:0]==3'b011) & adr14 & mwr_cyc_q) ? 1'b1 : 1'bz) : 1'bz;  
-//  assign rd_b  = ( overdrive_mode ) ? ( exp_ram_r & mwr_cyc_q & !mreq_b) ? 1'b0 : 1'bz : 1'bz;
-  assign rd_b  = ( overdrive_mode ) ? ( exp_ram_r & !mreq_b) ? 1'b0 : 1'bz : 1'bz;  
+  assign adr15 = ( overdrive_mode ) ? (((ramblock_q[2:0]==3'b011) & adr14 & mwr_cyc_q) ? 1'b1 : 1'bz) : 1'bz;
+`endif  
 
   always @ ( negedge reset_b or posedge clk )
     if ( !reset_b) begin
@@ -109,7 +128,7 @@ module cpld_ram512k_overdrive(rfsh_b,adr15,adr14,iorq_b,mreq_b,ramrd_b,reset_b,w
       else if ( mreq_b  )
         mwr_cyc_q <= 1'b0;
     end // else: !if( !reset_b)
-  
+
   always @ (negedge reset_b or negedge mreq_b ) 
     if ( !reset_b ) 
       adr15_q <= 1'b0;
@@ -126,24 +145,52 @@ module cpld_ram512k_overdrive(rfsh_b,adr15,adr14,iorq_b,mreq_b,ramrd_b,reset_b,w
     else
       ramblock_q <= data[5:0];
   
-
   always @ ( * ) begin
-    if ( shadow_mode ) begin  
-      // _write_ shadow RAM only at &Cxxx-&Fxxx in all modes except C3 which is handled in the case statement (and may need to read also)
-      shadow_en_b_r = !(!wr_b & adr15 & adr14);
-      hibit_tmp_r = ramblock_q[5:3] ;
-      if ( (ramblock_q[5:3] == shadow_bank))
-        hibit_tmp_r[0] = 1'b0;        
+    if ( shadow_mode ) begin
+      hibit_tmp_r = ramblock_q[5:3] ;        
+      if ( hibit_tmp_r == shadow_bank )  
+        hibit_tmp_r[0] = 1'b0; // alias the even bank below shadow bank to the shadow bank      
+`ifdef FULL_SHADOW_MODE
+      // FULL SHADOW MODE - all read accesses come from shadow bank except for CRTC accesses to internal memory  
       case (ramblock_q[2:0])
- 	3'b000: {exp_ram_r, ramcs_b_r, ramadrhi_r} = { 1'b0, shadow_en_b_r , shadow_bank, 2'b11 };
- 	3'b001: {exp_ram_r, ramcs_b_r, ramadrhi_r} = ( {adr15_q,adr14}==2'b11 ) ? {1'b1, 1'b0, hibit_tmp_r,2'b11} : { 2'b01, 5'bxxxxx };
- 	3'b010: {exp_ram_r, ramcs_b_r, ramadrhi_r} = { 1'b1, 1'b0,hibit_tmp_r, adr15_q,adr14} ; 
- 	3'b011: {exp_ram_r, ramcs_b_r, ramadrhi_r} = ( {adr15_q,adr14}==2'b11 ) ? {2'b10,hibit_tmp_r,2'b11} : ({adr15_q,adr14}==2'b01) ? {2'b00,shadow_bank,2'b11} : {2'b01, 5'bxxxxx};
- 	3'b100: {exp_ram_r, ramcs_b_r, ramadrhi_r} = ( {adr15_q,adr14}==2'b01 ) ? {2'b10,hibit_tmp_r,2'b00} : { 1'b0, shadow_en_b_r , shadow_bank, 2'b11 };              
- 	3'b101: {exp_ram_r, ramcs_b_r, ramadrhi_r} = ( {adr15_q,adr14}==2'b01 ) ? {2'b10,hibit_tmp_r,2'b01} : { 1'b0, shadow_en_b_r , shadow_bank, 2'b11 };              
- 	3'b110: {exp_ram_r, ramcs_b_r, ramadrhi_r} = ( {adr15_q,adr14}==2'b01 ) ? {2'b10,hibit_tmp_r,2'b10} : { 1'b0, shadow_en_b_r , shadow_bank, 2'b11 };              
- 	3'b111: {exp_ram_r, ramcs_b_r, ramadrhi_r} = ( {adr15_q,adr14}==2'b01 ) ? {2'b10,hibit_tmp_r,2'b11} : { 1'b0, shadow_en_b_r , shadow_bank, 2'b11 };
+ 	3'b000: {exp_ram_r, ramcs_b_r, ramadrhi_r} = { 2'b00, shadow_bank, adr15_q,adr14 };
+ 	3'b001: {exp_ram_r, ramcs_b_r, ramadrhi_r} = ({adr15_q,adr14}==2'b11) ? {2'b10, hibit_tmp_r,adr15_q,adr14} : { 2'b00, shadow_bank, adr15_q, adr14 };
+ 	3'b010: {exp_ram_r, ramcs_b_r, ramadrhi_r} = { 1'b1, 1'b0,hibit_tmp_r,adr15_q,adr14} ; 
+ 	3'b011: {exp_ram_r, ramcs_b_r, ramadrhi_r} = ({adr15_q,adr14}==2'b11) ? {2'b10,hibit_tmp_r,2'b11} : { 2'b00, shadow_bank, (adr15_q|adr14), adr14 };              
+ 	3'b100: {exp_ram_r, ramcs_b_r, ramadrhi_r} = ({adr15_q,adr14}==2'b01) ? {2'b10,hibit_tmp_r,2'b00} : { 2'b00, shadow_bank, adr15_q, adr14 };              
+ 	3'b101: {exp_ram_r, ramcs_b_r, ramadrhi_r} = ({adr15_q,adr14}==2'b01) ? {2'b10,hibit_tmp_r,2'b01} : { 2'b00, shadow_bank, adr15_q, adr14 };              
+ 	3'b110: {exp_ram_r, ramcs_b_r, ramadrhi_r} = ({adr15_q,adr14}==2'b01) ? {2'b10,hibit_tmp_r,2'b10} : { 2'b00, shadow_bank, adr15_q, adr14 };              
+ 	3'b111: {exp_ram_r, ramcs_b_r, ramadrhi_r} = ({adr15_q,adr14}==2'b01) ? {2'b10,hibit_tmp_r,2'b11} : { 2'b00, shadow_bank, adr15_q, adr14 };
       endcase // case (hibit_tmp_r[2:0])
+`else 
+`ifdef PARTIAL_SHADOW_MODE
+      // PARTIAL SHADOW MODE - all write accesses go to shadow memory but only shadow block 3 is ever read in mode C3 at bank 0x4000 (remapped to 0xC000)
+      shadow_en_b_r = wr_b;
+      case (ramblock_q[2:0])
+ 	3'b000: {exp_ram_r, ramcs_b_r, ramadrhi_r} = { 1'b0, shadow_en_b_r , shadow_bank, adr15_q,adr14 };
+ 	3'b001: {exp_ram_r, ramcs_b_r, ramadrhi_r} = ( {adr15_q,adr14}==2'b11 ) ? {1'b1, 1'b0, hibit_tmp_r,2'b11} : { 1'b0, shadow_en_b_r , shadow_bank, adr15_q,adr14 };
+ 	3'b010: {exp_ram_r, ramcs_b_r, ramadrhi_r} = { 1'b1, 1'b0,hibit_tmp_r, adr15_q,adr14} ; 
+ 	3'b011: {exp_ram_r, ramcs_b_r, ramadrhi_r} = ( {adr15_q,adr14}==2'b11 ) ? {2'b10,hibit_tmp_r,2'b11} : ({adr15_q,adr14}==2'b01) ? {2'b00,shadow_bank,2'b11} : { 1'b0, shadow_en_b_r , shadow_bank, adr15_q,adr14 };
+ 	3'b100: {exp_ram_r, ramcs_b_r, ramadrhi_r} = ( {adr15_q,adr14}==2'b01 ) ? {2'b10,hibit_tmp_r,2'b00} : { 1'b0, shadow_en_b_r , shadow_bank, adr15_q, adr14 };              
+ 	3'b101: {exp_ram_r, ramcs_b_r, ramadrhi_r} = ( {adr15_q,adr14}==2'b01 ) ? {2'b10,hibit_tmp_r,2'b01} : { 1'b0, shadow_en_b_r , shadow_bank, adr15_q, adr14 };              
+ 	3'b110: {exp_ram_r, ramcs_b_r, ramadrhi_r} = ( {adr15_q,adr14}==2'b01 ) ? {2'b10,hibit_tmp_r,2'b10} : { 1'b0, shadow_en_b_r , shadow_bank, adr15_q, adr14 };              
+ 	3'b111: {exp_ram_r, ramcs_b_r, ramadrhi_r} = ( {adr15_q,adr14}==2'b01 ) ? {2'b10,hibit_tmp_r,2'b11} : { 1'b0, shadow_en_b_r , shadow_bank, adr15_q, adr14 };
+      endcase // case (hibit_tmp_r[2:0])
+`else // `ifdef OLD_SHADOW_MODE      
+      // Original code which was working best ...
+      case (ramblock_q[2:0])
+ 	3'b000: {exp_ram_r, ramcs_b_r, ramadrhi_r} = { 1'b0,  !({adr15_q,adr14}==2'b11 ), shadow_bank, 2'b11 };
+ 	3'b001: {exp_ram_r, ramcs_b_r, ramadrhi_r} = ( {adr15_q,adr14}==2'b11 ) ? {1'b1, 1'b0, hibit_tmp_r,2'b11} : { 1'b0, 1'b1, 5'bxxxxx} ;
+ 	3'b010: {exp_ram_r, ramcs_b_r, ramadrhi_r} = { 1'b1, 1'b0,hibit_tmp_r,adr15_q,adr14} ; 
+ 	// Mode 3: Map 0b1100 to New 0b1100 _and_ 0b0100 to 0b1100 in 'shadow' bank for both reads and writes
+ 	3'b011: {exp_ram_r, ramcs_b_r, ramadrhi_r} = ( {adr15_q,adr14}==2'b11 ) ? {2'b10,hibit_tmp_r,2'b11} : {1'b0,  !({adr15_q,adr14}==2'b01 ), shadow_bank, 2'b11 };              
+ 	3'b100: {exp_ram_r, ramcs_b_r, ramadrhi_r} = ( {adr15_q,adr14}==2'b01 ) ? {2'b10,hibit_tmp_r,2'b00} : {1'b0,  !({adr15_q,adr14}==2'b11 ), shadow_bank, 2'b11 };              
+ 	3'b101: {exp_ram_r, ramcs_b_r, ramadrhi_r} = ( {adr15_q,adr14}==2'b01 ) ? {2'b10,hibit_tmp_r,2'b01} : {1'b0,  !({adr15_q,adr14}==2'b11 ), shadow_bank, 2'b11 };              
+ 	3'b110: {exp_ram_r, ramcs_b_r, ramadrhi_r} = ( {adr15_q,adr14}==2'b01 ) ? {2'b10,hibit_tmp_r,2'b10} : {1'b0,  !({adr15_q,adr14}==2'b11 ), shadow_bank, 2'b11 };              
+ 	3'b111: {exp_ram_r, ramcs_b_r, ramadrhi_r} = ( {adr15_q,adr14}==2'b01 ) ? {2'b10,hibit_tmp_r,2'b11} : {1'b0,  !({adr15_q,adr14}==2'b11 ), shadow_bank, 2'b11 };
+      endcase // case (hibit_tmp_r[2:0])
+`endif      
+`endif      
     end
     else begin
       case (ramblock_q[2:0])
