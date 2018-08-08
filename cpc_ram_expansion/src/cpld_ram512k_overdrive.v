@@ -27,11 +27,9 @@
 // Enable shadow mode for use at least in mode C3
 `define SHADOW_MODE  1
 // Enable full shadow mode where all RW accesses are from/to shadow bank in all modes (incl. mode C0)
-//`define FULL_SHADOW_MODE 1
+`define FULL_SHADOW_MODE 1
 // Enable partial shadow mode where all W accesses are to shadow bank in all modes (incl. mode C0), but only block 3 is read
-`define PARTIAL_SHADOW_MODE 1
-
-
+//`define PARTIAL_SHADOW_MODE 1
 `define OVERDRIVE 1
 
 module cpld_ram512k_overdrive(rfsh_b,adr15,adr14,iorq_b,mreq_b,ramrd_b,reset_b,wr_b,rd_b,data,ramdis,ramcs_b,ramadrhi,ready, clk, ramoe_b, ramwe_b);
@@ -62,7 +60,7 @@ module cpld_ram512k_overdrive(rfsh_b,adr15,adr14,iorq_b,mreq_b,ramrd_b,reset_b,w
   reg              clken_lat_qb;
   reg              adr15_q;
   reg              mreq_b_q;
-  reg              mwr_cyc_q;
+  reg              mwr_cyc_q, mwr_cyc_f_q;
   reg              exp_ram_r;   
   reg              shadow_en_b_r;
 
@@ -79,7 +77,6 @@ module cpld_ram512k_overdrive(rfsh_b,adr15,adr14,iorq_b,mreq_b,ramrd_b,reset_b,w
 `endif  
   wire [2:0]       shadow_bank = 3'b111; // use 3'b111 or 3'b011
 
-  parameter IDLE=2'b00, WM0=2'b11, WM1=2'b10, END=2'b01;
   // Create negedge clock on IO write event - clock low pulse will be suppressed if not an IOWR* event
   // but if the pulse is allowed through use the trailing (rising) edge to capture data
   wire             wclk    = !(clk|clken_lat_qb); 
@@ -105,21 +102,21 @@ module cpld_ram512k_overdrive(rfsh_b,adr15,adr14,iorq_b,mreq_b,ramrd_b,reset_b,w
   // 
 
   // overdrive rd_b for all expansion write accesses only 
-  assign rd_b  = ( overdrive_mode ) ? ( exp_ram_r & (mwr_cyc_q | !mreq_b)) ? 1'b0 : 1'bz : 1'bz;
+  assign rd_b  = ( overdrive_mode ) ? ( exp_ram_r & (mwr_cyc_q)) ? 1'b0 : 1'bz : 1'bz;
   
 `ifdef FULL_SHADOW_MODE  
   // overdrive adr15 only for writes as otherwise it will cause a ROM access for reads
-  assign adr15 = ( overdrive_mode ) ? (((ramblock_q[2:0]==3'b011) & adr14 & mwr_cyc_q)  ? 1'b1 : 1'bz) : 1'bz;
-  // Never use internal RAM for reads in shadow mode!
-  assign ramdis = shadow_mode | !ramcs_b_r | mwr_cyc_q ;  
+  assign adr15 = ( overdrive_mode ) ? (((ramblock_q[2:0]==3'b011) & adr14 & (mwr_cyc_q))  ? 1'b1 : 1'bz) : 1'bz;
+  // Never use internal RAM for reads in shadow mode but need to consider non shadow mode using overdrive
+  assign ramdis = shadow_mode | !ramcs_b_r ;  
   // In shadow mode SRAM is always enabled for all RAM accesses
-  assign ramcs_b = (shadow_mode) ? (mreq_b & ramrd_b & !mwr_cyc_q) : ramcs_b_r | ! (!mreq_b | mwr_cyc_q);
+  assign ramcs_b = (shadow_mode) ? mreq_b : ramcs_b_r | mreq_b;
 `else
-  assign ramdis  = !ramcs_b_r | mwr_cyc_q;  
-  assign ramcs_b = (shadow_mode) ? ramcs_b_r | (mreq_b & !mwr_cyc_q & ramrd_b) : ramcs_b_r | mreq_b | !mwr_cyc_q;  
   // overdrive A15 HIGH only in mode 3 when address is 0x4000-0x0x7FFF and valid WRITE mcycle -> write will go to RAM
   // For read cycles dont overdrive A15 as the remapping for the RAM read will come from shadow memory to avoid clash with enabled upper ROM
-  assign adr15 = ( overdrive_mode ) ? (((ramblock_q[2:0]==3'b011) & adr14 & mwr_cyc_q) ? 1'b1 : 1'bz) : 1'bz;
+  assign adr15 = ( overdrive_mode ) ? (((ramblock_q[2:0]==3'b011) & adr14 & (mwr_cyc_q)) ? 1'b1 : 1'bz) : 1'bz;
+  assign ramdis  = ( !ramcs_b_r & (!mreq_b|mwr_cyc_q));  
+  assign ramcs_b = ramcs_b_r | mreq_b ;  
 `endif  
 
   always @ ( negedge reset_b or posedge clk )
@@ -129,11 +126,17 @@ module cpld_ram512k_overdrive(rfsh_b,adr15,adr14,iorq_b,mreq_b,ramrd_b,reset_b,w
     end                                     
     else begin
       mreq_b_q <= mreq_b;                                     
-      if ( !mreq_b & mreq_b_q & rfsh_b & rd_b)
+      if ( !mreq_b & mreq_b_q & rfsh_b & rd_b )
         mwr_cyc_q <= 1'b1;
-      else if ( mreq_b )
+      else if ( mreq_b ) // | !m1_b
         mwr_cyc_q <= 1'b0;
     end // else: !if( !reset_b)
+
+  always @ ( negedge reset_b or negedge clk )
+    if ( !reset_b)
+      mwr_cyc_f_q <= 1'b0;
+    else
+      mwr_cyc_f_q <= mwr_cyc_q;
 
   always @ (negedge reset_b or negedge mreq_b ) 
     if ( !reset_b ) 
@@ -171,7 +174,7 @@ module cpld_ram512k_overdrive(rfsh_b,adr15,adr14,iorq_b,mreq_b,ramrd_b,reset_b,w
 `else 
 `ifdef PARTIAL_SHADOW_MODE
       // PARTIAL SHADOW MODE - all write accesses go to shadow memory but only shadow block 3 is ever read in mode C3 at bank 0x4000 (remapped to 0xC000)
-      shadow_en_b_r = !(!wr_b & adr14 & adr15);
+      shadow_en_b_r = !(!wr_b & adr14 & adr15_q);
       case (ramblock_q[2:0])
  	3'b000: {exp_ram_r, ramcs_b_r, ramadrhi_r} = { 1'b0, shadow_en_b_r , shadow_bank, adr15_q,adr14 };
  	3'b001: {exp_ram_r, ramcs_b_r, ramadrhi_r} = ( {adr15_q,adr14}==2'b11 ) ? {1'b1, 1'b0, hibit_tmp_r,2'b11} : { 1'b0, shadow_en_b_r , shadow_bank, adr15_q,adr14 };
