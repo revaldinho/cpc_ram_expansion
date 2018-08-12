@@ -14,11 +14,13 @@ setenv TERM xterm
 
 cp ../../common_pcb/autorouter.ctl /tmp
 
+## Original CPLD based RAM board - 6128 only
 make cpc_ram_board.net -f ../../common_pcb/Makefile
 make cpc_ram_board.scr -f ../../common_pcb/Makefile
 
-make cpc_ram_board_9572xl.net -f ../../common_pcb/Makefile
-make cpc_ram_board_9572xl.scr -f ../../common_pcb/Makefile
+## Revised CPLD based RAM board - 464 and 6128
+make cpc_ram512k_v110.net -f ../../common_pcb/Makefile
+make cpc_ram512k_v110.scr -f ../../common_pcb/Makefile
 
 cp ../../common_pcb/autorouter_74.ctl /tmp
 
