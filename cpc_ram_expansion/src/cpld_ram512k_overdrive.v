@@ -1,5 +1,10 @@
 /* cpld_ram512K
  *
+ * ==============================================================================
+ * THIS CODE IS NOT SUITABLE FOR RUNNING IN A V1.00 CPLD BOARD WITHOUT MANUAL 
+ * MODIFICATIONS TO HOOK UP ADDITIONAL CPC SIGNALS AND BREAK EXISTING CONNECTIONS
+ * ==============================================================================
+ * 
  * CPLD module to implement all logic for an Amstrad CPC 512K RAM extension card
  *
  * (c) 2018, Revaldinho
