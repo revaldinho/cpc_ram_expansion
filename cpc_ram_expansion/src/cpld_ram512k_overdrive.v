@@ -23,10 +23,16 @@
  * -------------------------------------------------------------------------------------------------------------------------------
  * 1100-1111       -       3      3      3      -      -      -      -      -      7       7      7     -      -      -      -
  * 1000-1011       -       -      2      -      -      -      -      -      -      -       6      -     -      -      -      -
- * 0100-0111       -       -      1      -      0      1       2      3     -      -       5      -     4      5      6      7
+ * 0100-0111       -       -      1      **     0      1       2      3     -      -       5      **    4      5      6      7
  * 0000-0011       -       -      0      -      -      -      -      -      -      -       4      -     -      -      -      -
  * -------------------------------------------------------------------------------------------------------------------------------
  *
+ * Mode 3 is special when accessing base RAM at block &4000-&7FFF. All accesses need to be redirected to base RAM at &C000-&FFFF. 
+ * This is handled internally on the CPC6128 and Plus machines. The 464 does not do the remapping internally, and simply back
+ * driving the A15 line high causes problems as the gate array may think that reading from &C000 onwards may be a ROM access. 
+ * The shadow memory mode is provided to allow mode 3 to operate correctly on the CPC464 and 664 but as implemented currently
+ * means that 64K (an entire bank) of the expansion has to be given up to the shadow function. 
+ * 
  */
 
 
@@ -144,7 +150,7 @@ module cpld_ram512k_overdrive(rfsh_b,adr15,adr14,iorq_b,mreq_b,ramrd_b,reset_b,w
         END:  state_q <= (!mreq_b & mreq_b_q & rfsh_b & rd_b ) ? T1 : IDLE ;
       endcase
   
-  always @ ( negedge reset_b or posedge clk)
+  always @ ( negedge reset_b or negedge clk)
     if ( !reset_b )
       ready_f_q = 1'b1;
     else
