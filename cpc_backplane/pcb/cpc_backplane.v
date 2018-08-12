@@ -8,6 +8,8 @@
 //
 // Unbuffered board - assume power and signal buffering is done on a dedicated board.
 //
+// 2018-08-12 Add 4th connector and simplify external power connections
+
 module cpc_backplane ();
 
   // wire declarations
@@ -60,11 +62,6 @@ module cpc_backplane ();
                    .p2(VDD2),
                    .p3(VDD_EXT)
                    );
-  hdr1x03      L2 (
-                   .p1(VDD_CPC),
-                   .p2(VDD3),
-                   .p3(VDD_EXT)
-                   );
 
   // 3 pin Tabbed power connector for external 5V power
   powerheader3   PCONN (
@@ -73,10 +70,9 @@ module cpc_backplane ();
                         .gnd(VSS)
                         );
 
-  // Radial electolytic, one per board
+  // Radial electolytics
   cap22uf         CAP22UF_0(.minus(VSS),.plus(VDD1));
   cap22uf         CAP22UF_1(.minus(VSS),.plus(VDD2));
-  cap22uf         CAP22UF_2(.minus(VSS),.plus(VDD3));
   
   // Amstrad CPC Edge Connector
   //
@@ -153,7 +149,7 @@ module cpc_backplane ();
                       .p30(D5),      .p29(D4),
                       .p28(D3),      .p27(D2),
                       .p26(D1),      .p25(D0),
-                      .p24(VDD2), .p23(MREQ_B),
+                      .p24(VDD2),    .p23(MREQ_B),
                       .p22(M1_B),    .p21(RFSH_B),
                       .p20(IOREQ_B), .p19(RD_B),
                       .p18(WR_B),    .p17(HALT_B),
@@ -180,7 +176,35 @@ module cpc_backplane ();
                       .p30(D5),      .p29(D4),
                       .p28(D3),      .p27(D2),
                       .p26(D1),      .p25(D0),
-                      .p24(VDD3),    .p23(MREQ_B),
+                      .p24(VDD2),    .p23(MREQ_B),
+                      .p22(M1_B),    .p21(RFSH_B),
+                      .p20(IOREQ_B), .p19(RD_B),
+                      .p18(WR_B),    .p17(HALT_B),
+                      .p16(INT_B),   .p15(NMI_B),
+                      .p14(BUSRQ_B), .p13(BUSACK_B),
+                      .p12(READY),   .p11(BUSRESET_B),
+                      .p10(RESET_B), .p9 (ROMEN_B),
+                      .p8 (ROMDIS),  .p7 (RAMRD_B),
+                      .p6 (RAMDIS),  .p5 (CURSOR),
+                      .p4 (LPEN),    .p3 (EXP_B),
+                      .p2 (VSS),     .p1 (CLK)
+                      ) ;
+
+  idc_skt_50w  CONN4 (
+                      .p50(Sound),   .p49(VSS),
+                      .p48(A15),     .p47(A14),
+                      .p46(A13),     .p45(A12),
+                      .p44(A11),     .p43(A10),
+                      .p42(A9),      .p41(A8)
+                      .p40(A7),      .p39(A6),
+                      .p38(A5),      .p37(A4),
+                      .p36(A3),      .p35(A2),
+                      .p34(A1),      .p33(A0),
+                      .p32(D7),      .p31(D6)
+                      .p30(D5),      .p29(D4),
+                      .p28(D3),      .p27(D2),
+                      .p26(D1),      .p25(D0),
+                      .p24(VDD2),    .p23(MREQ_B),
                       .p22(M1_B),    .p21(RFSH_B),
                       .p20(IOREQ_B), .p19(RD_B),
                       .p18(WR_B),    .p17(HALT_B),
