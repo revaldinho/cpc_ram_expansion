@@ -23,15 +23,24 @@
  * -------------------------------------------------------------------------------------------------------------------------------
  * 1100-1111       -       3      3      3      -      -      -      -      -      7       7      7     -      -      -      -
  * 1000-1011       -       -      2      -      -      -      -      -      -      -       6      -     -      -      -      -
- * 0100-0111       -       -      1      **     0      1       2      3     -      -       5      **    4      5      6      7
+ * 0100-0111       -       -      1      -      0      1       2      3     -      -       5      -     4      5      6      7
  * 0000-0011       -       -      0      -      -      -      -      -      -      -       4      -     -      -      -      -
  * -------------------------------------------------------------------------------------------------------------------------------
  *
- * Mode 3 is special when accessing base RAM at block &4000-&7FFF. All accesses need to be redirected to base RAM at &C000-&FFFF. 
- * This is handled internally on the CPC6128 and Plus machines. The 464 does not do the remapping internally, and simply back
- * driving the A15 line high causes problems as the gate array may think that reading from &C000 onwards may be a ROM access. 
- * The shadow memory mode is provided to allow mode 3 to operate correctly on the CPC464 and 664 but as implemented currently
- * means that 64K (an entire bank) of the expansion has to be given up to the shadow function. 
+ * 
+ * Test Status
+ * 
+ * All OK @ 4.65V [NB possibly sensitive to having JTAG header connected - higher current drain with connector in place]
+ * Tests
+ * o TEST.BIN
+ * o RAMTEST.BIN
+ * Apps
+ * o DK'Tronics Bank S/W
+ * o Future OS Desktop (appears in mono only, but pointer is good)
+ * o CP/M plus boots, Turbo Pascal runs ok BUT BBC BASIC doesn't load (disk problem?)
+ * Games & Demos
+ * o ZTB
+ * o ChaseHQ
  * 
  */
 
@@ -40,7 +49,7 @@
 `define OVERDRIVE            1 // Disable writing to base RAM when accessing expansion, remap writes in mode C3. This is the 464 mode.
 `define SHADOW_MODE 1          // Need to define this to get full C3 mode operation on a 464. Will be a DIP switch on a revised board
 //`define FULL_SHADOW_MODE   1 // Always prefer shadow RAM for reads to base RAM, all blocks. Otherwise a partial shadow scheme is used.
-`define STATE_MACHINE      1 // Use state machine to compute end of write cycle rather than sensing via mreq/m1/rfsh etc.
+`define STATE_MACHINE        1 // Use state machine to compute end of write cycle rather than sensing via mreq/m1/rfsh etc.
 
 `ifdef FULL_SHADOW_MODE
     `define SHADOW_MODE 1
@@ -75,7 +84,7 @@ module cpld_ram512k_overdrive(rfsh_b,adr15,adr14,iorq_b,mreq_b,ramrd_b,reset_b,w
   reg              clken_lat_qb;
   reg              adr15_q;
   reg              mreq_b_q;
-  reg              mwr_cyc_q;
+  reg              mwr_cyc_q, mwr_cyc_f_q;
   reg              exp_ram_r;   
   reg              shadow_en_b_r;
   reg              adr15_overdrive_r;
@@ -98,10 +107,10 @@ module cpld_ram512k_overdrive(rfsh_b,adr15,adr14,iorq_b,mreq_b,ramrd_b,reset_b,w
   // but if the pulse is allowed through use the trailing (rising) edge to capture data
   wire             wclk    = !(clk|clken_lat_qb); 
 
-  // Combination of RAMCS and RAMRD determine whether RAM output is enabled
-  assign ramoe_b = ramrd_b ;		
   assign ramadrhi = ramadrhi_r ;
   assign ramwe_b = wr_b ;
+  // Combination of RAMCS and RAMRD determine whether RAM output is enabled 
+  assign ramoe_b = ramrd_b | (overdrive_mode & mwr_cyc_w) ;
 
   //          ____      ____      ____      ____      ____  
   // CLK     /    \____/    \____/    \____/    \____/    \_
@@ -127,10 +136,9 @@ module cpld_ram512k_overdrive(rfsh_b,adr15,adr14,iorq_b,mreq_b,ramrd_b,reset_b,w
   // Never, ever use internal RAM for reads in full shadow mode
   assign ramdis = 1'b1;
   // In full shadow mode SRAM is always enabled for all real RAM accesses
-  assign ramcs_b = mreq_b | !rfsh_b;   
+  assign ramcs_b = mreq_b | !rfsh_b;
 `else // PARTIAL_SHADOW_MODE
-//  assign ramdis  = !ramcs_b_r & (!mreq_b|!ramrd_b) ;
-  assign ramdis  = !ramcs_b_r ;  
+  assign ramdis  = !ramcs_b_r & !mreq_b ;
   assign ramcs_b = ramcs_b_r | mreq_b | !rfsh_b ;
 `endif      
   
@@ -144,21 +152,20 @@ module cpld_ram512k_overdrive(rfsh_b,adr15,adr14,iorq_b,mreq_b,ramrd_b,reset_b,w
       state_q <= IDLE;
     else
       case ( state_q ) 
-        IDLE: state_q <= (!mreq_b & rfsh_b & rd_b ) ? T1 : IDLE ;
+        IDLE: state_q <= (!mreq_b & mreq_b_q & rfsh_b & rd_b ) ? T1 : IDLE ;
         T1:   state_q <= (ready_f_q) ? T2: T1;
         T2:   state_q <= END;
         // END same as IDLE but provide option to extend RAMDIS etc over last cycle by decoding this state
-        END:  state_q <= (!mreq_b & rfsh_b & rd_b ) ? T1 : IDLE ;
+        END:  state_q <= (!mreq_b & mreq_b_q & rfsh_b & rd_b ) ? T1 : IDLE ;
       endcase
   
-  always @ ( negedge reset_b or posedge clk)
-    // test.bin fails when using negedge clk !
+  always @ ( negedge reset_b or negedge clk)
     if ( !reset_b )
       ready_f_q = 1'b1;
     else
       ready_f_q = ready;
 `else
-  assign mwr_cyc_w = mwr_cyc_q;
+  mwr_cyc_w = mwr_cyc_q;
 
   always @ ( negedge reset_b or posedge clk )
     if ( !reset_b)
@@ -168,6 +175,7 @@ module cpld_ram512k_overdrive(rfsh_b,adr15,adr14,iorq_b,mreq_b,ramrd_b,reset_b,w
         mwr_cyc_q <= 1'b1;
       else if ( mreq_b | !rfsh_b ) // | !m1_b  
         mwr_cyc_q <= 1'b0;
+`endif                      
 
   always @ ( negedge reset_b or posedge clk )
       if ( !reset_b)
@@ -175,13 +183,21 @@ module cpld_ram512k_overdrive(rfsh_b,adr15,adr14,iorq_b,mreq_b,ramrd_b,reset_b,w
       else
           mreq_b_q <= mreq_b;                                     
 
-`endif                      
-
-  always @ (negedge reset_b or negedge mreq_b ) 
-    if ( !reset_b ) 
-      adr15_q <= 1'b0;
+  always @ ( negedge reset_b or negedge clk )
+    if ( !reset_b)
+      mwr_cyc_f_q <= 1'b0;
     else
-      adr15_q <= adr15;
+      mwr_cyc_f_q <= mwr_cyc_q;
+
+   always @ (negedge reset_b or negedge mreq_b ) 
+     if ( !reset_b ) 
+       adr15_q <= 1'b0;
+     else
+       adr15_q <= adr15;
+  
+//  always @ (*)
+//    if ( mreq_b ) 
+//      adr15_q <= adr15;
   
   always @ ( * )
     if ( clk ) 
@@ -226,13 +242,13 @@ module cpld_ram512k_overdrive(rfsh_b,adr15,adr14,iorq_b,mreq_b,ramrd_b,reset_b,w
       shadow_en_b_r = !(!wr_b & adr14 & adr15_q);
       case (ramblock_q[2:0])
  	3'b000: {exp_ram_r, ramcs_b_r, ramadrhi_r} = { 1'b0, shadow_en_b_r , shadow_bank, adr15_q,adr14 };
- 	3'b001: {exp_ram_r, ramcs_b_r, ramadrhi_r} = ( {adr15,adr14}==2'b11 ) ? {1'b1, 1'b0, hibit_tmp_r,2'b11} : { 1'b0, shadow_en_b_r , shadow_bank, adr15,adr14 };
- 	3'b010: {exp_ram_r, ramcs_b_r, ramadrhi_r} = { 1'b1, 1'b0,hibit_tmp_r, adr15,adr14} ; 
- 	3'b011: {exp_ram_r, ramcs_b_r, ramadrhi_r} = ( {adr15_q,adr14}==2'b11 ) ? {2'b10,hibit_tmp_r,2'b11} : ({adr15_q,adr14}==2'b01) ? {2'b00,shadow_bank,2'b11} : { 1'b0, shadow_en_b_r , shadow_bank, adr15,adr14 };
- 	3'b100: {exp_ram_r, ramcs_b_r, ramadrhi_r} = ( {adr15,adr14}==2'b01 ) ? {2'b10,hibit_tmp_r,2'b00} : { 1'b0, shadow_en_b_r , shadow_bank, adr15, adr14 };              
- 	3'b101: {exp_ram_r, ramcs_b_r, ramadrhi_r} = ( {adr15,adr14}==2'b01 ) ? {2'b10,hibit_tmp_r,2'b01} : { 1'b0, shadow_en_b_r , shadow_bank, adr15, adr14 };              
- 	3'b110: {exp_ram_r, ramcs_b_r, ramadrhi_r} = ( {adr15,adr14}==2'b01 ) ? {2'b10,hibit_tmp_r,2'b10} : { 1'b0, shadow_en_b_r , shadow_bank, adr15, adr14 };              
- 	3'b111: {exp_ram_r, ramcs_b_r, ramadrhi_r} = ( {adr15,adr14}==2'b01 ) ? {2'b10,hibit_tmp_r,2'b11} : { 1'b0, shadow_en_b_r , shadow_bank, adr15, adr14 };
+ 	3'b001: {exp_ram_r, ramcs_b_r, ramadrhi_r} = ( {adr15_q,adr14}==2'b11 ) ? {1'b1, 1'b0, hibit_tmp_r,2'b11} : { 1'b0, shadow_en_b_r , shadow_bank, adr15_q,adr14 };
+ 	3'b010: {exp_ram_r, ramcs_b_r, ramadrhi_r} = { 1'b1, 1'b0,hibit_tmp_r, adr15_q,adr14} ; 
+ 	3'b011: {exp_ram_r, ramcs_b_r, ramadrhi_r} = ( {adr15_q,adr14}==2'b11 ) ? {2'b10,hibit_tmp_r,2'b11} : ({adr15_q,adr14}==2'b01) ? {2'b00,shadow_bank,2'b11} : { 1'b0, shadow_en_b_r , shadow_bank, adr15_q,adr14 };
+ 	3'b100: {exp_ram_r, ramcs_b_r, ramadrhi_r} = ( {adr15_q,adr14}==2'b01 ) ? {2'b10,hibit_tmp_r,2'b00} : { 1'b0, shadow_en_b_r , shadow_bank, adr15_q, adr14 };              
+ 	3'b101: {exp_ram_r, ramcs_b_r, ramadrhi_r} = ( {adr15_q,adr14}==2'b01 ) ? {2'b10,hibit_tmp_r,2'b01} : { 1'b0, shadow_en_b_r , shadow_bank, adr15_q, adr14 };              
+ 	3'b110: {exp_ram_r, ramcs_b_r, ramadrhi_r} = ( {adr15_q,adr14}==2'b01 ) ? {2'b10,hibit_tmp_r,2'b10} : { 1'b0, shadow_en_b_r , shadow_bank, adr15_q, adr14 };              
+ 	3'b111: {exp_ram_r, ramcs_b_r, ramadrhi_r} = ( {adr15_q,adr14}==2'b01 ) ? {2'b10,hibit_tmp_r,2'b11} : { 1'b0, shadow_en_b_r , shadow_bank, adr15_q, adr14 };
       endcase // case (hibit_tmp_r[2:0])
 `endif 
     end
