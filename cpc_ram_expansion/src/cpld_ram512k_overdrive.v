@@ -28,19 +28,44 @@
  * -------------------------------------------------------------------------------------------------------------------------------
  *
  * 
- * Test Status
+ * Check-in Status table - 464 Mode
+ * ================================
  * 
- * All OK @ 4.65V [NB possibly sensitive to having JTAG header connected - higher current drain with connector in place]
- * Tests
- * o TEST.BIN
- * o RAMTEST.BIN
- * Apps
- * o DK'Tronics Bank S/W
- * o Future OS Desktop (appears in mono only, but pointer is good)
- * o CP/M plus boots, Turbo Pascal runs ok BUT BBC BASIC doesn't load (disk problem?)
- * Games & Demos
- * o ZTB
- * o ChaseHQ
+ * 464 Serial Number    : 
+ * Overdrive Mode       : ON/RD_B + ADR15
+ * Shadow Mode          : ON/Partial
+ * Write cycle control  : State Machine
+ * A15_Q                : Flopped (not latched)
+ * 
+ *                     |Result| Notes                                                 
+ * --------------------+------+-------------------------------------------------------+
+ * Tests/Voltage       |5.00V |                                                       |
+ * --------------------+------+-------------------------------------------------------+
+ * Test Programs       |      |                                                       |
+ *  o test.bin         | PASS |                                                       |
+ *  o ramtest.bin      | PASS |                                                       |
+ * Apps                |      |                                                       |
+ *  o CP/M+ TurboPascal| PASS |                                                       |
+ *  o CP/M+ BBC BASIC  | FAIL | "Cannot load program" disk loading error              |
+ *  o CP/M+ WordStar   | PASS |                                                       |
+ *  o FutureOS Desktop |      | Desktop in mono, but fully operational                |
+ *  o Amstrad Bankman  | NA   |                                                       |
+ *  o DK'T Bankman     | PASS |                                                       |
+ *  o DK'T SiDisc      | PASS |                                                       |
+ * Demos               |      |                                                       |
+ *  o Phortem          |      |                                                       |
+ *  o Batman           | NA   | Unsupported CRTC - not a RAM board issue              |
+ * Other               |      |                                                       |
+ *  o Chase HQ         | PASS | 128K Version with digitized speech                    |
+ *  o ZapTBalls        | PASS |                                                       |
+ *  o Double Dragon    | PASS | Loading graphics corrupt but game runs fine           |
+ *  o P47              | FAIL | Loads and start ok but game screen corrupt - unusable |
+ *  o HardDrivin'      | PASS |                                                       |
+ *  o Prehistorik 2    | PASS |                                                       |
+ *  o RoboCop          |      | 128K version with digitized speech                    |
+ *  o Gryzor           |      |                                                       |
+ *  o R-Type           |      | Loads and start ok but game screen corrupt - unusable |
+ * --------------------+------+-------------------------------------------------------+
  * 
  */
 
@@ -138,7 +163,7 @@ module cpld_ram512k_overdrive(rfsh_b,adr15,adr14,iorq_b,mreq_b,ramrd_b,reset_b,w
   // In full shadow mode SRAM is always enabled for all real RAM accesses
   assign ramcs_b = mreq_b | !rfsh_b;
 `else // PARTIAL_SHADOW_MODE
-  assign ramdis  = !ramcs_b_r & !mreq_b ;
+  assign ramdis  = !ramcs_b_r  ;
   assign ramcs_b = ramcs_b_r | mreq_b | !rfsh_b ;
 `endif      
   
