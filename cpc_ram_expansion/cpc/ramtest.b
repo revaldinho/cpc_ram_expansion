@@ -1,8 +1,9 @@
 MANIFEST $(
-       BLKBOT = #x4000  
-       BLKTOP = #x4FFF
-       BLKSZ  = #X1000
-       BANKMAN= #x7FFF
+  BLKBOT = #x4000  
+  BLKTOP = #x4FFF
+  BLKSZ  = #X1000
+  BANKMAN= #x7FFF
+  RAM=0
 $)
 
 STATIC $(
@@ -20,23 +21,6 @@ LET ramsel( bank, block ) BE $(
   OUT( BANKMAN, #xC0 | (bank<<3) | #x04 | (block&#x03) )
 $) 
 
-LET poke( adr, val ) BE $(
-  // Get low byte val into A
-  INLINE #xDD,#x7E,#x7E   // ld a, (ix+126)
-  // Get ADR into DE
-  INLINE #xDD,#x56,#x7D   // ld d, (ix+125)
-  INLINE #xDD,#x5E,#x7C   // ld e, (ix+124)
-  INLINE #x12             // ld (de),a
-$)
-
-LET peek( adr ) = VALOF $(
-  LET v = 0
-  INLINE #xDD,#x46,#x7F   // ld b, (ix+127)
-  INLINE #xDD,#x4E,#x7E   // ld c, (ix+126)
-  INLINE #x0A             // ld a, (bc)
-  INLINE #xDD,#x77,#x76   // ld (ix+118),a
-  RESULTIS v
-$)
 
 /*
  * rollcall()
@@ -51,14 +35,14 @@ LET rollcall() = VALOF $(
     FOR bank=0 TO 7 DO $(
         FOR block=0 TO 3 DO $(
             ramsel(bank,block)
-            poke( BLKBOT, (bank<<2)+block)
+            RAM%BLKBOT:=(bank<<2)+block
         $)
     $)
 
     FOR bank=0 TO 7 DO $(
         FOR block=0 TO 3 DO $(
             ramsel(bank,block)
-            IF peek( BLKBOT) = ((bank<<2)+block) DO $(
+            IF RAM%BLKBOT = ((bank<<2)+block) DO $(
                ledger!((bank<<2)+block+1) := 1
                ramblocks := ramblocks + 1
             $)
@@ -91,26 +75,26 @@ LET blocktest(block_abs) = VALOF $(
     FOR bkg_num = 1 TO BKG%0 DO $(
         data := BKG%bkg_num
         FOR adr =BLKBOT TO BLKTOP DO $(
-            poke( adr, data)
+            RAM%adr:=data
         $)
         wrch('.')
         FOR adr =BLKBOT TO BLKTOP DO $(
-            UNLESS ( peek(adr) = data) DO fails := fails + 1
-            poke( adr, ~(data))
+            UNLESS ( RAM%adr = data) DO fails := fails + 1
+            RAM%adr:= ~data
         $)
         wrch('.')
         FOR adr =BLKBOT TO BLKTOP DO $(
-            UNLESS ( peek(adr) EQV data ) DO fails := fails + 1
-            poke( adr, data)
+            UNLESS ( RAM%adr EQV data ) DO fails := fails + 1
+            RAM%adr:= data
         $)
         wrch('.')
         FOR adr =BLKTOP TO BLKBOT BY -1 DO $(
-            UNLESS (peek(adr) = data) DO fails := fails + 1
-            poke( adr, ~(data))
-        $)
+            UNLESS (RAM%adr = data) DO fails := fails + 1
+            RAM%adr:= ~data
+        $) 
         wrch('.')
         FOR adr =BLKTOP TO BLKBOT BY -1 DO $(
-            UNLESS (peek(adr) EQV data) DO fails := fails + 1
+            UNLESS (RAM%adr EQV data) DO fails := fails + 1
         $)
         wrch('.')
     $)
@@ -136,7 +120,7 @@ LET fullramtest() = VALOF $(
            bank := (block >> 2)&#x7
            subblock := block & #x3
            ramsel(bank, subblock)
-           FOR adr =BLKBOT TO BLKTOP DO poke( adr, BKG)
+           FOR adr =BLKBOT TO BLKTOP DO RAM%adr:=BKG
         $)    
         wrch('.')           
     $)
@@ -148,8 +132,8 @@ LET fullramtest() = VALOF $(
            subblock := block & #x3
            ramsel(bank,subblock)
            FOR adr =BLKBOT TO BLKTOP DO $(
-               UNLESS (peek(adr) = BKG) DO fails := fails + 1
-               poke( adr, ~(BKG))
+               UNLESS (RAM%adr = BKG) DO fails := fails + 1
+               RAM%adr:= ~BKG
            $)
         $)
         wrch('.')           
@@ -163,8 +147,8 @@ LET fullramtest() = VALOF $(
            subblock := block & #x3
            ramsel(bank,subblock)
            FOR adr =BLKBOT TO BLKTOP DO $(
-               UNLESS (peek(adr) EQV (BKG)) DO fails := fails + 1
-               poke( adr, BKG)
+               UNLESS (RAM%adr EQV (BKG)) DO fails := fails + 1
+               RAM%adr:=BKG
            $)
         $)
         wrch('.')
@@ -177,8 +161,8 @@ LET fullramtest() = VALOF $(
            subblock := block & #x3
            ramsel(bank,subblock)
            FOR adr =BLKTOP TO BLKBOT BY -1 DO $(
-               UNLESS (peek(adr) = BKG) DO fails := fails + 1
-               poke( adr, ~(BKG))
+               UNLESS (RAM%adr = BKG) DO fails := fails + 1
+               RAM%adr:= ~BKG
            $)
         $)
         wrch('.')
@@ -192,8 +176,8 @@ LET fullramtest() = VALOF $(
            subblock := block & #x3
            ramsel(bank,subblock)
            FOR adr =BLKTOP TO BLKBOT BY -1 DO $(
-               UNLESS (peek(adr) EQV (BKG)) DO fails := fails + 1
-               poke( adr, BKG)
+               UNLESS (RAM%adr EQV (BKG)) DO fails := fails + 1
+               RAM%adr:=BKG
            $)
         $)
         wrch('.')
