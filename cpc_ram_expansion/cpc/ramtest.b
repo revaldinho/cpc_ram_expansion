@@ -3,7 +3,13 @@ MANIFEST $(
   BLKTOP = #x4FFF
   BLKSZ  = #X1000
   BANKMAN= #x7FFF
+  VERBOSE = 1      
+  MAXFAILS= 4
+  BLK1 = #x4000
+  BLK3 = #xC000
+  TESTLEN = #x000F
   RAM=0
+  BKGS = 4   
 $)
 
 STATIC $(
@@ -17,8 +23,26 @@ LET out( adr, val ) BE $(
   INLINE #xED, #x79       // out (c), a
 $)
 
-LET ramsel( bank, block ) BE $(
-  OUT( BANKMAN, #xC0 | (bank<<3) | #x04 | (block&#x03) )
+
+LET exp_ramsel( mode, bank, block) BE $(
+  // Choosing mode >3 + a block number can access eff. modes 4-7
+  // e.g.  ramsel(4,4,0) -> addresses bank 4, block 0 using mode 4
+  //       ramsel(4,4,3) -> addresses bank 4, block 3 using mode 7
+  //       ramsel(3,4,x) -> select bank4 mode 3, block number ignored (and can be omitted)
+  //       ramsel(0,x,x) -> select base RAM, bank and block number ignored (and can be omitted)
+  TEST (mode>3) THEN 
+       out( BANKMAN, #xC0 | ((bank&#x07)<<3) | #x04 | (block&#x03) )
+  ELSE
+       out( BANKMAN, #xC0 | ((bank&#x07)<<3) | (mode&#x03))
+$)
+
+AND base_ramsel() BE $(
+    exp_ramsel(0,0,0)
+$)
+
+AND ramsel( bank, block ) BE $(
+  // legacy proc
+  exp_ramsel(4, bank, block)
 $) 
 
 
@@ -52,158 +76,127 @@ LET rollcall() = VALOF $(
 
 $)
 
-/* 
- * blocktest(block_abs)
- * 
- * RAM test of an absolute block number, is n=0..31 for a 512K expansion
- *
- */
 
-LET blocktest(block_abs) = VALOF $(
-    LET bank = (block_abs >> 2) & #x7
-    LET block = block_abs & #x3
-    LET fails = 0
-    LET data = 0    
-    LET BKG = "1234"  // put aside 4 bytes for data backgrounds
+LET block_fill( start, len, data) BE $(
+    LET adr,end=0,0
+    end := start+len-1
+    FOR adr = start TO end DO $(
+        RAM%adr := data
+    $)
+$)
 
-    BKG%1, BKG%2, BKG%3, BKG%4 := #x00, #x0F, #x33, #x55 
+LET memcpy( src, dest, len ) BE $(
+    LET s,end=0,0
+    LET d = dest
+    end := src+len-1
+    FOR s = src TO end DO $(
+        RAM%d := RAM%s
+        d := d+1
+    $)
+$)
 
-    writef("Testing bank %n, block %n ", bank,block)
-
-    ramsel( bank, block)
-
-    FOR bkg_num = 1 TO BKG%0 DO $(
-        data := BKG%bkg_num
-        FOR adr =BLKBOT TO BLKTOP DO $(
-            RAM%adr:=data
+LET block_check( start, len, data, verbose) =VALOF $(
+    LET adr,end, fails=0,0,0
+    end := start+len-1
+    FOR adr = start TO end DO $(
+        UNLESS RAM%adr=data THEN $(
+          fails:=fails+1
+          IF (verbose) THEN writef("Error: adr %X4 Exp. %X2 Act. %X2 *n", adr, data, RAM%adr)
         $)
-        wrch('.')
-        FOR adr =BLKBOT TO BLKTOP DO $(
-            UNLESS ( RAM%adr = data) DO fails := fails + 1
-            RAM%adr:= ~data
-        $)
-        wrch('.')
-        FOR adr =BLKBOT TO BLKTOP DO $(
-            UNLESS ( RAM%adr EQV data ) DO fails := fails + 1
-            RAM%adr:= data
-        $)
-        wrch('.')
-        FOR adr =BLKTOP TO BLKBOT BY -1 DO $(
-            UNLESS (RAM%adr = data) DO fails := fails + 1
-            RAM%adr:= ~data
-        $) 
-        wrch('.')
-        FOR adr =BLKTOP TO BLKBOT BY -1 DO $(
-            UNLESS (RAM%adr EQV data) DO fails := fails + 1
-        $)
-        wrch('.')
     $)
     RESULTIS fails
 $)
 
-/* 
- * fullramtest()
- * 
- * RAM test of full RAM to check no interference between blocks
- *
- */
-LET fullramtest() = VALOF $(
-    LET bank = 0
-    LET block = 0
-    LET subblock = 0
-    LET fails = 0
+LET rw_march( start,end,wr_val, rd_val, verbose ) = VALOF $(
+    LET fails,adr,up=0,0,0
+    LET incr = 0
+
+    incr := (end < start) -> -1, 1;
+    IF ( verbose>1 ) THEN writes("*n  March %s", (incr>0)-> "Up","Down")
+        
+    adr :=start
+    WHILE adr ~= end DO $(
+        TEST RAM%adr = rd_val THEN $(
+            IF (verbose & ( adr & #x1F = 0)) THEN writes (".")
+        $) ELSE $(
+            fails := fails+1
+            IF (verbose & (fails<=MAXFAILS)) THEN 
+               writef("*nFail @ adr=%X4 expected= %X2 actual= %X2 *n", adr, rd_val, RAM%adr)             
+        $)       
+        RAM%adr := wr_val
+        adr := adr + incr
+    $)
+    RESULTIS fails
+$)
+
+LET blk_9n_ramtest ( base, len, backgrounds, verbose) = VALOF $(
+    // Simple 9N test, return 0 for success, or number of mismatches
+    LET fails, memtop = 0,0
+    LET bkg = VEC 4
+    LET data, notdata = ?,?
+    LET maxbkg = 3
+
+    bkg!0 := #x00
+    bkg!1 := #xAA
+    bkg!2 := #xCC
+    bkg!3 := #xF0
+
+    UNLESS backgrounds > 3 DO maxbkg:=backgrounds
+
+    memtop := base+len-1
+    FOR i=0 TO maxbkg DO $(
+        data := (bkg!i) & #xFF
+        notdata := (~(bkg!i)) & #xFF    
+        block_fill(base,len, data)  // 1N 
+        fails := rw_march(base,memtop,notdata,data, verbose) // 2N 
+        fails := fails + rw_march(base,memtop,data,notdata, verbose) // 2N
+        fails := fails + rw_march(memtop,base,notdata,data, verbose) // 2N
+        fails := fails + rw_march(memtop,base,data,notdata, verbose) // 2N
+    $)
+    IF ( verbose>0 ) THEN newline()
+    RESULTIS fails
+$)
+
+
+LET exp_ramtest (mode, ledger, blk_fails, base_fails, verbose ) = VALOF $(    
+    // RAM Test suitable for modes 1,3,4-7, return 0 for success or number of fails
+    LET bank, blk, abs_blk = ?, ?, ?
+    LET start_blk = 0
+    LET blk_adr   = 0
+
+    base_ramsel()
+
+    TEST ( mode < 4 ) THEN $(
+       start_blk:=3 
+       blk_adr := BLK3
+    $) ELSE $(
+       start_blk:=0
+       blk_adr := BLK1
+    $)
+
+    block_fill(blk_adr,TESTLEN,#x00)
     
-    LET BKG = #x55
-
-    FOR block = 0 TO 31 DO $(
-        IF ledger!(block+1) DO $(
-           bank := (block >> 2)&#x7
-           subblock := block & #x3
-           ramsel(bank, subblock)
-           FOR adr =BLKBOT TO BLKTOP DO RAM%adr:=BKG
-        $)    
-        wrch('.')           
-    $)
-    newline()
-
-    FOR block = 0 TO 31 DO $(
-        IF ledger!(block+1) DO $(
-           bank := (block >> 2)&#x7
-           subblock := block & #x3
-           ramsel(bank,subblock)
-           FOR adr =BLKBOT TO BLKTOP DO $(
-               UNLESS (RAM%adr = BKG) DO fails := fails + 1
-               RAM%adr:= ~BKG
-           $)
-        $)
-        wrch('.')           
-    $)
-    newline()
-
-    //writef("Fails %n*n", fails)
-    FOR block = 0 TO 31 DO $(
-        IF ledger!(block+1) DO $(
-           bank := (block >> 2)&#x7
-           subblock := block & #x3
-           ramsel(bank,subblock)
-           FOR adr =BLKBOT TO BLKTOP DO $(
-               UNLESS (RAM%adr EQV (BKG)) DO fails := fails + 1
-               RAM%adr:=BKG
-           $)
-        $)
-        wrch('.')
-    $)
-    newline()
-    //writef("Fails %n*n", fails)
-    FOR block = 31 TO 0 BY -1 $(
-        IF ledger!(block+1) DO $(
-           bank := (block >> 2)&#x7
-           subblock := block & #x3
-           ramsel(bank,subblock)
-           FOR adr =BLKTOP TO BLKBOT BY -1 DO $(
-               UNLESS (RAM%adr = BKG) DO fails := fails + 1
-               RAM%adr:= ~BKG
-           $)
-        $)
-        wrch('.')
-    $)
-    newline()
-
-    //writef("Fails %n*n", fails)
-    FOR block = 31 TO 0 BY -1 $(
-        IF ledger!(block+1) DO $(
-           bank := (block >> 2)&#x7
-           subblock := block & #x3
-           ramsel(bank,subblock)
-           FOR adr =BLKTOP TO BLKBOT BY -1 DO $(
-               UNLESS (RAM%adr EQV (BKG)) DO fails := fails + 1
-               RAM%adr:=BKG
-           $)
-        $)
-        wrch('.')
-    $)
-    newline()
-
-    RESULTIS fails
-
-$)
-
-LET display(test_results) BE $(
-    LET bank = 0
-    writes("Block       0         1         2         3    *n")
-    writes("Bank  +---------+---------+---------+---------+*n")
-    FOR i=0 TO 31 DO $(
-        IF (i& #x3) = 0 DO writef("    %n |", (i>>2)&#x7)
-        TEST ledger!(i+1) THEN $(
-           TEST test_results!(i+1) THEN writes("  PASS   |")
-           ELSE writes("  FAIL   |")
-        $)
-        ELSE writes(" absent  |")
-        IF (i& #x3) = 3 DO $(
-           writes("*n")
+    FOR bank=0 TO 7 DO $(
+        writef("Checking bank %D *n", bank)
+        FOR blk=start_blk TO 3 DO $( 
+            abs_blk := bank*4 + blk
+            TEST (ledger!abs_blk) THEN $(
+               writef("  Block %D  ", blk)
+               exp_ramsel( 8, bank, blk)
+               blk_fails!abs_blk := blk_9n_ramtest(blk_adr, TESTLEN, BKGS, verbose)
+               writef("  Checking base RAM*n")
+               base_ramsel()
+               base_fails!abs_blk := block_check(blk_adr,TESTLEN,#x00, verbose)
+               IF ( base_fails!abs_blk >0 ) THEN block_fill(blk_adr,TESTLEN,#x00)
+               writef("*n*n  Exp. fails: %D  Base fails: %D *n",  blk_fails!abs_blk, base_fails!abs_blk)
+            $) ELSE $(
+               base_fails!abs_blk :=0
+               blk_fails!abs_blk :=0
+               writef("*n  Blk %D Absent", blk)
+            $)
         $)
     $)
-    writes("      +---------+---------+---------+---------+*n")
+    RESULTIS  (base_fails!abs_blk +  blk_fails!abs_blk)
 $)
 
 LET start() BE $(
@@ -213,11 +206,15 @@ LET start() BE $(
     LET total_ram_kb = 0
     LET ramblocks = 0
     LET t = 0
+    LET c47_blk_fails = VEC 32
+    LET c47_base_fails = VEC 32
+    LET tmp_blk, abs_blk, bank = 0,0,0
+    
     ledger := ledger_space
 
     t := starttest(2)
 
-    writes("*pR A M T E S T - (c) Revaldinho 2018*n")
+    writes("*pR A M T E S T V 2 - (c) Revaldinho 2018*n")
     writes("*nMemory Test for DK'Tronics Compatible RAM Expansions*n")
 
     FOR i=1 TO 32 DO ledger!i := 0
@@ -226,28 +223,33 @@ LET start() BE $(
     ramblocks := rollcall()
     writef("Found %n RAM blocks*n", ramblocks)
 
-    writes("*nRunning block by block RAM test*n")
-    FOR i=1 TO 32 DO $(
-        IF ledger!i DO $(
-             total_ram_kb := total_ram_kb + 16
-             fails := blocktest(i-1)
-             TEST fails > 0 THEN $(
-                 writes(" FAIL*n")
-                 test_results!i := 0
-             $) ELSE $(
-                 writes(" PASS*n")
-                 test_results!i := 1
-             $)
+    writes("*nMode C4-7 memory test*n")
+    writes("=====================*n")
+    exp_ramtest (8, ledger,c47_blk_fails,c47_base_fails, VERBOSE )
+
+    writes("*p*n          ** E X P A N S I O N  **  R A M T E S T  **  S U M M A R Y  ** *n")    
+    tmp_blk := 0
+    FOR i=0 TO 32 DO IF ledger!i THEN tmp_blk:= tmp_blk+1
+    writef("*nFound %D  expansion RAM blocks, Total RAM: 64K + %D K = %D K Bytes", tmp_blk, tmp_blk*16, (tmp_blk*16)+64)
+    writes("*n*nExpansion memory test:*n*n")    
+    writes("Bank   |   0    |   1    |   2    |   3    |   4    |   5    |   6    |   7    *n")
+    writes("Blk|Mde|Exp/Base|Exp/Base|Exp/Base|Exp/Base|Exp/Base|Exp/Base|Exp/Base|Exp/Base*n")
+    writes("---+---+--------+--------+--------+--------+--------+--------+--------+--------*n")
+    FOR blk=3 TO 0 BY -1 DO $(
+        writef("  %D |  %D ", blk, blk+4)
+        FOR bank=0 TO 7 DO $( 
+            abs_blk := bank*4 + blk
+            TEST (ledger!abs_blk) THEN $(
+                writes((c47_blk_fails!abs_blk)->"|BAD/","| OK/")
+                writes((c47_base_fails!abs_blk)->"BAD ","OK  ")  
+            $) ELSE writes("| Absent ")
         $)
+        newline()
     $)
+    writes("---+---+--------+--------+--------+--------+--------+--------+--------+--------*n")
 
-    writef("*n*nS U M M A R Y*n*n")
-    writef("Found %n KBytes Extension RAM*n*n", total_ram_kb)
-    display(test_results)
 
-    writes("*nRunning full RAM area test, all addresses*n")
-    fails := fullramtest()
-    
+
     TEST fails = 0 THEN writes("**** P A S S *****n") 
     ELSE writes("**** F A I L *****n")
     endtest(t)    

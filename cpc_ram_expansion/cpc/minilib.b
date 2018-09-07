@@ -5,7 +5,7 @@
 //
 // Include parts of the ARNOR ALIBHDR1 file
 
-option s-,b-,l-
+option s-,b-,l-,o #x8000
 
 MANIFEST $( bytesperword =2 ; endstream = -1 $)
 

@@ -48,12 +48,12 @@
  *  o CP/M+ TurboPascal| PASS |                                                       |
  *  o CP/M+ BBC BASIC  | FAIL | "Cannot load program" disk loading error              |
  *  o CP/M+ WordStar   | PASS |                                                       |
- *  o FutureOS Desktop |      | Desktop in mono, but fully operational                |
+ *  o FutureOS Desktop | PASS | Desktop in mono, but fully operational                |
  *  o Amstrad Bankman  | NA   |                                                       |
  *  o DK'T Bankman     | PASS |                                                       |
  *  o DK'T SiDisc      | PASS |                                                       |
  * Demos               |      |                                                       |
- *  o Phortem          |      |                                                       |
+ *  o Phortem          | PASS |                                                       |
  *  o Batman           | NA   | Unsupported CRTC - not a RAM board issue              |
  * Other               |      |                                                       |
  *  o Chase HQ         | PASS | 128K Version with digitized speech                    |
