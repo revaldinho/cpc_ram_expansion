@@ -22,7 +22,7 @@
  * -------------------------------------------------------------------------------------------------------------------------------
  * 1100-1111       -       3      3      3      -      -      -      -      -      7       7      7     -      -      -      -
  * 1000-1011       -       -      2      -      -      -      -      -      -      -       6      -     -      -      -      -
- * 0100-0111       -       -      1      -      0      1       2      3     -      -       5      -     4      5      6      7
+ * 0100-0111       -       -      1      **     0      1       2      3     -      -       5      -     4      5      6      7
  * 0000-0011       -       -      0      -      -      -      -      -      -      -       4      -     -      -      -      -
  * -------------------------------------------------------------------------------------------------------------------------------
  *
@@ -37,34 +37,34 @@
  * A15_Q                : Flopped (not latched)
  * 
  *                     |Result| Notes                                                 
- * --------------------+------+-------------------------------------------------------+
- * Tests/Voltage       |5.00V |                                                       |
- * --------------------+------+-------------------------------------------------------+
- * Test Programs       |      |                                                       |
- *  o test.bin         |      |                                                       |
- *  o ramtest.bin      |      |                                                       |
- * Apps                |      |                                                       |
- *  o CP/M+ TurboPascal|      |                                                       |
- *  o CP/M+ BBC BASIC  |      |                                                       |
- *  o CP/M+ WordStar   |      |                                                       |
- *  o FutureOS Desktop |      |                                                       |
- *  o Amstrad Bankman  |      |                                                       |
- *  o DK'T Bankman     |      |                                                       |
- *  o DK'T SiDisc      |      |                                                       |
- * Demos               |      |                                                       |
- *  o Phortem          |      |                                                       |
- *  o Batman           |      |                                                       |
- * Other               |      |                                                       |
- *  o Chase HQ         |      |                                                       |
- *  o ZapTBalls        |      |                                                       |
- *  o Double Dragon    |      |                                                       |
- *  o P47              |      |                                                       |
- *  o HardDrivin'      |      |                                                       |
- *  o Prehistorik 2    |      |                                                       |
- *  o RoboCop          |      |                                                       |
- *  o Gryzor           |      |                                                       |
- *  o R-Type           |      |                                                       |
- * --------------------+------+-------------------------------------------------------+
+ * --------------------+------+-------------------------------------------------------
+ * Tests/Voltage       |5.00V |                                                       
+ * --------------------+------+-------------------------------------------------------
+ * Test Programs       |      |                                                       
+ *  o test.bin         | PASS |                                                       
+ *  o ramtest.bin      | PASS |                                                       
+ * Apps                |      |                                                       
+ *  o CP/M+ TurboPascal| FAIL | Boot to CPM ok, dir B ok, start TPas, crash at menu (was working on prev. board) 
+ *  o CP/M+ BBC BASIC  |      |                                                       
+ *  o CP/M+ WordStar   |      |                                                       
+ *  o FutureOS Desktop | PASS | Basic desktop GUI working well
+ *  o Amstrad Bankman  | NA   | Does not run on 464                                                       
+ *  o DK'T Bankman     | PASS |                                                       
+ *  o DK'T SiDisc      | PASS |                                                       
+ * Demos               |      |                                                       
+ *  o Phortem          |      |                                                       
+ *  o Batman           | NA   | Can't run due to wrong CRTC type                                                       
+ * Other               |      |                                                       
+ *  o Chase HQ         | PASS | Perfect with digitized speech
+ *  o ZapTBalls        | PASS |                                                       
+ *  o Double Dragon    | FAIL | Initial loading screens still messed up but game is fine.                                                       
+ *  o P47              | FAIL | Load ok but blank screen on starting game                                                       
+ *  o HardDrivin'      | PASS | 128K version loaded and runs fine                                                      
+ *  o Prehistorik 2    | PASS |                                                       
+ *  o RoboCop          |      |                                                       
+ *  o Gryzor           |      |                                                       
+ *  o R-Type           | PASS | Game didn't previously run on hacked board without double drivers!                                                       
+ * --------------------+------+-------------------------------------------------------
  * 
  */
 
@@ -127,10 +127,11 @@ module cpld_ram512k_v110(
 `endif
   
 `ifdef SHADOW_MODE  
-  wire             shadow_mode = 1'b1;    // enable only on 464/664
+  wire             shadow_mode = 1'b1;    // enable only on 464/664 and needs overdrive too
 `else  
   wire             shadow_mode = 1'b0;    // enable only on 464/664
 `endif  
+
   wire [2:0]       shadow_bank = 3'b111; // use 3'b111 or 3'b011
 
   // Create negedge clock on IO write event - clock low pulse will be suppressed if not an IOWR* event
@@ -159,10 +160,8 @@ module cpld_ram512k_v110(
   // State    _IDLE____X___T1____X____T1___X___T2____X_END__
   // 
   // overdrive rd_b for all expansion write accesses only - need to keep overdriving beyond mreq_b rising edge
-  assign rd_b  = ( overdrive_mode ) ? ( exp_ram_r & mwr_cyc_w ) ? 1'b0 : 1'bz : 1'bz;
-  assign rd_b_aux  = ( overdrive_mode ) ? ( exp_ram_r & mwr_cyc_w ) ? 1'b0 : 1'bz : 1'bz;  
-  assign adr15 = ( adr15_overdrive_r ) ? 1'b1 : 1'bz;
-  assign adr15_aux = ( adr15_overdrive_r ) ? 1'b1 : 1'bz;  
+  assign { rd_b, rd_b_aux }    = ( overdrive_mode ) ? ( exp_ram_r & mwr_cyc_w ) ? 2'b00 : 2'bzz : 2'bzz;
+  assign { adr15, adr15_aux}   = ( adr15_overdrive_r ) ? 2'b11 : 2'bzz;
  
 `ifdef FULL_SHADOW_MODE  
   // Never, ever use internal RAM for reads in full shadow mode
@@ -205,7 +204,7 @@ module cpld_ram512k_v110(
     else
       if ( !mreq_b & mreq_b_q & rfsh_b & rd_b )
         mwr_cyc_q <= 1'b1;
-      else if ( mreq_b | !rfsh_b | !m1_b  )
+      else if ( mreq_b | !rfsh_b )
         mwr_cyc_q <= 1'b0;
 `endif                      
 
@@ -247,9 +246,18 @@ module cpld_ram512k_v110(
       if ( shadow_mode )
         // Restrict overdrive of A15 to writes as read will be remapped from shadow RAM
         adr15_overdrive_r = (ramblock_q[2:0]==3'b011) & !adr15_q & adr14 & mwr_cyc_w ;
-      else
-        // Need to overdrive A15 for both reads and writes if shadow RAM not enabled
-        adr15_overdrive_r = (ramblock_q[2:0]==3'b011) & !adr15_q & adr14 & !mreq_b ; //  ?? (!mreq_b|!ram_rd|mwr_cyc_w) ;
+    
+/*****************************************************************************************************************************
+ *  Comment out alternative here - assume that in 464 (aka overdrive mode) we'll always want the shadow RAM to be ON because    
+ *  otherwise mode C3 won't work. Possible that we might need to reinstate this code if C3 is not interesting for some applications
+ *  but commenting the code out should reduce the logic/improve timing for initial trials
+ * ****************************************************************************************************************************
+ * 
+ *      else
+ *        // Need to overdrive A15 for both reads and writes if shadow RAM not enabled
+ *        adr15_overdrive_r = (ramblock_q[2:0]==3'b011) & !adr15_q & adr14 & !mreq_b ; //  ?? (!mreq_b|!ram_rd|mwr_cyc_w) ;
+ * 
+ *****************************************************************************************************************************/
   end
   
   always @ ( * ) begin
