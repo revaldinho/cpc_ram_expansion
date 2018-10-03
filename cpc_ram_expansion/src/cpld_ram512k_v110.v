@@ -37,46 +37,48 @@
  * Write cycle control  : State Machine
  * A15_Q                : Latched (not Flopped)
  * 
- *                     |DIP   | Partial shadow + overdrive
- * --------------------+------+-------------------------------------------------------
- *                     |Result| Notes                                                 
- * --------------------+------+-------------------------------------------------------
- * Tests/Voltage       |5.00V |                                                       
- * --------------------+------+-------------------------------------------------------
- * Test Programs       |      |                                                       
- *  o test.bin         | PASS |
- *  o ramtest.bin      | PASS |                                                       
- * Apps                |      |                                                       
- *  o CP/M+ TurboPascal|      |
- *  o CP/M+ BBC BASIC  | FAIL | CP/M+ boots but 'Cannot Load Program'
- *  o CP/M+ WordStar   |      |                                                       
- *  o FutureOS Desktop | PASS |                                                       
- *  o Amstrad Bankman  |      |                                                       
- *  o DK'T Bankman     | PASS |                                                       
- *  o DK'T SiDisc      | PASS |                                                       
- * Demos               |      |                                                       
- *  o Phortem          |      |                                                       
- *  o Batman           | NA   | wrong type of CRTC                                    
- * Other               |      |                                                       
- *  o Chase HQ         | PASS |                                                       
- *  o ZapTBalls        | PASS |                                                       
- *  o Double Dragon    | FAIL | Initial loading screen corruption/game play ok                                                       
- *  o P47              | FAIL | Boot screens ok, game shows plane graphic and blank screen
- *  o HardDrivin'      |      |
- *  o Prehistorik 2    |      |                                                       
- *  o RoboCop          |      |                                                       
- *  o Gryzor           |      |                                                       
- *  o R-Type           | PASS | Perfect now - with and without shadow RAM                                                      
- * --------------------+------+-------------------------------------------------------
+ *                     |464 |6128| Partial shadow + overdrive
+ * --------------------+ROM |ROM |------+-------------------------------------------------------
+ *                     |OK  |OK  |Result| Notes                                                 
+ * --------------------+    |    |------+-------------------------------------------------------
+ * Tests/Voltage       |    |    |5.00V |                                                       
+ * --------------------+----+----+------+-------------------------------------------------------
+ * Test Programs       |    |    |      |                                                       
+ *  o test.bin         |    |    | PASS |
+ *  o ramtest.bin      |    |    | PASS |                                                       
+ * Apps                |    |    |      |                                                       
+ *  o CP/M+ TurboPascal|    |    |      |
+ *  o CP/M+ BBC BASIC  |    |    | FAIL | CP/M+ boots but 'Cannot Load Program'
+ *  o CP/M+ WordStar   |    |    |      |                                                       
+ *  o FutureOS Desktop |    |    | PASS |                                                       
+ *  o Amstrad Bankman  |    |    |      |                                                       
+ *  o DK'T Bankman     |    |    | PASS |                                                       
+ *  o DK'T SiDisc      |    |    | PASS |                                                       
+ * Demos               |    |    |      |                                                       
+ *  o Phortem          |    |    |      |                                                       
+ *  o Batman           |    |    | NA   | wrong type of CRTC                                    
+ * Other               |    |    |      |                                                       
+ *  o Chase HQ         |    |    | PASS |                                                       
+ *  o ZapTBalls        |No  | Yes| PASS |                                                       
+ *  o Double Dragon    |    |    | FAIL | Initial loading screen corruption/game play ok
+ *  o P47              |    |    | FAIL | Boot screens ok, game shows plane graphic and blank screen
+ *  o HardDrivin'      |    |    |      |
+ *  o Prehistorik 2    |    |    |      |                                                       
+ *  o RoboCop          |    |    |      |                                                       
+ *  o Gryzor           |    |    |      |                                                       
+ *  o R-Type           |    |    | PASS | Perfect now - with and without shadow RAM
+ * * --------------------+----+----+------+-------------------------------------------------------
  *
  * Notes
  * - ChaseHQ does not run when FutureOS ROMs are enabled. Issues CHASEHQ4.RAM not found message
+ * - FutureOS Desktop prefers higher voltage to get best cursor definition - 5.25V and above
  */
 
 // Conditional compilation options
-`define DRIVE_ADR_AUX 1 // Double up drivers to overdrive ADR15 signal
-`define DRIVE_RDB_AUX 1 // Double up drivers to overdrive RD_B signal
-`define LATCH_ADR15   1 // Latch ADR15 rather than use negedge FF on the mreq_b signal
+`define DRIVE_ADR_AUX 1      // Double up drivers to overdrive ADR15 signal
+`define DRIVE_RDB_AUX 1      // Double up drivers to overdrive RD_B signal
+//`define LATCH_ADR15   1      // Latch ADR15 rather than use negedge FF on the mreq_b signal
+`define IDLE_TIL_MREQ_HIGH 1 // Dont start a write sequence til MREQ FFd high on one or other clock edge
 
 module cpld_ram512k_v110(
   input        rfsh_b,
@@ -115,6 +117,9 @@ module cpld_ram512k_v110(
   reg              adr15_q;
   reg              mwr_cyc_q;  
   reg              exp_ram_r;
+`ifdef IDLE_TIL_MREQ_HIGH  
+  reg              mreq_b_q, mreq_b_f_q;
+`endif  
   reg              shadow_en_b_r;              
   reg              adr15_overdrive_r;
   wire             mwr_cyc_w;
@@ -143,11 +148,13 @@ module cpld_ram512k_v110(
   // 2 - remapping of _internal_ memory in mode C3 done but subject to errors when foreground ROM is selected
   //
   wire        overdrive_mode = dip[0];                  // AKA 464 mode [1] or 6128 mode [0]
-  wire        shadow_mode = dip[1];                    // Only valid in overdrive mode for 464
-//  wire        full_shadow = dip_q[2] ;                    // Full shadow mode [1] or partial mode [0] for 464
-//  wire [2:0]  shadow_bank = (dip_q[3])? 3'b111: 3'b011;   // use 3'b111 or 3'b011 for shadow bank for 464
-  wire        full_shadow = 1'b0;
-  wire [2:0]  shadow_bank = 3'b111;
+  wire        shadow_mode = dip[1];                     // Only valid in overdrive mode for 464
+  wire        full_shadow = 1'b0 ;                      // Full shadow mode [1] or partial mode [0] for 464
+  wire [2:0]  shadow_bank =  3'b011;                    // use 3'b111 or 3'b011 for shadow bank for 464
+
+  // Latching these two DIP switches not working  - need to check SIL values
+  //wire        full_shadow = dip_q[2] ;                  // Full shadow mode [1] or partial mode [0] for 464
+  //wire [2:0]  shadow_bank = (dip_q[3])? 3'b111: 3'b011;   // use 3'b111 or 3'b011 for shadow bank for 464
 
   // Create negedge clock on IO write event - clock low pulse will be suppressed if not an IOWR* event
   // but if the pulse is allowed through use the trailing (rising) edge to capture data
@@ -181,9 +188,9 @@ module cpld_ram512k_v110(
 
   // overdrive rd_b for all expansion write accesses only
 `ifdef DRIVE_RDB_AUX
-  assign { rd_b, rd_b_aux }    = ( overdrive_mode ) ? ( exp_ram_r & mwr_cyc_w & (!mreq_b | !wr_b)) ? 2'b00 : 2'bzz : 2'bzz;
+  assign { rd_b, rd_b_aux }    = ( overdrive_mode ) ? ( exp_ram_r & mwr_cyc_w ) ? 2'b00 : 2'bzz : 2'bzz;
 `else
-  assign { rd_b, rd_b_aux }    = ( overdrive_mode ) ? ( exp_ram_r & mwr_cyc_w & (!mreq_b | !wr_b)) ? 2'b0z : 2'bzz : 2'bzz;
+  assign { rd_b, rd_b_aux }    = ( overdrive_mode ) ? ( exp_ram_r & mwr_cyc_w ) ? 2'b0z : 2'bzz : 2'bzz;
 `endif
 
 
@@ -208,20 +215,41 @@ module cpld_ram512k_v110(
       state_q <= IDLE;
     else
       case ( state_q ) 
-        IDLE: state_q <= (!mreq_b & rfsh_b & rd_b & m1_b) ? T1 : IDLE ;        
+`ifdef IDLE_TIL_MREQ_HIGH
+        IDLE: state_q <= ((mreq_b_f_q | mreq_b_q) & !mreq_b & rfsh_b & rd_b & m1_b) ? T1 : IDLE ;                   
+`else    
+        IDLE: state_q <= (!mreq_b & rfsh_b & rd_b & m1_b) ? T1 : IDLE ;     
+`endif
         T1:   state_q <= (ready_f_q) ? T2: T1;
         T2:   state_q <= IDLE;
         default: state_q <= IDLE;        
       endcase
-  
+
+
+`ifdef IDLE_TIL_MREQ_HIGH  
   always @ (negedge reset_b or negedge clk)
     if ( !reset_b )
-      ready_f_q = 1'b1;
+      {ready_f_q, mreq_b_f_q} = 2'b11;
+    else
+      {ready_f_q, mreq_b_f_q} = {ready, mreq_b};
+
+  always @ (negedge reset_b or posedge clk)
+    if ( !reset_b )
+      mreq_b_q = 1'b1;
+    else
+      mreq_b_q = mreq_b;
+`else
+  always @ (negedge reset_b or negedge clk)
+    if ( !reset_b )
+      ready_f_q = 2'b11;
     else
       ready_f_q = ready;
+`endif
+
   
 `ifdef LATCH_ADR15
-   // Use a latch to release adr15_q as soon as mreq_b is high but lock it on mreq_b going low
+   // Use a latch to release adr15_q as soon as mreq_b is high but lock it on mreq_b going low and
+   // be sure _not_ to be driving adr15 while mreq_b is high
    always @ ( * ) 
      if ( mreq_b ) 
        adr15_q <= adr15;
@@ -243,8 +271,7 @@ module cpld_ram512k_v110(
   end
 
   // Latch DIP switch settings on reset
-  always @ ( * )
-    if ( !reset_b)
+  always @ ( posedge reset_b )
       dip_q <= { ramadrhi[4:3], dip[1:0] } ;
   
   always @ ( * )
@@ -266,14 +293,14 @@ module cpld_ram512k_v110(
       // FULL SHADOW MODE    - all CPU read accesses come from external memory (ramcs_b_r computed here is ignored)            
       // PARTIAL SHADOW MODE - all CPU write accesses go to shadow memory but only shadow block 3 is ever read in mode C3 at bank 0x4000 (remapped to 0xC000)
       case (ramblock_q[2:0])
- 	3'b000: {exp_ram_r, ramcs_b_r, ramadrhi_r} = { 1'b0, wr_b , shadow_bank, adr15,adr14 };
- 	3'b001: {exp_ram_r, ramcs_b_r, ramadrhi_r} = ( {adr15,adr14}==2'b11 ) ? {2'b10, hibit_tmp_r,2'b11} : { 1'b0, wr_b , shadow_bank, adr15,adr14 };
+ 	3'b000: {exp_ram_r, ramcs_b_r, ramadrhi_r} = { 1'b0, !mwr_cyc_w , shadow_bank, adr15,adr14 };
+ 	3'b001: {exp_ram_r, ramcs_b_r, ramadrhi_r} = ( {adr15,adr14}==2'b11 ) ? {2'b10, hibit_tmp_r,2'b11} : { 1'b0, !mwr_cyc_w , shadow_bank, adr15,adr14 };
  	3'b010: {exp_ram_r, ramcs_b_r, ramadrhi_r} = { 2'b10, hibit_tmp_r, adr15,adr14} ; 
- 	3'b011: {exp_ram_r, ramcs_b_r, ramadrhi_r} = ( {adr15_q,adr14}==2'b11 ) ? {2'b10,hibit_tmp_r,2'b11} : ({adr15_q,adr14}==2'b01) ? {2'b00,shadow_bank,2'b11} : { 1'b0, wr_b , shadow_bank, adr15,adr14 };
- 	3'b100: {exp_ram_r, ramcs_b_r, ramadrhi_r} = ( {adr15,adr14}==2'b01 ) ? {2'b10,hibit_tmp_r,2'b00} : { 1'b0, wr_b , shadow_bank, adr15, adr14 };              
- 	3'b101: {exp_ram_r, ramcs_b_r, ramadrhi_r} = ( {adr15,adr14}==2'b01 ) ? {2'b10,hibit_tmp_r,2'b01} : { 1'b0, wr_b , shadow_bank, adr15, adr14 };              
- 	3'b110: {exp_ram_r, ramcs_b_r, ramadrhi_r} = ( {adr15,adr14}==2'b01 ) ? {2'b10,hibit_tmp_r,2'b10} : { 1'b0, wr_b , shadow_bank, adr15, adr14 };              
- 	3'b111: {exp_ram_r, ramcs_b_r, ramadrhi_r} = ( {adr15,adr14}==2'b01 ) ? {2'b10,hibit_tmp_r,2'b11} : { 1'b0, wr_b , shadow_bank, adr15, adr14 };
+ 	3'b011: {exp_ram_r, ramcs_b_r, ramadrhi_r} = ( {adr15_q,adr14}==2'b11 ) ? {2'b10,hibit_tmp_r,2'b11} : ({adr15_q,adr14}==2'b01) ? {2'b00,shadow_bank,2'b11} : { 1'b0, !mwr_cyc_w , shadow_bank, adr15,adr14 };
+ 	3'b100: {exp_ram_r, ramcs_b_r, ramadrhi_r} = ( {adr15,adr14}==2'b01 ) ? {2'b10,hibit_tmp_r,2'b00} : { 1'b0, !mwr_cyc_w , shadow_bank, adr15, adr14 };              
+ 	3'b101: {exp_ram_r, ramcs_b_r, ramadrhi_r} = ( {adr15,adr14}==2'b01 ) ? {2'b10,hibit_tmp_r,2'b01} : { 1'b0, !mwr_cyc_w , shadow_bank, adr15, adr14 };              
+ 	3'b110: {exp_ram_r, ramcs_b_r, ramadrhi_r} = ( {adr15,adr14}==2'b01 ) ? {2'b10,hibit_tmp_r,2'b10} : { 1'b0, !mwr_cyc_w , shadow_bank, adr15, adr14 };              
+ 	3'b111: {exp_ram_r, ramcs_b_r, ramadrhi_r} = ( {adr15,adr14}==2'b01 ) ? {2'b10,hibit_tmp_r,2'b11} : { 1'b0, !mwr_cyc_w , shadow_bank, adr15, adr14 };
       endcase // case (hibit_tmp_r[2:0])
     end
     else begin
@@ -290,30 +317,5 @@ module cpld_ram512k_v110(
       endcase 
     end	    
   end
-
-
   
 endmodule
-
-
-
-//   always @ ( * ) begin
-//     hibit_tmp_r = ramblock_q[5:3] ;
-//     ramcs_b_tmp_r = wr_b|!shadow_mode ; // ie '1' if shadow mode not used for non expansion RAM accesses      
-//     if (shadow_mode & (hibit_tmp_r == shadow_bank ))
-//         hibit_tmp_r[0] = 1'b0; // alias the even bank below shadow bank to the shadow bank
-// 
-//     // FULL SHADOW MODE    - all CPU read accesses come from external memory (ramcs_b_r computed here is ignored)            
-//     // PARTIAL SHADOW MODE - all CPU write accesses go to shadow memory but only shadow block 3 is ever read in mode C3 at bank 0x4000 (remapped to 0xC000)
-//     case (ramblock_q[2:0])
-//       3'b000: {exp_ram_r, ramcs_b_r, ramadrhi_r} = { 1'b0, ramcs_b_tmp_r , shadow_bank, adr15,adr14 };
-//       3'b001: {exp_ram_r, ramcs_b_r, ramadrhi_r} = ( {adr15,adr14}==2'b11 ) ? {2'b10, hibit_tmp_r,2'b11} : { 1'b0, ramcs_b_tmp_r , shadow_bank, adr15,adr14 };
-//       3'b010: {exp_ram_r, ramcs_b_r, ramadrhi_r} = { 2'b10, hibit_tmp_r, adr15,adr14} ; 
-//       3'b011: {exp_ram_r, ramcs_b_r, ramadrhi_r} = ({adr15_q,adr14}==2'b11 ) ? {2'b10,hibit_tmp_r,2'b11} : 
-//                                                    ((shadow_mode) ? ({adr15_q,adr14}==2'b01) ? {2'b00,shadow_bank,2'b11} : { 1'b0, ramcs_b_tmp_r , shadow_bank, adr15,adr14 });
-//       3'b100: {exp_ram_r, ramcs_b_r, ramadrhi_r} = ( {adr15,adr14}==2'b01 ) ? {2'b10,hibit_tmp_r,2'b00} : { 1'b0, ramcs_b_tmp_r , shadow_bank, adr15, adr14 };              
-//       3'b101: {exp_ram_r, ramcs_b_r, ramadrhi_r} = ( {adr15,adr14}==2'b01 ) ? {2'b10,hibit_tmp_r,2'b01} : { 1'b0, ramcs_b_tmp_r , shadow_bank, adr15, adr14 };              
-//       3'b110: {exp_ram_r, ramcs_b_r, ramadrhi_r} = ( {adr15,adr14}==2'b01 ) ? {2'b10,hibit_tmp_r,2'b10} : { 1'b0, ramcs_b_tmp_r , shadow_bank, adr15, adr14 };              
-//       3'b111: {exp_ram_r, ramcs_b_r, ramadrhi_r} = ( {adr15,adr14}==2'b01 ) ? {2'b10,hibit_tmp_r,2'b11} : { 1'b0, ramcs_b_tmp_r , shadow_bank, adr15, adr14 };
-//     endcase // case (hibit_tmp_r[2:0])
-//   end
