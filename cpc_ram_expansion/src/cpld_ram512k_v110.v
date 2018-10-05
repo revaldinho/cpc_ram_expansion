@@ -75,7 +75,10 @@
  */
 
 // Conditional compilation options
-`define LATCH_ADR15   1      // Latch ADR15 rather than use negedge FF on the mreq_b signal
+//`define LATCH_ADR15   1         // Latch ADR15 rather than use negedge FF on the mreq_b signal
+//`define USE_STATE_MACHINE 1     // Use state machine instead of sampling MREQ at start and end of memory cycle
+//`define FULL_SHADOW 1             // Full shadow memory - use expansion SRAM in preference to machine RAM
+//`define MINI_TURBO 1              // Kill wait states in full shadow mode for SRAM accesses
 
 module cpld_ram512k_v110(
   input        rfsh_b,
@@ -105,14 +108,19 @@ module cpld_ram512k_v110(
   
   reg [5:0]        ramblock_q;
   reg [4:0]        ramadrhi_r;
-  reg [1:0]        state_q;
   reg [3:0]        dip_q;
   reg              mode3_q;              
-  reg              ready_f_q;              
+`ifdef USE_STATE_MACHINE
+  reg [1:0]        state_q;  
+  reg              ready_f_q;
+`else
+  reg              mwr_cyc_q;
+  reg              mwr_cyc_f_q;    
+`endif
   reg              ramcs_b_r;
   reg              clken_lat_qb;
   reg              adr15_q;
-  reg              mwr_cyc_q;  
+  reg              adr14_q;  
   reg              exp_ram_r;
   reg              mreq_b_q, mreq_b_f_q;
   reg              shadow_en_b_r;              
@@ -144,7 +152,11 @@ module cpld_ram512k_v110(
   //
   wire        overdrive_mode = dip[0];                  // AKA 464 mode [1] or 6128 mode [0]
   wire        shadow_mode = dip[1];                     // Only valid in overdrive mode for 464
+`ifdef FULL_SHADOW
+  wire        full_shadow = 1'b1 ;                      // Full shadow mode [1] or partial mode [0] for 464
+`else  
   wire        full_shadow = 1'b0 ;                      // Full shadow mode [1] or partial mode [0] for 464
+`endif
   wire [2:0]  shadow_bank =  3'b011;                    // use 3'b111 or 3'b011 for shadow bank for 464
 
   // Latching these two DIP switches not working  - need to check SIL values
@@ -159,9 +171,9 @@ module cpld_ram512k_v110(
   assign ramadrhi = (reset_b) ? ramadrhi_r : {2'bzz, ramadrhi_r[2:0]} ; 
   assign ramwe_b  = wr_b ;
   // Combination of RAMCS and RAMRD determine whether RAM output is enabled 
-  assign ramoe_b = ramrd_b ; 
+  assign ramoe_b = ramrd_b ;
   
-  // Memory Data Access
+ // Memory Data Access
   //          ____      ____      ____      ____      ____  
   // CLK     /    \____/    \____/    \____/    \____/    \_
   //         _____     :    .    :    .    :    .   ________
@@ -174,11 +186,11 @@ module cpld_ram512k_v110(
   // READY             :  \_____/      
   //                   :    .    :    .    :    .    :    .
   //                   :_____________________________:    .        
-  // MWR_CYC    _______/    .    :    .    :    .    \______
-  //          _________:_________:_________:_________:______
+  // MWR_CYC    _______/    .    :    .    :    .    \______  State Machine Version
+  //                   :_____________________________:____.        
+  // MWR_CYC    _______/    .    :    .    :    .    \____\__  FF'd Version (optional trailing edge extension)
   // State    _IDLE____X___T1____X____T1___X___T2____X_END__
   //
-
   // overdrive rd_b for all expansion write accesses only
   assign { rd_b, rd_b_aux }    = ( overdrive_mode ) ? ( exp_ram_r & mwr_cyc_w ) ? 2'b00 : 2'bzz : 2'bzz;
   assign { adr15, adr15_aux}   = ( overdrive_mode ) ? ( adr15_overdrive_r ) ? 2'b11 : 2'bzz : 2'bzz ;
@@ -186,9 +198,12 @@ module cpld_ram512k_v110(
   // Never, ever use internal RAM for reads in full shadow mode
   assign ramdis = (full_shadow) ? 1'b1 :  !ramcs_b_r ;
   
-  // In full shadow mode SRAM is always enabled for all real RAM accesses
-  assign ramcs_b = (full_shadow ) ? (mreq_b | !rfsh_b) : ramcs_b_r | mreq_b | !rfsh_b ;
-  
+  // In full shadow mode SRAM is always enabled for all real RAM accesses but dont clash with ROM access
+  assign ramcs_b = (full_shadow ) ? ( ! ((mwr_cyc_w)|(!ramrd_b))) : ramcs_b_r | mreq_b | !rfsh_b ;
+
+
+
+`ifdef USE_STATE_MACHINE
   parameter IDLE=2'b00, T1=2'b01, T2=2'b11, END=2'b10;  
 
   assign mwr_cyc_w = (state_q==T1)|(state_q==T2) ;
@@ -207,9 +222,38 @@ module cpld_ram512k_v110(
 
   always @ (negedge reset_b or negedge clk)
     if ( !reset_b )
-      {ready_f_q, mreq_b_f_q} = 2'b11;
+      ready_f_q = 1'b1;
     else
-      {ready_f_q, mreq_b_f_q} = {ready, mreq_b};
+      ready_f_q = ready;
+`else
+
+  assign mwr_cyc_w = mwr_cyc_q | mwr_cyc_f_q;
+
+  always @ (negedge reset_b or negedge clk)
+    if ( !reset_b )
+      mwr_cyc_f_q <= 1'b0;
+    else begin
+      mwr_cyc_f_q <= mwr_cyc_q;
+    end
+
+  always @ (negedge reset_b or posedge clk)
+    if ( !reset_b )
+      mwr_cyc_q <= 1'b0;
+    else begin
+      if (((mreq_b_f_q | mreq_b_q) & !mreq_b & rfsh_b & rd_b & m1_b))
+        mwr_cyc_q <= 1'b1;
+      else if (mreq_b)
+        mwr_cyc_q <= 1'b0;
+    end
+
+  
+`endif
+  
+  always @ (negedge reset_b or negedge clk)
+    if ( !reset_b )
+      mreq_b_f_q = 1'b1;
+    else
+      mreq_b_f_q = mreq_b;
 
   always @ (negedge reset_b or posedge clk)
     if ( !reset_b )
@@ -220,34 +264,34 @@ module cpld_ram512k_v110(
 `ifdef LATCH_ADR15
    // Use a latch to release adr15_q as soon as mreq_b is high but lock it on mreq_b going low and
    // be sure _not_ to be driving adr15 while mreq_b is high
-   always @ ( * ) 
-     if ( mreq_b ) 
-       adr15_q <= adr15;
+  always @ ( * ) 
+    if ( mreq_b ) 
+      {adr15_q, adr14_q}  <= {adr15, adr14};
 `else
-   always @ (negedge reset_b or negedge mreq_b ) 
-     if ( !reset_b ) 
-       adr15_q <= 1'b0;
-     else
-       adr15_q <= adr15;
+  always @ (negedge reset_b or negedge mreq_b ) 
+    if ( !reset_b ) 
+      {adr15_q, adr14_q} <= 2'b00;
+    else
+      {adr15_q, adr14_q} <= {adr15, adr14};
 `endif 
 
   always @ (*) begin
     if ( shadow_mode )
       // Restrict overdrive of A15 to writes as read will be remapped from shadow RAM
-      adr15_overdrive_r = mode3_q & adr14 & mwr_cyc_w ; //& !mreq_b ;
+      adr15_overdrive_r = mode3_q & adr14_q & mwr_cyc_w ;
     else
       // Need to overdrive A15 for both reads and writes if shadow RAM not enabled
-      adr15_overdrive_r = mode3_q & adr14 & !mreq_b ; 
+      adr15_overdrive_r = mode3_q & adr14_q & !mreq_b ; 
   end
   
   // Latch DIP switch settings on reset
   always @ ( posedge reset_b )
-      dip_q <= { ramadrhi[4:3], dip[1:0] } ;
+    dip_q <= { ramadrhi[4:3], dip[1:0] } ;
   
   always @ ( * )
     if ( clk ) 
       clken_lat_qb <= !(!iorq_b && !wr_b && !adr15 && data[6] && data[7]);
-
+  
   // Pre-decode mode 3 setting and noodle shadow bank alias if required to save decode
   // time after the Q
   always @ (negedge reset_b or posedge wclk )
@@ -256,14 +300,11 @@ module cpld_ram512k_v110(
       mode3_q <= 1'b0;
     end        
     else begin
-      // All writes to the RAM register must have the top 2 bits set!
-      if (data[7:6]==2'b11) begin
-        if ( shadow_mode && (data[5:3]==shadow_bank) )
-          ramblock_q <= {data[5:4],1'b0, data[2:0]};          
-        else
-          ramblock_q <= data[5:0] ;
-        mode3_q <= (data[2:0] == 3'b011);
-      end      
+      if ( shadow_mode && (data[5:3]==shadow_bank) )
+        ramblock_q <= {data[5:4],1'b0, data[2:0]};          
+      else
+        ramblock_q <= data[5:0] ;
+      mode3_q <= (data[2:0] == 3'b011);
     end
   
   always @ ( * ) begin
@@ -274,7 +315,7 @@ module cpld_ram512k_v110(
  	3'b000: {exp_ram_r, ramcs_b_r, ramadrhi_r} = { 1'b0, !mwr_cyc_w , shadow_bank, adr15,adr14 };
  	3'b001: {exp_ram_r, ramcs_b_r, ramadrhi_r} = ( {adr15,adr14}==2'b11 ) ? {2'b10, ramblock_q[5:3],2'b11} : { 1'b0, !mwr_cyc_w , shadow_bank, adr15,adr14 };
  	3'b010: {exp_ram_r, ramcs_b_r, ramadrhi_r} = { 2'b10, ramblock_q[5:3], adr15,adr14} ; 
- 	3'b011: {exp_ram_r, ramcs_b_r, ramadrhi_r} = ( {adr15_q,adr14}==2'b11 ) ? {2'b10,ramblock_q[5:3],2'b11} : ({adr15_q,adr14}==2'b01) ? {2'b00,shadow_bank,2'b11} : { 1'b0, !mwr_cyc_w , shadow_bank, adr15,adr14 };
+ 	3'b011: {exp_ram_r, ramcs_b_r, ramadrhi_r} = ( {adr15_q,adr14}==2'b11 ) ? {2'b10,ramblock_q[5:3],2'b11} : ({adr15_q,adr14}==2'b01) ? {2'b00,shadow_bank,2'b11} : { 1'b0, !mwr_cyc_w , shadow_bank, adr15_q,adr14 };
  	3'b100: {exp_ram_r, ramcs_b_r, ramadrhi_r} = ( {adr15,adr14}==2'b01 ) ? {2'b10,ramblock_q[5:3],2'b00} : { 1'b0, !mwr_cyc_w , shadow_bank, adr15, adr14 };              
  	3'b101: {exp_ram_r, ramcs_b_r, ramadrhi_r} = ( {adr15,adr14}==2'b01 ) ? {2'b10,ramblock_q[5:3],2'b01} : { 1'b0, !mwr_cyc_w , shadow_bank, adr15, adr14 };              
  	3'b110: {exp_ram_r, ramcs_b_r, ramadrhi_r} = ( {adr15,adr14}==2'b01 ) ? {2'b10,ramblock_q[5:3],2'b10} : { 1'b0, !mwr_cyc_w , shadow_bank, adr15, adr14 };              
