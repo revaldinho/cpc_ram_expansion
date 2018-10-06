@@ -29,8 +29,7 @@
  * Check-in Status table - 464 Mode
  * ================================
  * 
- *  Always write all blocks in shadow bank even if only block3 is ever read.
- * 
+
  * 464 Serial Number    : 
  * Overdrive Mode       : ON/RD_B + ADR15
  * Shadow Mode          : ON/Partial
@@ -41,32 +40,32 @@
  * --------------------+ROM |ROM |------+-------------------------------------------------------
  *                     |OK  |OK  |Result| Notes                                                 
  * --------------------+    |    |------+-------------------------------------------------------
- * Tests/Voltage       |    |    |5.00V |                                                       
+ * Tests/Voltage       |    |    | 4.5V |                                                       
  * --------------------+----+----+------+-------------------------------------------------------
  * Test Programs       |    |    |      |                                                       
  *  o test.bin         |    |    | PASS |
- *  o ramtest.bin      |    |    | PASS |                                                       
+ *  o ramtest.bin      |    |    |      |                                                       
  * Apps                |    |    |      |                                                       
- *  o CP/M+ TurboPascal|    |    | PASS |
+ *  o CP/M+ TurboPascal|    |    |      |
  *  o CP/M+ BBC BASIC  |    |    |      |  
  *  o CP/M+ WordStar   |    |    |      |                                                       
- *  o FutureOS Desktop |N/A |YES | PASS | Voltage dependency - cursor poor when V < 5V                                                      
+ *  o FutureOS Desktop |N/A |YES | PASS | 
  *  o Amstrad Bankman  |    |    |      |                                                       
- *  o DK'T Bankman     |    |    | PASS |                                                       
- *  o DK'T SiDisc      |    |    | PASS |                                                       
+ *  o DK'T Bankman     |    |    |      |                                                       
+ *  o DK'T SiDisc      |    |    |      |                                                       
  * Demos               |    |    |      |                                                       
  *  o Phortem          |    |    | PASS |                                                       
- *  o Batman           |    |    | NA   | wrong type of CRTC                                    
+ *  o Batman           |    |    |      | wrong type of CRTC                                    
  * Other               |    |    |      |                                                       
  *  o Chase HQ         |    |    |      |                                                       
- *  o ZapTBalls        |N/A |    | PASS |                                                       
- *  o Double Dragon    |    |    | FAIL | Initial loading screen corruption,game play ok, intermediate screens ok
- *  o P47              |    |    | FAIL | Boot screens ok, game shows plane graphic and blank screen
+ *  o ZapTBalls        |N/A |    |      |                                                       
+ *  o Double Dragon    |    |    |      | Initial loading screen corruption,game play ok, intermediate screens ok
+ *  o P47              |    |    |      | Boot screens ok, game shows plane graphic and blank screen
  *  o HardDrivin'      |    |    |      |
- *  o Prehistorik 2    |    |    | PASS |                                                       
+ *  o Prehistorik 2    |    |    |      |                                                       
  *  o RoboCop          |    |    |      |                                                       
  *  o Gryzor           |    |    |      |                                                       
- *  o R-Type           |    |    | PASS | Perfect now - with and without shadow RAM
+ *  o R-Type           |    |    |      | Perfect now - with and without shadow RAM
  * * ------------------+----+----+------+-------------------------------------------------------
  *
  * Notes
@@ -76,9 +75,8 @@
 
 // Conditional compilation options
 //`define LATCH_ADR15   1         // Latch ADR15 rather than use negedge FF on the mreq_b signal
-//`define USE_STATE_MACHINE 1     // Use state machine instead of sampling MREQ at start and end of memory cycle
-//`define FULL_SHADOW 1             // Full shadow memory - use expansion SRAM in preference to machine RAM
-//`define MINI_TURBO 1              // Kill wait states in full shadow mode for SRAM accesses
+//`define FULL_SHADOW 1           // Full shadow memory - use expansion SRAM in preference to machine RAM
+//`define MINI_TURBO 1           // interference in Phortem and others ...
 
 module cpld_ram512k_v110(
   input        rfsh_b,
@@ -94,7 +92,7 @@ module cpld_ram512k_v110(
   inout        rd_b,
   inout        rd_b_aux, 
   input [7:0]  data,
-  input        ready,
+  inout        ready,
   input        clk,
   input        m1_b,
   input [1:0]  dip,
@@ -110,23 +108,18 @@ module cpld_ram512k_v110(
   reg [4:0]        ramadrhi_r;
   reg [3:0]        dip_q;
   reg              mode3_q;              
-`ifdef USE_STATE_MACHINE
-  reg [1:0]        state_q;  
-  reg              ready_f_q;
-`else
   reg              mwr_cyc_q;
   reg              mwr_cyc_f_q;    
-`endif
   reg              ramcs_b_r;
   reg              clken_lat_qb;
   reg              adr15_q;
-  reg              adr14_q;  
   reg              exp_ram_r;
+  reg              ramrd_b_q;             
   reg              mreq_b_q, mreq_b_f_q;
-  reg              shadow_en_b_r;              
-  reg              adr15_overdrive_r;
   wire             mwr_cyc_w;
+  wire             adr15_overdrive_w;
 
+  
   // Valid DIP options (switches are numbered 1-4 rather than 0-3 on the physical component)
   // 
   // 1 2 3 4| Note                                                               | Supported Video Modes (Notes)
@@ -158,6 +151,7 @@ module cpld_ram512k_v110(
   wire        full_shadow = 1'b0 ;                      // Full shadow mode [1] or partial mode [0] for 464
 `endif
   wire [2:0]  shadow_bank =  3'b011;                    // use 3'b111 or 3'b011 for shadow bank for 464
+              
 
   // Latching these two DIP switches not working  - need to check SIL values
   //wire        full_shadow = dip_q[2] ;                  // Full shadow mode [1] or partial mode [0] for 464
@@ -172,6 +166,7 @@ module cpld_ram512k_v110(
   assign ramwe_b  = wr_b ;
   // Combination of RAMCS and RAMRD determine whether RAM output is enabled 
   assign ramoe_b = ramrd_b ;
+
   
  // Memory Data Access
   //          ____      ____      ____      ____      ____  
@@ -185,56 +180,31 @@ module cpld_ram512k_v110(
   //         _____________       ___________________________
   // READY             :  \_____/      
   //                   :    .    :    .    :    .    :    .
-  //                   :_____________________________:    .        
-  // MWR_CYC    _______/    .    :    .    :    .    \______  State Machine Version
   //                   :_____________________________:____.        
   // MWR_CYC    _______/    .    :    .    :    .    \____\__  FF'd Version (optional trailing edge extension)
   // State    _IDLE____X___T1____X____T1___X___T2____X_END__
   //
   // overdrive rd_b for all expansion write accesses only
-  assign { rd_b, rd_b_aux }    = ( overdrive_mode ) ? ( exp_ram_r & mwr_cyc_w ) ? 2'b00 : 2'bzz : 2'bzz;
-  assign { adr15, adr15_aux}   = ( overdrive_mode ) ? ( adr15_overdrive_r ) ? 2'b11 : 2'bzz : 2'bzz ;
+  assign { rd_b, rd_b_aux }    = ( overdrive_mode & exp_ram_r & mwr_cyc_w ) ? 2'b00 : 2'bzz ;
+  // Overdrive A15 for writes only in shadow modes (full and partial) but for all access types otherwise
+  assign adr15_overdrive_w = overdrive_mode & mode3_q & adr14 & ((shadow_mode) ? (mwr_cyc_q ) : !mreq_b );
+  assign { adr15, adr15_aux}   = (adr15_overdrive_w & mwr_cyc_q) ? 2'b11 : 2'bzz;   // this looks redundant and can only work in shadow mode but fixes voltage dep in FOS!
+
+
+`ifdef MINI_TURBO
+  // In full shadow mode all _RAM_ reads can ignore wait states from the GA
+  assign ready = ( full_shadow & shadow_mode & !ramrd_b & !mreq_b_q ) ? 1'b1 : 1'bz;
+`else
+  assign ready = 1'bz;  
+`endif  
   
   // Never, ever use internal RAM for reads in full shadow mode
   assign ramdis = (full_shadow) ? 1'b1 :  !ramcs_b_r ;
   
   // In full shadow mode SRAM is always enabled for all real RAM accesses but dont clash with ROM access
-  assign ramcs_b = (full_shadow ) ? ( ! ((mwr_cyc_w)|(!ramrd_b))) : ramcs_b_r | mreq_b | !rfsh_b ;
-
-
-
-`ifdef USE_STATE_MACHINE
-  parameter IDLE=2'b00, T1=2'b01, T2=2'b11, END=2'b10;  
-
-  assign mwr_cyc_w = (state_q==T1)|(state_q==T2) ;
-  
-  always @ ( negedge reset_b or posedge clk)
-    if ( !reset_b )
-      state_q <= IDLE;
-    else
-      case ( state_q )
-        // Dont leave idle 'til a '1' has been seen on either preceding rising or falling edge
-        IDLE: state_q <= ((mreq_b_f_q | mreq_b_q) & !mreq_b & rfsh_b & rd_b & m1_b) ? T1 : IDLE ;                   
-        T1:   state_q <= (ready_f_q) ? T2: T1;
-        T2:   state_q <= IDLE;
-        default: state_q <= IDLE;        
-      endcase
-
-  always @ (negedge reset_b or negedge clk)
-    if ( !reset_b )
-      ready_f_q = 1'b1;
-    else
-      ready_f_q = ready;
-`else
+  assign ramcs_b = (full_shadow ) ? ( ! ((mwr_cyc_w)|(!ramrd_b_q))) : ramcs_b_r | mreq_b | !rfsh_b ;
 
   assign mwr_cyc_w = mwr_cyc_q | mwr_cyc_f_q;
-
-  always @ (negedge reset_b or negedge clk)
-    if ( !reset_b )
-      mwr_cyc_f_q <= 1'b0;
-    else begin
-      mwr_cyc_f_q <= mwr_cyc_q;
-    end
 
   always @ (negedge reset_b or posedge clk)
     if ( !reset_b )
@@ -246,44 +216,40 @@ module cpld_ram512k_v110(
         mwr_cyc_q <= 1'b0;
     end
 
-  
-`endif
-  
   always @ (negedge reset_b or negedge clk)
-    if ( !reset_b )
-      mreq_b_f_q = 1'b1;
-    else
-      mreq_b_f_q = mreq_b;
-
+    if ( !reset_b ) begin
+      mreq_b_f_q = 1'b1;      
+      mwr_cyc_f_q <= 1'b0;
+      end
+    else begin
+      mreq_b_f_q = mreq_b;  
+      mwr_cyc_f_q <= mwr_cyc_q;
+    end
+  
   always @ (negedge reset_b or posedge clk)
-    if ( !reset_b )
+    if ( !reset_b ) begin
       mreq_b_q = 1'b1;
-    else
+      ramrd_b_q = 1'b1;      
+    end
+    else begin
       mreq_b_q = mreq_b;
+      ramrd_b_q = ramrd_b;
+    end
   
 `ifdef LATCH_ADR15
    // Use a latch to release adr15_q as soon as mreq_b is high but lock it on mreq_b going low and
    // be sure _not_ to be driving adr15 while mreq_b is high
   always @ ( * ) 
     if ( mreq_b ) 
-      {adr15_q, adr14_q}  <= {adr15, adr14};
+      adr15_q  <= adr15;
 `else
   always @ (negedge reset_b or negedge mreq_b ) 
     if ( !reset_b ) 
-      {adr15_q, adr14_q} <= 2'b00;
+      adr15_q <= 1'b0;
     else
-      {adr15_q, adr14_q} <= {adr15, adr14};
+      adr15_q <= adr15;
 `endif 
 
-  always @ (*) begin
-    if ( shadow_mode )
-      // Restrict overdrive of A15 to writes as read will be remapped from shadow RAM
-      adr15_overdrive_r = mode3_q & adr14_q & mwr_cyc_w ;
-    else
-      // Need to overdrive A15 for both reads and writes if shadow RAM not enabled
-      adr15_overdrive_r = mode3_q & adr14_q & !mreq_b ; 
-  end
-  
   // Latch DIP switch settings on reset
   always @ ( posedge reset_b )
     dip_q <= { ramadrhi[4:3], dip[1:0] } ;
