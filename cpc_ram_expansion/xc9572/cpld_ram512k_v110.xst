@@ -7,7 +7,7 @@ run
 -ofn cpld_ram512k_v110
 -ofmt NGC
 -top cpld_ram512k_v110
--opt_mode Area
+-opt_mode Speed
 -opt_level 2
 -iuc NO
 -lso cpld_ram512k_v110.lso
