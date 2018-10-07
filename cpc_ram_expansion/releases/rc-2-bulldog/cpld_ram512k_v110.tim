@@ -5,7 +5,7 @@ Design:     cpld_ram512k_v110
 Device:     XC9536-10-PC44
 Speed File: Version 3.0
 Program:    Timing Report Generator:  version L.70
-Date:       Sun Oct  7 13:33:58 2018
+Date:       Sun Oct  7 14:18:26 2018
 
 Output will be sorted by decreasing path delays.
 Logical Path    Delay Type                              Delay        Cumulative
@@ -37,87 +37,51 @@ Thru: N0$BUF0/N0$BUF0_TRST.UIM tLOGI + tPTA + tPDI      :  4.5ns        (8.0ns)
 Thru: rd_b_aux  tF + tPTTS                              : 16.0ns       (24.0ns)
   To: rd_b_aux  tEN                                     :  0.0ns       (24.0ns)
 
-From: m1_b      -                                       :  0.0ns        (0.0ns)
-Thru: m1_b_IBUF tIN                                     :  3.5ns        (3.5ns)
-Thru: N0$BUF0/N0$BUF0_TRST.UIM tLOGI + tPTA + tPDI      :  4.5ns        (8.0ns)
-Thru: rd_b      tF + tPTTS                              : 16.0ns       (24.0ns)
-  To: rd_b      tEN                                     :  0.0ns       (24.0ns)
-
-From: m1_b      -                                       :  0.0ns        (0.0ns)
-Thru: m1_b_IBUF tIN                                     :  3.5ns        (3.5ns)
-Thru: N0$BUF0/N0$BUF0_TRST.UIM tLOGI + tPTA + tPDI      :  4.5ns        (8.0ns)
-Thru: rd_b_aux  tF + tPTTS                              : 16.0ns       (24.0ns)
-  To: rd_b_aux  tEN                                     :  0.0ns       (24.0ns)
-
-From: mreq_b    -                                       :  0.0ns        (0.0ns)
-Thru: mreq_b_IBUF tIN                                   :  3.5ns        (3.5ns)
-Thru: N0$BUF0/N0$BUF0_TRST.UIM tLOGI + tPTA + tPDI      :  4.5ns        (8.0ns)
-Thru: rd_b      tF + tPTTS                              : 16.0ns       (24.0ns)
-  To: rd_b      tEN                                     :  0.0ns       (24.0ns)
-
-From: mreq_b    -                                       :  0.0ns        (0.0ns)
-Thru: mreq_b_IBUF tIN                                   :  3.5ns        (3.5ns)
-Thru: N0$BUF0/N0$BUF0_TRST.UIM tLOGI + tPTA + tPDI      :  4.5ns        (8.0ns)
-Thru: rd_b_aux  tF + tPTTS                              : 16.0ns       (24.0ns)
-  To: rd_b_aux  tEN                                     :  0.0ns       (24.0ns)
-
-From: rfsh_b    -                                       :  0.0ns        (0.0ns)
-Thru: rfsh_b_IBUF tIN                                   :  3.5ns        (3.5ns)
-Thru: N0$BUF0/N0$BUF0_TRST.UIM tLOGI + tPTA + tPDI      :  4.5ns        (8.0ns)
-Thru: rd_b      tF + tPTTS                              : 16.0ns       (24.0ns)
-  To: rd_b      tEN                                     :  0.0ns       (24.0ns)
-
-From: rfsh_b    -                                       :  0.0ns        (0.0ns)
-Thru: rfsh_b_IBUF tIN                                   :  3.5ns        (3.5ns)
-Thru: N0$BUF0/N0$BUF0_TRST.UIM tLOGI + tPTA + tPDI      :  4.5ns        (8.0ns)
-Thru: rd_b_aux  tF + tPTTS                              : 16.0ns       (24.0ns)
-  To: rd_b_aux  tEN                                     :  0.0ns       (24.0ns)
-
 From: dip<1>    -                                       :  0.0ns        (0.0ns)
 Thru: dip_1_IBUF tIN                                    :  3.5ns        (3.5ns)
-Thru: $OpTx$FX_DC$18.UIM tLOGI + tPDI                   :  3.5ns        (7.0ns)
+Thru: $OpTx$FX_DC$13.UIM tLOGI + tPDI                   :  3.5ns        (7.0ns)
 Thru: adr15     tF + tPTTS                              : 16.0ns       (23.0ns)
   To: adr15     tEN                                     :  0.0ns       (23.0ns)
 
 From: dip<1>    -                                       :  0.0ns        (0.0ns)
 Thru: dip_1_IBUF tIN                                    :  3.5ns        (3.5ns)
-Thru: $OpTx$FX_DC$18.UIM tLOGI + tPDI                   :  3.5ns        (7.0ns)
+Thru: $OpTx$FX_DC$13.UIM tLOGI + tPDI                   :  3.5ns        (7.0ns)
 Thru: adr15_aux tF + tPTTS                              : 16.0ns       (23.0ns)
   To: adr15_aux tEN                                     :  0.0ns       (23.0ns)
 
 From: m1_b      -                                       :  0.0ns        (0.0ns)
 Thru: m1_b_IBUF tIN                                     :  3.5ns        (3.5ns)
-Thru: $OpTx$FX_DC$18.UIM tLOGI + tPDI                   :  3.5ns        (7.0ns)
+Thru: $OpTx$FX_DC$13.UIM tLOGI + tPDI                   :  3.5ns        (7.0ns)
 Thru: adr15     tF + tPTTS                              : 16.0ns       (23.0ns)
   To: adr15     tEN                                     :  0.0ns       (23.0ns)
 
 From: m1_b      -                                       :  0.0ns        (0.0ns)
 Thru: m1_b_IBUF tIN                                     :  3.5ns        (3.5ns)
-Thru: $OpTx$FX_DC$18.UIM tLOGI + tPDI                   :  3.5ns        (7.0ns)
+Thru: $OpTx$FX_DC$13.UIM tLOGI + tPDI                   :  3.5ns        (7.0ns)
 Thru: adr15_aux tF + tPTTS                              : 16.0ns       (23.0ns)
   To: adr15_aux tEN                                     :  0.0ns       (23.0ns)
 
 From: mreq_b    -                                       :  0.0ns        (0.0ns)
 Thru: mreq_b_IBUF tIN                                   :  3.5ns        (3.5ns)
-Thru: $OpTx$FX_DC$18.UIM tLOGI + tPDI                   :  3.5ns        (7.0ns)
+Thru: $OpTx$FX_DC$13.UIM tLOGI + tPDI                   :  3.5ns        (7.0ns)
 Thru: adr15     tF + tPTTS                              : 16.0ns       (23.0ns)
   To: adr15     tEN                                     :  0.0ns       (23.0ns)
 
 From: mreq_b    -                                       :  0.0ns        (0.0ns)
 Thru: mreq_b_IBUF tIN                                   :  3.5ns        (3.5ns)
-Thru: $OpTx$FX_DC$18.UIM tLOGI + tPDI                   :  3.5ns        (7.0ns)
+Thru: $OpTx$FX_DC$13.UIM tLOGI + tPDI                   :  3.5ns        (7.0ns)
 Thru: adr15_aux tF + tPTTS                              : 16.0ns       (23.0ns)
   To: adr15_aux tEN                                     :  0.0ns       (23.0ns)
 
 From: rd_b      -                                       :  0.0ns        (0.0ns)
 Thru: N3        tIN                                     :  3.5ns        (3.5ns)
-Thru: $OpTx$FX_DC$18.UIM tLOGI + tPDI                   :  3.5ns        (7.0ns)
+Thru: $OpTx$FX_DC$13.UIM tLOGI + tPDI                   :  3.5ns        (7.0ns)
 Thru: adr15     tF + tPTTS                              : 16.0ns       (23.0ns)
   To: adr15     tEN                                     :  0.0ns       (23.0ns)
 
 From: rd_b      -                                       :  0.0ns        (0.0ns)
 Thru: N3        tIN                                     :  3.5ns        (3.5ns)
-Thru: $OpTx$FX_DC$18.UIM tLOGI + tPDI                   :  3.5ns        (7.0ns)
+Thru: $OpTx$FX_DC$13.UIM tLOGI + tPDI                   :  3.5ns        (7.0ns)
 Thru: adr15_aux tF + tPTTS                              : 16.0ns       (23.0ns)
   To: adr15_aux tEN                                     :  0.0ns       (23.0ns)
 
@@ -129,12 +93,6 @@ Thru: rd_b      tF + tPTTS                              : 16.0ns       (23.0ns)
 
 From: adr15     -                                       :  0.0ns        (0.0ns)
 Thru: N2        tIN                                     :  3.5ns        (3.5ns)
-Thru: N0$BUF0/N0$BUF0_TRST.UIM tLOGI + tPDI             :  3.5ns        (7.0ns)
-Thru: rd_b_aux  tF + tPTTS                              : 16.0ns       (23.0ns)
-  To: rd_b_aux  tEN                                     :  0.0ns       (23.0ns)
-
-From: rd_b      -                                       :  0.0ns        (0.0ns)
-Thru: N3        tIN                                     :  3.5ns        (3.5ns)
 Thru: N0$BUF0/N0$BUF0_TRST.UIM tLOGI + tPDI             :  3.5ns        (7.0ns)
 Thru: rd_b_aux  tF + tPTTS                              : 16.0ns       (23.0ns)
   To: rd_b_aux  tEN                                     :  0.0ns       (23.0ns)
@@ -338,14 +296,14 @@ Thru: rd_b_aux  tF + tPTTS                              : 16.0ns       (37.0ns)
 From: clk       -                                       :  0.0ns        (0.0ns)
 Thru: clk_IBUF  tIN                                     :  3.5ns        (3.5ns)
 Thru: mwr_cyc_q tPTCK + tCOI                            :  3.5ns        (7.0ns)
-Thru: $OpTx$FX_DC$18.UIM tF + tLOGI + tPDI              : 13.0ns       (20.0ns)
+Thru: $OpTx$FX_DC$13.UIM tF + tLOGI + tPDI              : 13.0ns       (20.0ns)
 Thru: adr15     tF + tPTTS                              : 16.0ns       (36.0ns)
   To: adr15     tEN                                     :  0.0ns       (36.0ns)
 
 From: clk       -                                       :  0.0ns        (0.0ns)
 Thru: clk_IBUF  tIN                                     :  3.5ns        (3.5ns)
 Thru: mwr_cyc_q tPTCK + tCOI                            :  3.5ns        (7.0ns)
-Thru: $OpTx$FX_DC$18.UIM tF + tLOGI + tPDI              : 13.0ns       (20.0ns)
+Thru: $OpTx$FX_DC$13.UIM tF + tLOGI + tPDI              : 13.0ns       (20.0ns)
 Thru: adr15_aux tF + tPTTS                              : 16.0ns       (36.0ns)
   To: adr15_aux tEN                                     :  0.0ns       (36.0ns)
 
@@ -621,30 +579,30 @@ Thru: N0$BUF0/N0$BUF0_TRST.UIM tF + tLOGI + tPTA + tPDI : 14.0ns       (14.5ns)
 Thru: rd_b_aux  tF + tPTTS                              : 16.0ns       (30.5ns)
   To: rd_b_aux  tEN                                     :  0.0ns       (30.5ns)
 
-Source clock net: mreq_b_f_q.CLKF
+Source clock net: mwr_cyc_f_q.CLKF
 Worst case clock delay from origin clk is 6.5ns
-From: mreq_b_f_q tCOI                                   :  0.5ns        (0.5ns)
+From: mwr_cyc_f_q tCOI                                  :  0.5ns        (0.5ns)
 Thru: N0$BUF0/N0$BUF0_TRST.UIM tF + tLOGI + tPTA + tPDI : 14.0ns       (14.5ns)
 Thru: rd_b      tF + tPTTS                              : 16.0ns       (30.5ns)
   To: rd_b      tEN                                     :  0.0ns       (30.5ns)
 
-Source clock net: mreq_b_f_q.CLKF
+Source clock net: mwr_cyc_f_q.CLKF
 Worst case clock delay from origin clk is 6.5ns
-From: mreq_b_f_q tCOI                                   :  0.5ns        (0.5ns)
+From: mwr_cyc_f_q tCOI                                  :  0.5ns        (0.5ns)
 Thru: N0$BUF0/N0$BUF0_TRST.UIM tF + tLOGI + tPTA + tPDI : 14.0ns       (14.5ns)
 Thru: rd_b_aux  tF + tPTTS                              : 16.0ns       (30.5ns)
   To: rd_b_aux  tEN                                     :  0.0ns       (30.5ns)
 
-Source clock net: mreq_b_q.CLKF
+Source clock net: mwr_cyc_q.CLKF
 Worst case clock delay from origin clk is 6.5ns
-From: mreq_b_q  tCOI                                    :  0.5ns        (0.5ns)
+From: mwr_cyc_q tCOI                                    :  0.5ns        (0.5ns)
 Thru: N0$BUF0/N0$BUF0_TRST.UIM tF + tLOGI + tPTA + tPDI : 14.0ns       (14.5ns)
 Thru: rd_b      tF + tPTTS                              : 16.0ns       (30.5ns)
   To: rd_b      tEN                                     :  0.0ns       (30.5ns)
 
-Source clock net: mreq_b_q.CLKF
+Source clock net: mwr_cyc_q.CLKF
 Worst case clock delay from origin clk is 6.5ns
-From: mreq_b_q  tCOI                                    :  0.5ns        (0.5ns)
+From: mwr_cyc_q tCOI                                    :  0.5ns        (0.5ns)
 Thru: N0$BUF0/N0$BUF0_TRST.UIM tF + tLOGI + tPTA + tPDI : 14.0ns       (14.5ns)
 Thru: rd_b_aux  tF + tPTTS                              : 16.0ns       (30.5ns)
   To: rd_b_aux  tEN                                     :  0.0ns       (30.5ns)
@@ -700,58 +658,44 @@ Thru: rd_b_aux  tF + tPTTS                              : 16.0ns       (30.5ns)
 Source clock net: mreq_b_f_q.CLKF
 Worst case clock delay from origin clk is 6.5ns
 From: mreq_b_f_q tCOI                                   :  0.5ns        (0.5ns)
-Thru: $OpTx$FX_DC$18.UIM tF + tLOGI + tPDI              : 13.0ns       (13.5ns)
+Thru: $OpTx$FX_DC$13.UIM tF + tLOGI + tPDI              : 13.0ns       (13.5ns)
 Thru: adr15     tF + tPTTS                              : 16.0ns       (29.5ns)
   To: adr15     tEN                                     :  0.0ns       (29.5ns)
 
 Source clock net: mreq_b_f_q.CLKF
 Worst case clock delay from origin clk is 6.5ns
 From: mreq_b_f_q tCOI                                   :  0.5ns        (0.5ns)
-Thru: $OpTx$FX_DC$18.UIM tF + tLOGI + tPDI              : 13.0ns       (13.5ns)
+Thru: $OpTx$FX_DC$13.UIM tF + tLOGI + tPDI              : 13.0ns       (13.5ns)
 Thru: adr15_aux tF + tPTTS                              : 16.0ns       (29.5ns)
   To: adr15_aux tEN                                     :  0.0ns       (29.5ns)
 
 Source clock net: mreq_b_q.CLKF
 Worst case clock delay from origin clk is 6.5ns
 From: mreq_b_q  tCOI                                    :  0.5ns        (0.5ns)
-Thru: $OpTx$FX_DC$18.UIM tF + tLOGI + tPDI              : 13.0ns       (13.5ns)
+Thru: $OpTx$FX_DC$13.UIM tF + tLOGI + tPDI              : 13.0ns       (13.5ns)
 Thru: adr15     tF + tPTTS                              : 16.0ns       (29.5ns)
   To: adr15     tEN                                     :  0.0ns       (29.5ns)
 
 Source clock net: mreq_b_q.CLKF
 Worst case clock delay from origin clk is 6.5ns
 From: mreq_b_q  tCOI                                    :  0.5ns        (0.5ns)
-Thru: $OpTx$FX_DC$18.UIM tF + tLOGI + tPDI              : 13.0ns       (13.5ns)
+Thru: $OpTx$FX_DC$13.UIM tF + tLOGI + tPDI              : 13.0ns       (13.5ns)
 Thru: adr15_aux tF + tPTTS                              : 16.0ns       (29.5ns)
   To: adr15_aux tEN                                     :  0.0ns       (29.5ns)
 
 Source clock net: mwr_cyc_q.CLKF
 Worst case clock delay from origin clk is 6.5ns
 From: mwr_cyc_q tCOI                                    :  0.5ns        (0.5ns)
-Thru: $OpTx$FX_DC$18.UIM tF + tLOGI + tPDI              : 13.0ns       (13.5ns)
+Thru: $OpTx$FX_DC$13.UIM tF + tLOGI + tPDI              : 13.0ns       (13.5ns)
 Thru: adr15     tF + tPTTS                              : 16.0ns       (29.5ns)
   To: adr15     tEN                                     :  0.0ns       (29.5ns)
 
 Source clock net: mwr_cyc_q.CLKF
 Worst case clock delay from origin clk is 6.5ns
 From: mwr_cyc_q tCOI                                    :  0.5ns        (0.5ns)
-Thru: $OpTx$FX_DC$18.UIM tF + tLOGI + tPDI              : 13.0ns       (13.5ns)
+Thru: $OpTx$FX_DC$13.UIM tF + tLOGI + tPDI              : 13.0ns       (13.5ns)
 Thru: adr15_aux tF + tPTTS                              : 16.0ns       (29.5ns)
   To: adr15_aux tEN                                     :  0.0ns       (29.5ns)
-
-Source clock net: mwr_cyc_q.CLKF
-Worst case clock delay from origin clk is 6.5ns
-From: mwr_cyc_q tCOI                                    :  0.5ns        (0.5ns)
-Thru: N0$BUF0/N0$BUF0_TRST.UIM tF + tLOGI + tPDI        : 13.0ns       (13.5ns)
-Thru: rd_b      tF + tPTTS                              : 16.0ns       (29.5ns)
-  To: rd_b      tEN                                     :  0.0ns       (29.5ns)
-
-Source clock net: mwr_cyc_q.CLKF
-Worst case clock delay from origin clk is 6.5ns
-From: mwr_cyc_q tCOI                                    :  0.5ns        (0.5ns)
-Thru: N0$BUF0/N0$BUF0_TRST.UIM tF + tLOGI + tPDI        : 13.0ns       (13.5ns)
-Thru: rd_b_aux  tF + tPTTS                              : 16.0ns       (29.5ns)
-  To: rd_b_aux  tEN                                     :  0.0ns       (29.5ns)
 
 Source clock net: ramblock_q<0>.CLKF
 Worst case clock delay from origin clken_lat_qb.Q is 13.0ns
@@ -976,18 +920,6 @@ Worst case clock delay from origin clk is 6.5ns
 From: mode3_q   tCOI                                    :  0.5ns        (0.5ns)
 Thru: adr15_aux tF + tPTTS                              : 16.0ns       (16.5ns)
   To: adr15_aux tEN                                     :  0.0ns       (16.5ns)
-
-Source clock net: mwr_cyc_f_q.CLKF
-Worst case clock delay from origin clk is 6.5ns
-From: mwr_cyc_f_q tCOI                                  :  0.5ns        (0.5ns)
-Thru: ramcs_b   tF + tLOGI + tPDI                       : 13.0ns       (13.5ns)
-  To: ramcs_b   tOUT                                    :  3.0ns       (16.5ns)
-
-Source clock net: mwr_cyc_f_q.CLKF
-Worst case clock delay from origin clk is 6.5ns
-From: mwr_cyc_f_q tCOI                                  :  0.5ns        (0.5ns)
-Thru: ramdis    tF + tLOGI + tPDI                       : 13.0ns       (13.5ns)
-  To: ramdis    tOUT                                    :  3.0ns       (16.5ns)
 
 Source clock net: mwr_cyc_q.CLKF
 Worst case clock delay from origin clk is 6.5ns

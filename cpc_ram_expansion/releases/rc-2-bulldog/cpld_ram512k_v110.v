@@ -67,14 +67,12 @@ module cpld_ram512k_v110(
   reg [3:0]        dip_q;
   reg              mode3_q;              
   reg              mwr_cyc_q;
-  reg              mwr_cyc_f_q;    
+  reg              mwr_cyc_f_q;  
   reg              ramcs_b_r;
   reg              clken_lat_qb;
   reg              adr15_q;
   reg              exp_ram_r;
-  reg              ramrd_b_q;             
   reg              mreq_b_q, mreq_b_f_q;
-  wire             mwr_cyc_w;
   wire             mwr_cyc_d;  
   wire             adr15_overdrive_w;
 
@@ -130,13 +128,13 @@ module cpld_ram512k_v110(
   //         _____________       ___________________________
   // READY             :  \_____/      
   //                   :    .    :    .    :    .    :    .
-  //                   :_____________________________:____.        
-  // MWR_CYC    _______/    .    :    .    :    .    \____\__  FF'd Version (optional trailing edge extension)
+  //                   :_____________________________:    .
+  // MWR_CYC    _______/    .    :    .    :    .    \______  FF'd Version 
   // State    _IDLE____X___T1____X____T1___X___T2____X_END__
   //
   
-  // overdrive rd_b for all expansion write accesses only
-  assign { rd_b, rd_b_aux }    = ( overdrive_mode & exp_ram_r & (mwr_cyc_d|mwr_cyc_q)  ) ? 2'b00 : 2'bzz ;
+  // overdrive rd_b for all expansion write accesses only - extend overdrive to trailing edge following mreq going high
+  assign { rd_b, rd_b_aux }    = ( overdrive_mode & exp_ram_r & (mwr_cyc_q|mwr_cyc_f_q)) ? 2'b00 : 2'bzz ;
 
   // Overdrive A15 for writes only in shadow modes (full and partial) but for all access types otherwise
   // Need to compute whether A15 will need to be driven before the first rising edge of the MREQ cycle for the
@@ -151,8 +149,6 @@ module cpld_ram512k_v110(
   // In full shadow mode SRAM is always enabled for all real memory accesses but dont clash with ROM access (ramrd_b will control oe_b)
   assign ramcs_b = !( !ramcs_b_r | full_shadow) | mreq_b | !rfsh_b ;
 
-  assign mwr_cyc_w = mwr_cyc_q | mwr_cyc_f_q;
-
   always @ (negedge reset_b or posedge clk)
     if ( !reset_b )
       mwr_cyc_q <= 1'b0;
@@ -165,23 +161,19 @@ module cpld_ram512k_v110(
 
   always @ (negedge reset_b or negedge clk)
     if ( !reset_b ) begin
-      mreq_b_f_q = 1'b1;      
-      mwr_cyc_f_q <= 1'b0;
-      end
+      mreq_b_f_q = 1'b1;
+      mwr_cyc_f_q <= 1'b0;      
+    end     
     else begin
-      mreq_b_f_q = mreq_b;  
-      mwr_cyc_f_q <= mwr_cyc_q;
+      mreq_b_f_q = mreq_b;
+      mwr_cyc_f_q <= mwr_cyc_q;            
     end
   
   always @ (negedge reset_b or posedge clk)
-    if ( !reset_b ) begin
+    if ( !reset_b ) 
       mreq_b_q = 1'b1;
-      ramrd_b_q = 1'b1;      
-    end
-    else begin
+    else 
       mreq_b_q = mreq_b;
-      ramrd_b_q = ramrd_b;
-    end
   
   always @ (negedge reset_b or negedge mreq_b ) 
     if ( !reset_b ) 
@@ -218,14 +210,14 @@ module cpld_ram512k_v110(
       // FULL SHADOW MODE    - all CPU read accesses come from external memory (ramcs_b_r computed here is ignored)            
       // PARTIAL SHADOW MODE - all CPU write accesses go to shadow memory but only shadow block 3 is ever read in mode C3 at bank 0x4000 (remapped to 0xC000)
       case (ramblock_q[2:0])
- 	3'b000: {exp_ram_r, ramcs_b_r, ramadrhi_r} = { 1'b0, !mwr_cyc_w , shadow_bank, adr15,adr14 };
- 	3'b001: {exp_ram_r, ramcs_b_r, ramadrhi_r} = ( {adr15,adr14}==2'b11 ) ? {2'b10, ramblock_q[5:3],2'b11} : { 1'b0, !mwr_cyc_w , shadow_bank, adr15,adr14 };
+ 	3'b000: {exp_ram_r, ramcs_b_r, ramadrhi_r} = { 1'b0, !mwr_cyc_q , shadow_bank, adr15,adr14 };
+ 	3'b001: {exp_ram_r, ramcs_b_r, ramadrhi_r} = ( {adr15,adr14}==2'b11 ) ? {2'b10, ramblock_q[5:3],2'b11} : { 1'b0, !mwr_cyc_q , shadow_bank, adr15,adr14 };
  	3'b010: {exp_ram_r, ramcs_b_r, ramadrhi_r} = { 2'b10, ramblock_q[5:3], adr15,adr14} ; 
- 	3'b011: {exp_ram_r, ramcs_b_r, ramadrhi_r} = ( {adr15_q,adr14}==2'b11 ) ? {2'b10,ramblock_q[5:3],2'b11} : ({adr15_q,adr14}==2'b01) ? {2'b00,shadow_bank,2'b11} : { 1'b0, !mwr_cyc_w , shadow_bank, adr15,adr14 };
- 	3'b100: {exp_ram_r, ramcs_b_r, ramadrhi_r} = ( {adr15,adr14}==2'b01 ) ? {2'b10,ramblock_q[5:3],2'b00} : { 1'b0, !mwr_cyc_w , shadow_bank, adr15, adr14 };              
- 	3'b101: {exp_ram_r, ramcs_b_r, ramadrhi_r} = ( {adr15,adr14}==2'b01 ) ? {2'b10,ramblock_q[5:3],2'b01} : { 1'b0, !mwr_cyc_w , shadow_bank, adr15, adr14 };              
- 	3'b110: {exp_ram_r, ramcs_b_r, ramadrhi_r} = ( {adr15,adr14}==2'b01 ) ? {2'b10,ramblock_q[5:3],2'b10} : { 1'b0, !mwr_cyc_w , shadow_bank, adr15, adr14 };              
- 	3'b111: {exp_ram_r, ramcs_b_r, ramadrhi_r} = ( {adr15,adr14}==2'b01 ) ? {2'b10,ramblock_q[5:3],2'b11} : { 1'b0, !mwr_cyc_w , shadow_bank, adr15, adr14 };
+ 	3'b011: {exp_ram_r, ramcs_b_r, ramadrhi_r} = ( {adr15_q,adr14}==2'b11 ) ? {2'b10,ramblock_q[5:3],2'b11} : ({adr15_q,adr14}==2'b01) ? {2'b00,shadow_bank,2'b11} : { 1'b0, !mwr_cyc_q , shadow_bank, adr15,adr14 };
+ 	3'b100: {exp_ram_r, ramcs_b_r, ramadrhi_r} = ( {adr15,adr14}==2'b01 ) ? {2'b10,ramblock_q[5:3],2'b00} : { 1'b0, !mwr_cyc_q , shadow_bank, adr15, adr14 };              
+ 	3'b101: {exp_ram_r, ramcs_b_r, ramadrhi_r} = ( {adr15,adr14}==2'b01 ) ? {2'b10,ramblock_q[5:3],2'b01} : { 1'b0, !mwr_cyc_q , shadow_bank, adr15, adr14 };              
+ 	3'b110: {exp_ram_r, ramcs_b_r, ramadrhi_r} = ( {adr15,adr14}==2'b01 ) ? {2'b10,ramblock_q[5:3],2'b10} : { 1'b0, !mwr_cyc_q , shadow_bank, adr15, adr14 };              
+ 	3'b111: {exp_ram_r, ramcs_b_r, ramadrhi_r} = ( {adr15,adr14}==2'b01 ) ? {2'b10,ramblock_q[5:3],2'b11} : { 1'b0, !mwr_cyc_q , shadow_bank, adr15, adr14 };
       endcase 
     else
       // 6128 mode. In 464 mode (ie overdrive ON but no shadow memory) means that C3 is not fully supported for FutureOS etc, but other modes are ok
