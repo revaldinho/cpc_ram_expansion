@@ -29,12 +29,20 @@
  * Notes
  * - ChaseHQ does not run when FutureOS ROMs are enabled. Issues CHASEHQ4.RAM not found message
  * - FutureOS Desktop prefers higher voltage to get best cursor definition - 5.25V and above
+ * 
+ * 
+ * Crib
+ * 1. Keeping a net in synthesis
+ * //synthesis attribute keep of input_a_reg is "true"
+ * BUF mybuf (.I(input_a_reg),.O(comb));
+ * 
+ * 
  */
 
 // Conditional compilation options
 
 
-`define CPC464_SHADOW_OPERATION_ONLY  1  
+//`define CPC464_SHADOW_OPERATION_ONLY  1  
 // Select this option to force shadow mode ON whenever the overdrive option is selected for the CPC464.
 // This shouldn't be necessary, but when some code optimized for this combination is disabled there is
 // a voltage dependency on FutureOS GUI operation - the cursor is not clearly visible with VDD below 5V.
@@ -82,6 +90,7 @@ module cpld_ram512k_v110(
   reg              ramrd_b_q;             
   reg              mreq_b_q, mreq_b_f_q;
   wire             mwr_cyc_w;
+  wire             mwr_cyc_d;  
   wire             adr15_overdrive_w;
 
 
@@ -152,16 +161,14 @@ module cpld_ram512k_v110(
   
   // overdrive rd_b for all expansion write accesses only
   assign { rd_b, rd_b_aux }    = ( overdrive_mode & exp_ram_r & mwr_cyc_q  ) ? 2'b00 : 2'bzz ;
-  // Overdrive A15 for writes only in shadow modes (full and partial) but for all access types otherwise
-  assign adr15_overdrive_w = overdrive_mode & mode3_q & adr14 & !mreq_b & m1_b & rfsh_b ;
 
-`ifdef SHADOW_OPERATION_ONLY
-  // know that this breaks non-shadow mode operation, but addresses the mode3 timing/voltage issue in FutureOS
-  assign { adr15, adr15_aux}   = (adr15_overdrive_w & mwr_cyc_q ) ? 2'b11 : 2'bzz; 
-`else
-  // This should work in all modes ... but requires VDD > 5V to get a clear FutureOS cursor
-  assign { adr15, adr15_aux}   = (adr15_overdrive_w & (mwr_cyc_q| !shadow_mode) ) ? 2'b11 : 2'bzz; 
-`endif
+  // Overdrive A15 for writes only in shadow modes (full and partial) but for all access types otherwise
+
+  // Need to compute whether A15 will need to be driven before the first rising edge of the MREQ cycle for the
+  // gate array to act on it. Cant wait to sample mwr_cyc_q after it has been set initially.
+  assign mwr_cyc_d = (mreq_b_f_q | mreq_b_q) & !mreq_b & rfsh_b & rd_b & m1_b ;  
+  assign adr15_overdrive_w   =  overdrive_mode & mode3_q & adr14 & rfsh_b & ((shadow_mode) ? (mwr_cyc_q|mwr_cyc_d): !mreq_b) ;
+  assign { adr15, adr15_aux} = (adr15_overdrive_w  ) ? 2'b11 : 2'bzz; 
 
 `ifdef MINI_TURBO
   // In full shadow mode all _RAM_ reads can ignore wait states from the GA
@@ -183,7 +190,7 @@ module cpld_ram512k_v110(
     if ( !reset_b )
       mwr_cyc_q <= 1'b0;
     else begin
-      if (((mreq_b_f_q | mreq_b_q) & !mreq_b & rfsh_b & rd_b & m1_b))
+      if ( mwr_cyc_d ) 
         mwr_cyc_q <= 1'b1;
       else if (mreq_b)
         mwr_cyc_q <= 1'b0;
