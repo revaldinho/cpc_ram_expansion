@@ -5,7 +5,7 @@ Parameter TMPDIR set to tmp
 
 
 Total REAL time to Xst completion: 0.00 secs
-Total CPU time to Xst completion: 0.04 secs
+Total CPU time to Xst completion: 0.05 secs
  
 --> 
 Parameter xsthdpdir set to xst
@@ -201,13 +201,13 @@ Design Statistics
 # IOs                              : 34
 
 Cell Usage :
-# BELS                             : 245
+# BELS                             : 247
 #      AND2                        : 94
-#      AND3                        : 5
+#      AND3                        : 6
 #      AND4                        : 2
 #      GND                         : 1
 #      INV                         : 87
-#      OR2                         : 49
+#      OR2                         : 50
 #      OR3                         : 5
 #      VCC                         : 1
 #      XOR2                        : 1
@@ -223,13 +223,13 @@ Cell Usage :
 =========================================================================
 
 
-Total REAL time to Xst completion: 2.00 secs
-Total CPU time to Xst completion: 1.47 secs
+Total REAL time to Xst completion: 1.00 secs
+Total CPU time to Xst completion: 1.53 secs
  
 --> 
 
 
-Total memory usage is 128752 kilobytes
+Total memory usage is 128748 kilobytes
 
 Number of errors   :    0 (   0 filtered)
 Number of warnings :    8 (   0 filtered)

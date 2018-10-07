@@ -136,7 +136,7 @@ module cpld_ram512k_v110(
   //
   
   // overdrive rd_b for all expansion write accesses only
-  assign { rd_b, rd_b_aux }    = ( overdrive_mode & exp_ram_r & mwr_cyc_q  ) ? 2'b00 : 2'bzz ;
+  assign { rd_b, rd_b_aux }    = ( overdrive_mode & exp_ram_r & (mwr_cyc_d|mwr_cyc_q)  ) ? 2'b00 : 2'bzz ;
 
   // Overdrive A15 for writes only in shadow modes (full and partial) but for all access types otherwise
   // Need to compute whether A15 will need to be driven before the first rising edge of the MREQ cycle for the
