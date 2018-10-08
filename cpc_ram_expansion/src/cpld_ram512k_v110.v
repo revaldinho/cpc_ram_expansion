@@ -28,13 +28,16 @@
  * 
  * Notes
  * - ChaseHQ does not run when FutureOS ROMs are enabled. Issues CHASEHQ4.RAM not found message
- * - FutureOS Desktop prefers higher voltage to get best cursor definition - 5.25V and above
  * 
  * Crib
  * 1. Keeping a net in synthesis
  * //synthesis attribute keep of input_a_reg is "true"
  * BUF mybuf (.I(input_a_reg),.O(comb));
  */
+
+
+// Evaluate benefits of having full shadow mode only in synthesis
+`define FULL_SHADOW_ONLY 1
 
 module cpld_ram512k_v110(
   input        rfsh_b,
@@ -50,7 +53,7 @@ module cpld_ram512k_v110(
   inout        rd_b,
   inout        rd_b_aux, 
   input [7:0]  data,
-  inout        ready,
+  input        ready,
   input        clk,
   input        m1_b,
   input [1:0]  dip,
@@ -103,7 +106,11 @@ module cpld_ram512k_v110(
   wire        overdrive_mode = dip[0];                     // AKA 464 mode [1] or 6128 mode [0]
   wire        shadow_mode = dip[1];                        // Only valid in overdrive mode for 464
   // Latching these two DIP switches requires the CPC to be powered down/up rather than just a ctrl-shift-esc reset
+`ifdef FULL_SHADOW_ONLY
+  wire        full_shadow = shadow_mode;        
+`else  
   wire        full_shadow = dip_q[2] & shadow_mode;        // Full shadow mode [1] or partial mode [0] for 464
+`endif  
   wire [2:0]  shadow_bank = {dip_q[3], 2'b11};             // use 3'b111 or 3'b011 for shadow bank for 464
 
   // Create negedge clock on IO write event - clock low pulse will be suppressed if not an IOWR* event
@@ -143,13 +150,19 @@ module cpld_ram512k_v110(
   assign adr15_overdrive_w   =  overdrive_mode & mode3_q & adr14 & rfsh_b & ((shadow_mode) ? (mwr_cyc_q|mwr_cyc_d): !mreq_b) ;
   assign { adr15, adr15_aux} = (adr15_overdrive_w  ) ? 2'b11 : 2'bzz; 
 
-  // Never, ever use internal RAM for reads in full shadow mode
-  assign ramdis = (full_shadow) ? 1'b1 :  !ramcs_b_r ;
-  
+`ifdef FULL_SHADOW_ONLY
+  // Never, ever use internal RAM for reads in full shadow mode  (but allow it in overdrive only)
+  assign ramdis = (shadow_mode) ? 1'b1 :  !ramcs_b_r ;  
+  // In full shadow mode SRAM is always enabled for all real memory accesses but dont clash with ROM access (ramrd_b will control oe_b)
+  assign ramcs_b = mreq_b | !rfsh_b ;  
+`else  
+  // Never, ever use internal RAM for reads in full shadow mode  
+  assign ramdis = (full_shadow) ? 1'b1 :  !ramcs_b_r ;  
   // In full shadow mode SRAM is always enabled for all real memory accesses but dont clash with ROM access (ramrd_b will control oe_b)
   assign ramcs_b = !( !ramcs_b_r | full_shadow) | mreq_b | !rfsh_b ;
-
-  always @ (negedge reset_b or posedge clk)
+`endif
+  
+  always @ (posedge clk)
     if ( !reset_b )
       mwr_cyc_q <= 1'b0;
     else begin
@@ -159,7 +172,7 @@ module cpld_ram512k_v110(
         mwr_cyc_q <= 1'b0;
     end
 
-  always @ (negedge reset_b or negedge clk)
+  always @ (negedge clk)
     if ( !reset_b ) begin
       mreq_b_f_q = 1'b1;
       mwr_cyc_f_q <= 1'b0;      
@@ -169,13 +182,13 @@ module cpld_ram512k_v110(
       mwr_cyc_f_q <= mwr_cyc_q;            
     end
   
-  always @ (negedge reset_b or posedge clk)
+  always @ (posedge clk)
     if ( !reset_b ) 
       mreq_b_q = 1'b1;
     else 
       mreq_b_q = mreq_b;
   
-  always @ (negedge reset_b or negedge mreq_b ) 
+  always @ (negedge mreq_b ) 
     if ( !reset_b ) 
       adr15_q <= 1'b0;
     else
@@ -192,7 +205,7 @@ module cpld_ram512k_v110(
   
   // Pre-decode mode 3 setting and noodle shadow bank alias if required to save decode
   // time after the Q
-  always @ (negedge reset_b or posedge wclk )
+  always @ (posedge wclk )
     if (!reset_b) begin
       ramblock_q <= 6'b0;
       mode3_q <= 1'b0;
@@ -209,6 +222,22 @@ module cpld_ram512k_v110(
     if ( shadow_mode )
       // FULL SHADOW MODE    - all CPU read accesses come from external memory (ramcs_b_r computed here is ignored)            
       // PARTIAL SHADOW MODE - all CPU write accesses go to shadow memory but only shadow block 3 is ever read in mode C3 at bank 0x4000 (remapped to 0xC000)
+`ifdef FULL_SHADOW_ONLY
+      // ramcs_b_r never used in this mode
+      begin
+        ramcs_b_r = 1'bx;        
+	case (ramblock_q[2:0])
+	  3'b000: {exp_ram_r, ramadrhi_r} = { 1'b0, shadow_bank, adr15,adr14 };
+	  3'b001: {exp_ram_r, ramadrhi_r} = ( {adr15,adr14}==2'b11 ) ? {1'b1, ramblock_q[5:3],2'b11} : { 1'b0, shadow_bank, adr15,adr14 };
+	  3'b010: {exp_ram_r, ramadrhi_r} = { 1'b1, ramblock_q[5:3], adr15,adr14} ; 
+	  3'b011: {exp_ram_r, ramadrhi_r} = ( {adr15_q,adr14}==2'b11 ) ? {1'b1,ramblock_q[5:3],2'b11} : ({adr15_q,adr14}==2'b01) ? {1'b0,shadow_bank,2'b11} : { 1'b0, shadow_bank, adr15,adr14 };
+	  3'b100: {exp_ram_r, ramadrhi_r} = ( {adr15,adr14}==2'b01 ) ? {1'b1,ramblock_q[5:3],2'b00} : { 1'b0, shadow_bank, adr15, adr14 };              
+	  3'b101: {exp_ram_r, ramadrhi_r} = ( {adr15,adr14}==2'b01 ) ? {1'b1,ramblock_q[5:3],2'b01} : { 1'b0, shadow_bank, adr15, adr14 };              
+	  3'b110: {exp_ram_r, ramadrhi_r} = ( {adr15,adr14}==2'b01 ) ? {1'b1,ramblock_q[5:3],2'b10} : { 1'b0, shadow_bank, adr15, adr14 };              
+	  3'b111: {exp_ram_r, ramadrhi_r} = ( {adr15,adr14}==2'b01 ) ? {1'b1,ramblock_q[5:3],2'b11} : { 1'b0, shadow_bank, adr15, adr14 };
+	endcase // case (ramblock_q[2:0])
+      end
+`else      
       case (ramblock_q[2:0])
  	3'b000: {exp_ram_r, ramcs_b_r, ramadrhi_r} = { 1'b0, !mwr_cyc_q , shadow_bank, adr15,adr14 };
  	3'b001: {exp_ram_r, ramcs_b_r, ramadrhi_r} = ( {adr15,adr14}==2'b11 ) ? {2'b10, ramblock_q[5:3],2'b11} : { 1'b0, !mwr_cyc_q , shadow_bank, adr15,adr14 };
@@ -218,7 +247,8 @@ module cpld_ram512k_v110(
  	3'b101: {exp_ram_r, ramcs_b_r, ramadrhi_r} = ( {adr15,adr14}==2'b01 ) ? {2'b10,ramblock_q[5:3],2'b01} : { 1'b0, !mwr_cyc_q , shadow_bank, adr15, adr14 };              
  	3'b110: {exp_ram_r, ramcs_b_r, ramadrhi_r} = ( {adr15,adr14}==2'b01 ) ? {2'b10,ramblock_q[5:3],2'b10} : { 1'b0, !mwr_cyc_q , shadow_bank, adr15, adr14 };              
  	3'b111: {exp_ram_r, ramcs_b_r, ramadrhi_r} = ( {adr15,adr14}==2'b01 ) ? {2'b10,ramblock_q[5:3],2'b11} : { 1'b0, !mwr_cyc_q , shadow_bank, adr15, adr14 };
-      endcase 
+      endcase // case (ramblock_q[2:0])
+`endif    
     else
       // 6128 mode. In 464 mode (ie overdrive ON but no shadow memory) means that C3 is not fully supported for FutureOS etc, but other modes are ok
       case (ramblock_q[2:0])
