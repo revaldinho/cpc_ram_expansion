@@ -37,7 +37,7 @@
 
 
 // Evaluate benefits of having full shadow mode only in synthesis
-`define FULL_SHADOW_ONLY 1
+//`define FULL_SHADOW_ONLY 1
 
 module cpld_ram512k_v110(
   input        rfsh_b,
@@ -161,7 +161,7 @@ module cpld_ram512k_v110(
   // In full shadow mode SRAM is always enabled for all real memory accesses but dont clash with ROM access (ramrd_b will control oe_b)
   assign ramcs_b = !( !ramcs_b_r | full_shadow) | mreq_b | !rfsh_b ;
 `endif
-  
+
   always @ (posedge clk)
     if ( !reset_b )
       mwr_cyc_q <= 1'b0;
