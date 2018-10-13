@@ -38,6 +38,7 @@
 
 // Evaluate benefits of having full shadow mode only in synthesis
 //`define FULL_SHADOW_ONLY 1
+`define ENABLE_TURBO 1
 
 module cpld_ram512k_v110(
   input       rfsh_b,
@@ -53,7 +54,11 @@ module cpld_ram512k_v110(
   inout       rd_b,
   inout       rd_b_aux, 
   input [7:0] data,
-  inout       ready,
+`ifdef ENABLE_TURBO
+  inout       ready,                         
+`else                         
+  input       ready,
+`endif                         
   input       clk,
   input       m1_b,
   input [1:0] dip,
@@ -104,6 +109,8 @@ module cpld_ram512k_v110(
  *                                                                         
  * 1 1 0 0  OD ON, Shadow FULL, Bank LOW, turbo OFF     448KB 192/256    464 C3 (FutureOS) w. SiDisk
  * 1 1 0 1  OD ON, Shadow FULL, Bank HIGH, turbo OFF    448KB 448/0      464 C3 (FutureOS)
+ * -----------------------------------------------------------------------------------------------------
+ * Experimental code only - not enabled 
  * 1 1 1 0  OD ON, Shadow FULL, Bank LOW, turbo ON      448KB 192/256    464 C3 (FutureOS) w. SiDisk [2]
  * 1 1 1 1  OD ON, Shadow FULL, Bank HIGH, turbo ON     448KB 448/0      464 C3 (FutureOS) [2]
  * -----------------------------------------------------------------------------------------------------
@@ -115,14 +122,16 @@ module cpld_ram512k_v110(
  */
 
   assign overdrive_mode = dip[0];                  // ie DIP SW 1 
-  assign shadow_mode = dip[1] | dip_q[2];          // ie DIP SW 2 OR DIP SW 3
-  assign full_shadow = dip[1];                     // ie DIP SW 2
+  assign shadow_mode = dip[1] | dip_q[2];        // ie DIP SW 2 OR DIP SW 3
+  assign full_shadow = dip[1];                   // ie DIP SW 2
   assign shadow_bank = { dip_q[3], 2'b11 } ;       // ie DIP SW 4
-  assign turbo_mode  = dip[1] & dip_q[2];          // ie DIP SW 2 AND DIP SW 3
+  assign turbo_mode  = dip[1] & dip_q[2];        // ie DIP SW 2 AND DIP SW 3
   
   // Should be able to ignore waits on all reads from expansion RAM but CP/M shows some visible pixel
-  // corruption in mode2 which can be eliminated by this additional term:  ({adr14,ramblock_q[2:0]}!=4'b1010) 
-  assign ready =  (turbo_mode & ({adr14,ramblock_q[2:0]}!=4'b1010) & (!mwr_cyc_d & !mwr_cyc_q) & !ramrd_b & !mreq_b) ? 1'b1 : 1'bz;
+  // corruption in mode2 which can be eliminated by this additional term:  ({adr14,ramblock_q[2:0]}!=4'b1010)
+`ifdef ENABLE_TURBO  
+  assign ready =  (turbo_mode & ((!(|ramblock_q[1:0])|ramblock_q[2]) & !mwr_cyc_q & !ramrd_b & !mreq_b) ) ? 1'b1 : 1'bz;
+`endif
   
   // Create negedge clock on IO write event - clock low pulse will be suppressed if not an IOWR* event
   // but if the pulse is allowed through use the trailing (rising) edge to capture data
