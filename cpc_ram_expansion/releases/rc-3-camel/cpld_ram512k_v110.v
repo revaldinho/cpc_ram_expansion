@@ -72,6 +72,13 @@ module cpld_ram512k_v110(
   reg              adr15_q;
   reg              exp_ram_r;
   reg              mreq_b_q, mreq_b_f_q;
+  reg [1:0]        reset_b_q;
+
+  wire             reset_b_w;
+  wire             wclk;
+  wire [2:0]       shadow_bank;
+  wire             full_shadow;
+  wire             overdrive_mode;  
   wire             mwr_cyc_d;  
   wire             adr15_overdrive_w;
 
@@ -99,18 +106,21 @@ module cpld_ram512k_v110(
   // (2) - remapping of _internal_ memory in mode C3 done but subject to errors when foreground ROM is selected
   //
 
-  wire        overdrive_mode = dip[0];                     // AKA 464 mode [1] or 6128 mode [0]
-  wire        shadow_mode = dip[1];                        // Only valid in overdrive mode for 464
+  assign overdrive_mode = dip[0];                     // AKA 464 mode [1] or 6128 mode [0]
+  assign shadow_mode = dip[1];                        // Only valid in overdrive mode for 464
   // Latching these two DIP switches requires the CPC to be powered down/up rather than just a ctrl-shift-esc reset
-  wire        full_shadow = dip_q[2] & shadow_mode;        // Full shadow mode [1] or partial mode [0] for 464
-  wire [2:0]  shadow_bank = {dip_q[3], 2'b11};             // use 3'b111 or 3'b011 for shadow bank for 464
+  assign full_shadow = dip_q[2] & shadow_mode;        // Full shadow mode [1] or partial mode [0] for 464
+  assign shadow_bank = {dip_q[3], 2'b11};             // use 3'b111 or 3'b011 for shadow bank for 464
 
   // Create negedge clock on IO write event - clock low pulse will be suppressed if not an IOWR* event
   // but if the pulse is allowed through use the trailing (rising) edge to capture data
-  wire             wclk    = !(clk|clken_lat_qb); 
+  assign wclk    = !(clk|clken_lat_qb); 
 
+  // Synchronized reset release to posedge of clock
+  assign reset_b_w = reset_b & reset_b_q[0];
+  
   // Dont drive address outputs during reset due to overlay of DIP switches    
-  assign ramadrhi = (reset_b) ? ramadrhi_r : {2'bzz, ramadrhi_r[2:0]} ; 
+  assign ramadrhi = (reset_b_w) ? ramadrhi_r : {2'bzz, ramadrhi_r[2:0]} ; 
   assign ramwe_b  = wr_b ;
   // Combination of RAMCS and RAMRD determine whether RAM output is enabled 
   assign ramoe_b = ramrd_b ;
@@ -149,7 +159,10 @@ module cpld_ram512k_v110(
   assign ramcs_b = !( !ramcs_b_r | full_shadow) | mreq_b | !rfsh_b ;
 
   always @ (posedge clk)
-    if ( !reset_b )
+    reset_b_q <= {reset_b, reset_b_q[1]};
+  
+  always @ (posedge clk)
+    if ( !reset_b_w )
       mwr_cyc_q <= 1'b0;
     else begin
       if ( mwr_cyc_d ) 
@@ -159,7 +172,7 @@ module cpld_ram512k_v110(
     end
 
   always @ (negedge clk)
-    if ( !reset_b ) begin
+    if ( !reset_b_w ) begin
       mreq_b_f_q = 1'b1;
       mwr_cyc_f_q <= 1'b0;      
     end     
@@ -169,20 +182,20 @@ module cpld_ram512k_v110(
     end
   
   always @ (posedge clk)
-    if ( !reset_b ) 
+    if ( !reset_b_w ) 
       mreq_b_q = 1'b1;
     else 
       mreq_b_q = mreq_b;
   
   always @ (negedge mreq_b ) 
-    if ( !reset_b ) 
+    if ( !reset_b_w ) 
       adr15_q <= 1'b0;
     else
       adr15_q <= adr15;
 
   // Latch DIP switch settings on reset - need a CPC power down/up.
   always @ ( * )
-    if ( !reset_b ) 
+    if ( !reset_b_w ) 
       dip_q <= { ramadrhi[4:3], dip[1:0] } ;
   
   always @ ( * )
@@ -192,7 +205,7 @@ module cpld_ram512k_v110(
   // Pre-decode mode 3 setting and noodle shadow bank alias if required to save decode
   // time after the Q
   always @ (posedge wclk )
-    if (!reset_b) begin
+    if (!reset_b_w) begin
       ramblock_q <= 6'b0;
       mode3_q <= 1'b0;
     end        

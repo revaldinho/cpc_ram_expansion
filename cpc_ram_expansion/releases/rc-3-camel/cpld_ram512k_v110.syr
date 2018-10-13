@@ -118,7 +118,8 @@ WARNING:Xst:737 - Found 1-bit latch for signal <clken_lat_qb>. Latches may be ge
     Found 1-bit register for signal <mwr_cyc_f_q>.
     Found 1-bit register for signal <mwr_cyc_q>.
     Found 6-bit register for signal <ramblock_q>.
-    Found 3-bit comparator equal for signal <ramblock_q$cmp_eq0000> created at line 200.
+    Found 3-bit comparator equal for signal <ramblock_q$cmp_eq0000> created at line 213.
+    Found 2-bit register for signal <reset_b_q>.
     Summary:
 	inferred   1 Comparator(s).
 	inferred   6 Tristate(s).
@@ -129,8 +130,9 @@ Unit <cpld_ram512k_v110> synthesized.
 HDL Synthesis Report
 
 Macro Statistics
-# Registers                                            : 7
+# Registers                                            : 8
  1-bit register                                        : 6
+ 2-bit register                                        : 1
  6-bit register                                        : 1
 # Latches                                              : 2
  1-bit latch                                           : 1
@@ -197,8 +199,8 @@ Design Statistics
 # IOs                              : 34
 
 Cell Usage :
-# BELS                             : 256
-#      AND2                        : 102
+# BELS                             : 257
+#      AND2                        : 103
 #      AND3                        : 6
 #      AND4                        : 2
 #      GND                         : 1
@@ -207,8 +209,8 @@ Cell Usage :
 #      OR3                         : 5
 #      VCC                         : 1
 #      XOR2                        : 1
-# FlipFlops/Latches                : 15
-#      FD                          : 12
+# FlipFlops/Latches                : 17
+#      FD                          : 14
 #      LD                          : 3
 # IO Buffers                       : 32
 #      IBUF                        : 19
@@ -219,12 +221,12 @@ Cell Usage :
 
 
 Total REAL time to Xst completion: 2.00 secs
-Total CPU time to Xst completion: 1.46 secs
+Total CPU time to Xst completion: 1.56 secs
  
 --> 
 
 
-Total memory usage is 128928 kilobytes
+Total memory usage is 129028 kilobytes
 
 Number of errors   :    0 (   0 filtered)
 Number of warnings :    7 (   0 filtered)
