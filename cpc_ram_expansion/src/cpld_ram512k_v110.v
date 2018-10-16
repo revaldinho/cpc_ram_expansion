@@ -49,12 +49,12 @@ module cpld_ram512k_v110(
   inout        rd_b,
   inout        rd_b_aux, 
   input [7:0]  data,
-  inout        ready,
+  input        ready,
   input        clk,
   input        m1_b,
   input [1:0]  dip,
     
-  output       ramdis,
+  inout        ramdis,
   output       ramcs_b,
   inout [4:0]  ramadrhi, // bits 4,3 also connected to DIP switches 2,1 resp and read on startup
   output       ramoe_b,
@@ -64,6 +64,7 @@ module cpld_ram512k_v110(
   reg [5:0]        ramblock_q;
   reg [4:0]        ramadrhi_r;
   reg [3:0]        dip_q;
+  reg              cardsel_q;              
   reg              mode3_q;              
   reg              mwr_cyc_q;
   reg              mwr_cyc_f_q;  
@@ -72,55 +73,77 @@ module cpld_ram512k_v110(
   reg              adr15_q;
   reg              exp_ram_r;
   reg              mreq_b_q, mreq_b_f_q;
-  reg [1:0]        reset_b_q;
 
-  wire             reset_b_w;
   wire             wclk;
   wire [2:0]       shadow_bank;
   wire             full_shadow;
   wire             overdrive_mode;  
   wire             mwr_cyc_d;  
   wire             adr15_overdrive_w;
+  wire             low512kb_mode;  
+/*  
+ * Config.|DIP |464/Z80  |    |            |Compatibility|RAM|C3  |
+ *        |1234|overdrive|Port| Shadow/Bank|X-MEM |Y-MEM |Exp|Mode|Application
+ *--------|----|---------|----|------------|------|------|---|----|---------------------------------
+ *   0    |0000| OFF     |7Fxx| none/x     | No   | YES  |512|AMS |6128
+ *   1    |0001| OFF     |7Fxx| none/x     | No   | YES  |512|AMS |6128
+ *   2    |0010| OFF     |7Exx| none/x     | YES  | No   |512|AMS |6128
+ *   3    |0011| OFF     |7Exx| none/x     | YES  | No   |512|AMS |6128
+ *--------|----|---------|----|------------|------|------|---|----|---------------------------------
+ *   4    |0100| ON      |7Fxx| none/x     | No   | YES  |512|DK'T|464 DK'Tronics compatible
+ *   5    |0101| ON      |7Fxx| none/x     | No   | YES  |512|DK'T|464 DK'Tronics compatible
+ *   6    |0110| ON      |7Exx| none/x     | YES  | No   |512|DK'T|464 DK'Tronics compatible
+ *   7    |0111| ON      |7Exx| none/x     | YES  | No   |512|DK'T|464 DK'Tronics compatible
+ *--------|----|---------|----|------------|------|------|---|----|---------------------------------
+ *   8    |1000| ON      |7Fxx| partial/lo | No   | No   |448|AMS |464 full 6128 compatible  w/ SiDisk
+ *   9    |1001| ON      |7Fxx| partial/hi | No   | No   |448|AMS |464 full 6128 compatible  
+ *  10    |1010| ON      |7Exx| partial/lo | No   | No   |448|AMS |464 full 6128 compatible  w/ SiDisk
+ *  11    |1011| ON      |7Exx| partial/hi | No   | No   |448|AMS |464 full 6128 compatible           
+ *  12    |1100| ON      |7Fxx| full/   lo | No   | No   |448|AMS |464 full 6128 compatible  w/ faulty base RAM w/ SiDisk    
+ *  13    |1101| ON      |7Fxx| full/   hi | No   | No   |448|AMS |464 full 6128 compatible           
+ *  14    |1110| ON      |7Exx| full/   lo | No   | No   |448|AMS |464 full 6128 compatible  w/ faulty base RAM w/SiDisk
+ *  15    |1111| ON      |7Exx| full/   hi | No   | No   |448|AMS |464 full 6128 compatible           
+ *--------+----+---------+----+------------+------+------+---+----+---------------------------------
+ *
+ * Notes 
+ * DIP switches in table numbered as on physical component. Verilog bus starts at 0 rather than 1.
+ * 
+ * Compatibility indicates that card can be used with X-MEM or Y-MEM as appropriate in a particular
+ * configuration
+ * 
+ * Possible but as yet untested combinations
+ * 
+ * Host CPC| Cards with DIP settings             | Result
+ * --------|-------------------------------------|-------------------------------------------------
+ * 6128	   | X-MEM+Rev.Card <0010> or <0011>     | 512K ROM [0-31] + 1MB RAM
+ * 6128	   | Y-MEM+Rev.Card <0000> or <0001>     | 512K ROM [32-63]+ 1MB RAM
+ * 6128    | Rev. Card <0000> + Rev. Card <0010> | 1MB RAM
+ * --------|-------------------------------------|-------------------------------------------------
+ *  464	   | X-MEM+Rev.Card <0110> or <0111>     | 512K ROM [0-31] + 1MB RAM, DK'Tronics Compatible
+ *  464	   | Y-MEM+Rev.Card <0100> or <0101>     | 512K ROM [32-63]+ 1MB RAM, DK'Tronics Compatible
+ *  464    | Rev. Card <0100> + Rev. Card <0110> | 1MB RAM, DK'Tronics compatible
+ * --------|-------------------------------------|-------------------------------------------------
+ *  464    | Rev. Card <1000> + Rev. Card <1010> | 896K RAM, Amstrad C3 compatibleMode
+ * --------|-------------------------------------|-------------------------------------------------
+ * 
+ * It's not possible to mix a Rev. card in shadow mode with a X/Y-MEM card or another
+ * Rev. card which is _not_ in shadow mode. 
+ * 
+ * NB  Latching DIP3 and DIP4 switches requires the CPC to be powered down/up rather than just a ctrl-shift-esc reset
+ */
 
-  // NBDIP switches are numbered 1-4 on the physical component, but 0-3 in Verilog code
-  // 
-  // 1 2 3 4| Note                                                               | Supported Video Modes (Notes)
-  // -------+--------------------------------------------------------------------+------------------------------
-  //        | Recommended Video Modes                                            |
-  // -------+--------------------------------------------------------------------+------------------------------
-  // 0 0 0 0| Only valid 6128 or 464+, 6128+ setting                             | 0-7
-  // -------+--------------------------------------------------------------------+------------------------------  
-  // 1 1 0 0| 464 overdrive mode, partial shadow RAM, shadow bank number 3'b011  | 0-7
-  // 1 1 0 1| 464 overdrive mode, partial shadow RAM, shadow bank number 3'b111  | 0-7
-  // 1 1 1 0| 464 overdrive mode, full shadow RAM, shadow bank number 3'b011     | 0-7
-  // 1 1 1 1| 464 overdrive mode, full shadow RAM, shadow bank number 3'b111     | 0-7
-  // -------+--------------------------------------------------------------------+------------------------------
-  //        | Limited Video Modes                                                |
-  // -------+--------------------------------------------------------------------+------------------------------
-  // 0 1 1 0| 464 full shadow RAM, no overdrive, shadow bank number 3'b011       | 0,4-7(1)
-  // 0 1 1 1| 464 full shadow RAM, no overdrive, shadow bank number 3'b111       | 0,4-7(1)
-  // 1 0 0 0| 464 overdrive mode, no shadow RAM                                  | 0,1,2,3(2),4-7    
-  // -------+--------------------------------------------------------------------+------------------------------
-  // Notes
-  // (1) - no screen protection, visible interference whenever writing to expansion memory overlaid on screen memory
-  // (2) - remapping of _internal_ memory in mode C3 done but subject to errors when foreground ROM is selected
-  //
-
-  assign overdrive_mode = dip[0];                     // AKA 464 mode [1] or 6128 mode [0]
-  assign shadow_mode = dip[1];                        // Only valid in overdrive mode for 464
-  // Latching these two DIP switches requires the CPC to be powered down/up rather than just a ctrl-shift-esc reset
-  assign full_shadow = dip_q[2] & shadow_mode;        // Full shadow mode [1] or partial mode [0] for 464
-  assign shadow_bank = {dip_q[3], 2'b11};             // use 3'b111 or 3'b011 for shadow bank for 464
+  assign overdrive_mode= dip[0] | dip[1];
+  assign shadow_bank   = {dip_q[3],2'b11};  
+  assign shadow_mode   = dip[0];
+  assign full_shadow   = dip[0]&dip[1];
+  assign low512kb_mode = dip_q[2];
 
   // Create negedge clock on IO write event - clock low pulse will be suppressed if not an IOWR* event
   // but if the pulse is allowed through use the trailing (rising) edge to capture data
   assign wclk    = !(clk|clken_lat_qb); 
 
-  // Synchronized reset release to posedge of clock
-  assign reset_b_w = reset_b & reset_b_q[0];
-  
   // Dont drive address outputs during reset due to overlay of DIP switches    
-  assign ramadrhi = (reset_b_w) ? ramadrhi_r : {2'bzz, ramadrhi_r[2:0]} ; 
+  assign ramadrhi = (reset_b) ? ramadrhi_r : {2'bzz, ramadrhi_r[2:0]} ; 
   assign ramwe_b  = wr_b ;
   // Combination of RAMCS and RAMRD determine whether RAM output is enabled 
   assign ramoe_b = ramrd_b ;
@@ -143,26 +166,23 @@ module cpld_ram512k_v110(
   //
   
   // overdrive rd_b for all expansion write accesses only - extend overdrive to trailing edge following mreq going high
-  assign { rd_b, rd_b_aux }    = ( overdrive_mode & exp_ram_r & (mwr_cyc_q|mwr_cyc_f_q)) ? 2'b00 : 2'bzz ;
+  assign { rd_b, rd_b_aux }    = ( overdrive_mode & exp_ram_r & cardsel_q & (mwr_cyc_q|mwr_cyc_f_q)) ? 2'b00 : 2'bzz ;
 
   // Overdrive A15 for writes only in shadow modes (full and partial) but for all access types otherwise
   // Need to compute whether A15 will need to be driven before the first rising edge of the MREQ cycle for the
   // gate array to act on it. Cant wait to sample mwr_cyc_q after it has been set initially.
   assign mwr_cyc_d = (mreq_b_f_q | mreq_b_q) & !mreq_b & rfsh_b & rd_b & m1_b ;  
-  assign adr15_overdrive_w   =  overdrive_mode & mode3_q & adr14 & rfsh_b & ((shadow_mode) ? (mwr_cyc_q|mwr_cyc_d): !mreq_b) ;
+  assign adr15_overdrive_w   =  overdrive_mode & cardsel_q & mode3_q & adr14 & rfsh_b & ((shadow_mode) ? (mwr_cyc_q|mwr_cyc_d): !mreq_b) ;
   assign { adr15, adr15_aux} = (adr15_overdrive_w  ) ? 2'b11 : 2'bzz; 
 
-  // Never, ever use internal RAM for reads in full shadow mode
-  assign ramdis = (full_shadow) ? 1'b1 :  !ramcs_b_r ;
+  // Never, ever use internal RAM for reads in full shadow mode - allow tristate if card not selected otherwise
+  assign ramdis = (full_shadow) ? 1'b1 :  ((!ramcs_b_r & cardsel_q) ? 1'b1 : 1'bz);
   
   // In full shadow mode SRAM is always enabled for all real memory accesses but dont clash with ROM access (ramrd_b will control oe_b)
-  assign ramcs_b = !( !ramcs_b_r | full_shadow) | mreq_b | !rfsh_b ;
-
-  always @ (posedge clk)
-    reset_b_q <= {reset_b, reset_b_q[1]};
+  assign ramcs_b = !( (!ramcs_b_r & cardsel_q) | full_shadow) | mreq_b | !rfsh_b ;
   
   always @ (posedge clk)
-    if ( !reset_b_w )
+    if ( !reset_b )
       mwr_cyc_q <= 1'b0;
     else begin
       if ( mwr_cyc_d ) 
@@ -172,7 +192,7 @@ module cpld_ram512k_v110(
     end
 
   always @ (negedge clk)
-    if ( !reset_b_w ) begin
+    if ( !reset_b ) begin
       mreq_b_f_q = 1'b1;
       mwr_cyc_f_q <= 1'b0;      
     end     
@@ -182,20 +202,20 @@ module cpld_ram512k_v110(
     end
   
   always @ (posedge clk)
-    if ( !reset_b_w ) 
+    if ( !reset_b ) 
       mreq_b_q = 1'b1;
     else 
       mreq_b_q = mreq_b;
   
   always @ (negedge mreq_b ) 
-    if ( !reset_b_w ) 
+    if ( !reset_b ) 
       adr15_q <= 1'b0;
     else
       adr15_q <= adr15;
 
   // Latch DIP switch settings on reset - need a CPC power down/up.
   always @ ( * )
-    if ( !reset_b_w ) 
+    if ( !reset_b ) 
       dip_q <= { ramadrhi[4:3], dip[1:0] } ;
   
   always @ ( * )
@@ -205,15 +225,18 @@ module cpld_ram512k_v110(
   // Pre-decode mode 3 setting and noodle shadow bank alias if required to save decode
   // time after the Q
   always @ (posedge wclk )
-    if (!reset_b_w) begin
+    if (!reset_b) begin
       ramblock_q <= 6'b0;
       mode3_q <= 1'b0;
+      cardsel_q <= 1'b0;      
     end        
     else begin
       if ( shadow_mode && (data[5:3]==shadow_bank) )
         ramblock_q <= {data[5:4],1'b0, data[2:0]};          
       else
         ramblock_q <= data[5:0] ;
+      // Use IO Port 7Fxx or 7Exx depending on low512kb_mode
+      cardsel_q <= adr8 ^ low512kb_mode;      
       mode3_q <= (data[2:0] == 3'b011);
     end
   
