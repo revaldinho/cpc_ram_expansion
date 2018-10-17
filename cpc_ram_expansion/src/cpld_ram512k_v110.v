@@ -8,6 +8,9 @@
  *
  * (c) 2018, Revaldinho
  *
+ * DK'Tronics Operation
+ * --------------------
+ * 
  * Select RAM bank scheme by writing to 0x7FXX with 0b11cccbbb, where:
  * 
  * ccc - picks one of 8 possible 64K banks
@@ -28,6 +31,7 @@
  * 
  * Notes
  * - ChaseHQ does not run when FutureOS ROMs are enabled. Issues CHASEHQ4.RAM not found message
+ * - Extensions to the DK'Tronics/Amstrad standard allow mapping of an additional 512K block of RAM to IO port &FExx.
  * 
  * Crib
  * 1. Keeping a net in synthesis
@@ -63,7 +67,7 @@ module cpld_ram512k_v110(
   
   reg [5:0]        ramblock_q;
   reg [4:0]        ramadrhi_r;
-  reg [3:0]        dip_q;
+  reg [3:0]        dip_lat_q;
   reg              cardsel_q;              
   reg              mode3_q;              
   reg              mwr_cyc_q;
@@ -81,100 +85,104 @@ module cpld_ram512k_v110(
   wire             mwr_cyc_d;  
   wire             adr15_overdrive_w;
   wire             low512kb_mode;  
-/*  
- * Config.|DIP |464/Z80  |    |            |Compatibility|RAM|C3  |
- *        |1234|overdrive|Port| Shadow/Bank|X-MEM |Y-MEM |Exp|Mode|Application
- *--------|----|---------|----|------------|------|------|---|----|---------------------------------
- *   0    |0000| OFF     |7Fxx| none/x     | No   | YES  |512|AMS |6128
- *   1    |0001| OFF     |7Fxx| none/x     | No   | YES  |512|AMS |6128
- *   2    |0010| OFF     |7Exx| none/x     | YES  | No   |512|AMS |6128
- *   3    |0011| OFF     |7Exx| none/x     | YES  | No   |512|AMS |6128
- *--------|----|---------|----|------------|------|------|---|----|---------------------------------
- *   4    |0100| ON      |7Fxx| none/x     | No   | YES  |512|DK'T|464 DK'Tronics compatible
- *   5    |0101| ON      |7Fxx| none/x     | No   | YES  |512|DK'T|464 DK'Tronics compatible
- *   6    |0110| ON      |7Exx| none/x     | YES  | No   |512|DK'T|464 DK'Tronics compatible
- *   7    |0111| ON      |7Exx| none/x     | YES  | No   |512|DK'T|464 DK'Tronics compatible
- *--------|----|---------|----|------------|------|------|---|----|---------------------------------
- *   8    |1000| ON      |7Fxx| partial/lo | No   | No   |448|AMS |464 full 6128 compatible  w/ SiDisk
- *   9    |1001| ON      |7Fxx| partial/hi | No   | No   |448|AMS |464 full 6128 compatible  
- *  10    |1010| ON      |7Exx| partial/lo | No   | No   |448|AMS |464 full 6128 compatible  w/ SiDisk
- *  11    |1011| ON      |7Exx| partial/hi | No   | No   |448|AMS |464 full 6128 compatible           
- *  12    |1100| ON      |7Fxx| full/   lo | No   | No   |448|AMS |464 full 6128 compatible  w/ faulty base RAM w/ SiDisk    
- *  13    |1101| ON      |7Fxx| full/   hi | No   | No   |448|AMS |464 full 6128 compatible           
- *  14    |1110| ON      |7Exx| full/   lo | No   | No   |448|AMS |464 full 6128 compatible  w/ faulty base RAM w/SiDisk
- *  15    |1111| ON      |7Exx| full/   hi | No   | No   |448|AMS |464 full 6128 compatible           
- *--------+----+---------+----+------------+------+------+---+----+---------------------------------
- *
- * Notes 
- * DIP switches in table numbered as on physical component. Verilog bus starts at 0 rather than 1.
- * 
- * Compatibility indicates that card can be used with X-MEM or Y-MEM as appropriate in a particular
- * configuration
- * 
- * Possible but as yet untested combinations
- * 
- * Host CPC| Cards with DIP settings             | Result
- * --------|-------------------------------------|-------------------------------------------------
- * 6128	   | X-MEM+Rev.Card <0010> or <0011>     | 512K ROM [0-31] + 1MB RAM
- * 6128	   | Y-MEM+Rev.Card <0000> or <0001>     | 512K ROM [32-63]+ 1MB RAM
- * 6128    | Rev. Card <0000> + Rev. Card <0010> | 1MB RAM
- * --------|-------------------------------------|-------------------------------------------------
- *  464	   | X-MEM+Rev.Card <0110> or <0111>     | 512K ROM [0-31] + 1MB RAM, DK'Tronics Compatible
- *  464	   | Y-MEM+Rev.Card <0100> or <0101>     | 512K ROM [32-63]+ 1MB RAM, DK'Tronics Compatible
- *  464    | Rev. Card <0100> + Rev. Card <0110> | 1MB RAM, DK'Tronics compatible
- * --------|-------------------------------------|-------------------------------------------------
- *  464    | Rev. Card <1000> + Rev. Card <1010> | 896K RAM, Amstrad C3 compatibleMode
- * --------|-------------------------------------|-------------------------------------------------
- * 
- * It's not possible to mix a Rev. card in shadow mode with a X/Y-MEM card or another
- * Rev. card which is _not_ in shadow mode. 
- * 
- * NB  Latching DIP3 and DIP4 switches requires the CPC to be powered down/up rather than just a ctrl-shift-esc reset
- */
-
+  
+  /*  
+   * DIP Switch Settings
+   * ===================
+   * 
+   * Config.|DIP |464/Z80  |    |            |Compatibility|RAM|C3  |
+   *        |1234|overdrive|Port| Shadow/Bank|X-MEM |Y-MEM |Exp|Mode|Application
+   *--------|----|---------|----|------------|------|------|---|----|---------------------------------
+   *   0    |0000| OFF     |7Fxx| none/x     | No   | YES  |512|AMS |6128
+   *   1    |0001| OFF     |7Fxx| none/x     | No   | YES  |512|AMS |6128
+   *   2    |0010| OFF     |7Exx| none/x     | YES  | No   |512|AMS |6128
+   *   3    |0011| OFF     |7Exx| none/x     | YES  | No   |512|AMS |6128
+   *--------|----|---------|----|------------|------|------|---|----|---------------------------------
+   *   4    |0100| ON      |7Fxx| none/x     | No   | YES  |512|DK'T|464 DK'Tronics compatible
+   *   5    |0101| ON      |7Fxx| none/x     | No   | YES  |512|DK'T|464 DK'Tronics compatible
+   *   6    |0110| ON      |7Exx| none/x     | YES  | No   |512|DK'T|464 DK'Tronics compatible
+   *   7    |0111| ON      |7Exx| none/x     | YES  | No   |512|DK'T|464 DK'Tronics compatible
+   *--------|----|---------|----|------------|------|------|---|----|---------------------------------
+   *   8    |1000| ON      |7Fxx| partial/lo | No   | No   |448|AMS |464 full 6128 compatible  w/ SiDisk
+   *   9    |1001| ON      |7Fxx| partial/hi | No   | No   |448|AMS |464 full 6128 compatible  
+   *  10    |1010| ON      |7Exx| partial/lo | No   | No   |448|AMS |464 full 6128 compatible  w/ SiDisk
+   *  11    |1011| ON      |7Exx| partial/hi | No   | No   |448|AMS |464 full 6128 compatible           
+   *  12    |1100| ON      |7Fxx| full/   lo | No   | No   |448|AMS |464 full 6128 compatible  w/ faulty base RAM w/ SiDisk    
+   *  13    |1101| ON      |7Fxx| full/   hi | No   | No   |448|AMS |464 full 6128 compatible           
+   *  14    |1110| ON      |7Exx| full/   lo | No   | No   |448|AMS |464 full 6128 compatible  w/ faulty base RAM w/SiDisk
+   *  15    |1111| ON      |7Exx| full/   hi | No   | No   |448|AMS |464 full 6128 compatible           
+   *--------+----+---------+----+------------+------+------+---+----+---------------------------------
+   *
+   * Notes 
+   * DIP switches in table numbered as on physical component. Verilog bus starts at 0 rather than 1.
+   * 
+   * Compatibility indicates that card can be used with X-MEM or Y-MEM as appropriate in a particular
+   * configuration
+   * 
+   * Possible but as yet untested combinations
+   * 
+   * Host CPC| Cards with DIP settings             | Result
+   * --------|-------------------------------------|-------------------------------------------------
+   * 6128	   | X-MEM+Rev.Card <0010> or <0011>     | 512K ROM [0-31] + 1MB RAM
+   * 6128	   | Y-MEM+Rev.Card <0000> or <0001>     | 512K ROM [32-63]+ 1MB RAM
+   * 6128    | Rev. Card <0000> + Rev. Card <0010> | 1MB RAM
+   * --------|-------------------------------------|-------------------------------------------------
+   *  464	   | X-MEM+Rev.Card <0110> or <0111>     | 512K ROM [0-31] + 1MB RAM, DK'Tronics Compatible
+   *  464	   | Y-MEM+Rev.Card <0100> or <0101>     | 512K ROM [32-63]+ 1MB RAM, DK'Tronics Compatible
+   *  464    | Rev. Card <0100> + Rev. Card <0110> | 1MB RAM, DK'Tronics compatible
+   * --------|-------------------------------------|-------------------------------------------------
+   *  464    | Rev. Card <1000> + Rev. Card <1010> | 896K RAM, Amstrad C3 compatibleMode
+   * --------|-------------------------------------|-------------------------------------------------
+   * 
+   * It's not possible to mix a Rev. card in shadow mode with a X/Y-MEM card or another
+   * Rev. card which is _not_ in shadow mode. 
+   * 
+   * NB  Latching DIP3 and DIP4 switches requires the CPC to be powered down/up rather than just a ctrl-shift-esc reset
+   */
+  
   assign overdrive_mode= dip[0] | dip[1];
-  assign shadow_bank   = {dip_q[3],2'b11};  
+  assign shadow_bank   = {dip_lat_q[3],2'b11};  
   assign shadow_mode   = dip[0];
   assign full_shadow   = dip[0]&dip[1];
-  assign low512kb_mode = dip_q[2];
-
+  assign low512kb_mode = dip_lat_q[2];
+  
   // Create negedge clock on IO write event - clock low pulse will be suppressed if not an IOWR* event
   // but if the pulse is allowed through use the trailing (rising) edge to capture data
   assign wclk    = !(clk|clken_lat_qb); 
-
+  
   // Dont drive address outputs during reset due to overlay of DIP switches    
   assign ramadrhi = (reset_b) ? ramadrhi_r : {2'bzz, ramadrhi_r[2:0]} ; 
   assign ramwe_b  = wr_b ;
   // Combination of RAMCS and RAMRD determine whether RAM output is enabled 
   assign ramoe_b = ramrd_b ;
   
- // Memory Data Access
-  //          ____      ____      ____      ____      ____  
-  // CLK     /    \____/    \____/    \____/    \____/    \_
-  //         _____     :    .    :    .    :    .   ________
-  // MREQ*        \________________________________/ :    .
-  //         _______________________________________________
-  // RFSH*   1         :    .    :    .    :    .    :    .
-  //         _________________   :    .    :    .  _________
-  // WR*               :    . \___________________/  :    .    
-  //         _____________       ___________________________
-  // READY             :  \_____/      
-  //                   :    .    :    .    :    .    :    .
-  //                   :_____________________________:    .
-  // MWR_CYC    _______/    .    :    .    :    .    \______  FF'd Version 
-  // State    _IDLE____X___T1____X____T1___X___T2____X_END__
-  //
+  /* Memory Data Access
+   *          ____      ____      ____      ____      ____  
+   * CLK     /    \____/    \____/    \____/    \____/    \_
+   *         _____     :    .    :    .    :    .   ________
+   * MREQ*        \________________________________/ :    .
+   *         _______________________________________________
+   * RFSH*   1         :    .    :    .    :    .    :    .
+   *         _________________   :    .    :    .  _________
+   * WR*               :    . \___________________/  :    .    
+   *         _____________       ___________________________
+   * READY             :  \_____/      
+   *                   :    .    :    .    :    .    :    .
+   *                   :_____________________________:    .
+   * MWR_CYC    _______/    .    :    .    :    .    \______  FF'd Version 
+   * State    _IDLE____X___T1____X____T1___X___T2____X_END__
+   */
   
   // overdrive rd_b for all expansion write accesses only - extend overdrive to trailing edge following mreq going high
   assign { rd_b, rd_b_aux }    = ( overdrive_mode & exp_ram_r & cardsel_q & (mwr_cyc_q|mwr_cyc_f_q)) ? 2'b00 : 2'bzz ;
-
+  
   // Overdrive A15 for writes only in shadow modes (full and partial) but for all access types otherwise
   // Need to compute whether A15 will need to be driven before the first rising edge of the MREQ cycle for the
   // gate array to act on it. Cant wait to sample mwr_cyc_q after it has been set initially.
   assign mwr_cyc_d = (mreq_b_f_q | mreq_b_q) & !mreq_b & rfsh_b & rd_b & m1_b ;  
   assign adr15_overdrive_w   =  overdrive_mode & cardsel_q & mode3_q & adr14 & rfsh_b & ((shadow_mode) ? (mwr_cyc_q|mwr_cyc_d): !mreq_b) ;
   assign { adr15, adr15_aux} = (adr15_overdrive_w  ) ? 2'b11 : 2'bzz; 
-
+  
   // Never, ever use internal RAM for reads in full shadow mode - allow tristate if card not selected otherwise
   assign ramdis = (full_shadow) ? 1'b1 :  ((!ramcs_b_r & cardsel_q) ? 1'b1 : 1'bz);
   
@@ -212,11 +220,11 @@ module cpld_ram512k_v110(
       adr15_q <= 1'b0;
     else
       adr15_q <= adr15;
-
+  
   // Latch DIP switch settings on reset - need a CPC power down/up.
   always @ ( * )
     if ( !reset_b ) 
-      dip_q <= { ramadrhi[4:3], dip[1:0] } ;
+      dip_lat_q <= { ramadrhi[4:3], dip[1:0] } ;
   
   always @ ( * )
     if ( clk ) 
