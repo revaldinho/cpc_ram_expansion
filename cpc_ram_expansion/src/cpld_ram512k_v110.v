@@ -67,7 +67,7 @@ module cpld_ram512k_v110(
   
   reg [5:0]        ramblock_q;
   reg [4:0]        ramadrhi_r;
-  reg [3:0]        dip_lat_q;
+  reg              dip3_lat_q, dip2_lat_q;
   reg              cardsel_q;              
   reg              mode3_q;              
   reg              mwr_cyc_q;
@@ -77,6 +77,9 @@ module cpld_ram512k_v110(
   reg              adr15_q;
   reg              exp_ram_r;
   reg              mreq_b_q, mreq_b_f_q;
+  reg              reset_b_q;
+  reg              reset1_b_q;  
+              
 
   wire             wclk;
   wire [2:0]       shadow_bank;
@@ -141,17 +144,17 @@ module cpld_ram512k_v110(
    */
   
   assign overdrive_mode= dip[0] | dip[1];
-  assign shadow_bank   = {dip_lat_q[3],2'b11};  
+  assign shadow_bank   = {dip2_lat_q,2'b11};  
   assign shadow_mode   = dip[0];
   assign full_shadow   = dip[0]&dip[1];
-  assign low512kb_mode = dip_lat_q[2];
+  assign low512kb_mode = dip2_lat_q;
   
   // Create negedge clock on IO write event - clock low pulse will be suppressed if not an IOWR* event
   // but if the pulse is allowed through use the trailing (rising) edge to capture data
   assign wclk    = !(clk|clken_lat_qb); 
   
   // Dont drive address outputs during reset due to overlay of DIP switches    
-  assign ramadrhi = (reset_b) ? ramadrhi_r : {2'bzz, ramadrhi_r[2:0]} ; 
+  assign ramadrhi = (reset_b & reset1_b_q) ? ramadrhi_r : 5'bzzzzz ; 
   assign ramwe_b  = wr_b ;
   // Combination of RAMCS and RAMRD determine whether RAM output is enabled 
   assign ramoe_b = ramrd_b ;
@@ -184,47 +187,54 @@ module cpld_ram512k_v110(
   assign { adr15, adr15_aux} = (adr15_overdrive_w  ) ? 2'b11 : 2'bzz; 
   
   // Never, ever use internal RAM for reads in full shadow mode - allow tristate if card not selected otherwise
-  assign ramdis = (full_shadow) ? 1'b1 :  ((!ramcs_b_r & cardsel_q) ? 1'b1 : 1'bz);
+  assign ramdis = (full_shadow) ? 1'b1 :  (((!ramcs_b_r) & cardsel_q) ? 1'b1 : 1'bz);
   
   // In full shadow mode SRAM is always enabled for all real memory accesses but dont clash with ROM access (ramrd_b will control oe_b)
-  assign ramcs_b = !( (!ramcs_b_r & cardsel_q) | full_shadow) | mreq_b | !rfsh_b ;
+  assign ramcs_b = !( ((!ramcs_b_r) & cardsel_q) | full_shadow) | mreq_b | !rfsh_b ;
   
   always @ (posedge clk)
-    if ( !reset_b )
-      mwr_cyc_q <= 1'b0;
-    else begin
+//    if ( !reset_b )
+//      mwr_cyc_q <= 1'b0;
+//    else begin
       if ( mwr_cyc_d ) 
         mwr_cyc_q <= 1'b1;
       else if (mreq_b)
         mwr_cyc_q <= 1'b0;
-    end
+//    end
 
   always @ (negedge clk)
-    if ( !reset_b ) begin
-      mreq_b_f_q = 1'b1;
-      mwr_cyc_f_q <= 1'b0;      
-    end     
-    else begin
+//    if ( !reset_b ) begin
+//      mreq_b_f_q = 1'b1;
+//      mwr_cyc_f_q <= 1'b0;      
+//   end     
+//    else begin
+    begin
       mreq_b_f_q = mreq_b;
       mwr_cyc_f_q <= mwr_cyc_q;            
     end
   
   always @ (posedge clk)
-    if ( !reset_b ) 
-      mreq_b_q = 1'b1;
-    else 
+//    if ( !reset_b ) 
+//      mreq_b_q = 1'b1;
+//    else 
       mreq_b_q = mreq_b;
+
+  always @ (posedge clk)
+    if ( !reset_b ) 
+      { reset1_b_q, reset_b_q}  = 2'b0;
+    else 
+      { reset1_b_q, reset_b_q} = { reset_b_q, reset_b};
   
   always @ (negedge mreq_b ) 
-    if ( !reset_b ) 
-      adr15_q <= 1'b0;
-    else
+//    if ( !reset_b ) 
+//      adr15_q <= 1'b0;
+//    else
       adr15_q <= adr15;
   
   // Latch DIP switch settings on reset - need a CPC power down/up.
   always @ ( * )
     if ( !reset_b ) 
-      dip_lat_q <= { ramadrhi[4:3], dip[1:0] } ;
+      {dip3_lat_q, dip2_lat_q} <= {ramadrhi[4], ramadrhi[3]};
   
   always @ ( * )
     if ( clk ) 
@@ -236,7 +246,7 @@ module cpld_ram512k_v110(
     if (!reset_b) begin
       ramblock_q <= 6'b0;
       mode3_q <= 1'b0;
-      cardsel_q <= 1'b0;      
+//      cardsel_q <= 1'b0;      
     end        
     else begin
       if ( shadow_mode && (data[5:3]==shadow_bank) )
@@ -244,7 +254,7 @@ module cpld_ram512k_v110(
       else
         ramblock_q <= data[5:0] ;
       // Use IO Port 7Fxx or 7Exx depending on low512kb_mode
-      cardsel_q <= adr8 ^ low512kb_mode;      
+      cardsel_q <= (low512kb_mode) ? !adr8 : adr8;      
       mode3_q <= (data[2:0] == 3'b011);
     end
   
