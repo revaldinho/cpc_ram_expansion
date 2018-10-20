@@ -39,6 +39,9 @@
  * BUF mybuf (.I(input_a_reg),.O(comb));
  */
 
+
+// `define GATED_WCLK 1
+
 module cpld_ram512k_v110(
   input        rfsh_b,
   inout        adr15,
@@ -73,15 +76,18 @@ module cpld_ram512k_v110(
   reg              mwr_cyc_q;
   reg              mwr_cyc_f_q;  
   reg              ramcs_b_r;
-  reg              clken_lat_qb;
   reg              adr15_q;
   reg              exp_ram_r;
   reg              mreq_b_q, mreq_b_f_q;
   reg              reset_b_q;
   reg              reset1_b_q;  
-              
 
+`ifdef GATED_WCLK  
+  reg              clken_lat_qb;
   wire             wclk;
+`else
+  wire             register_select_w;            
+`endif  
   wire [2:0]       shadow_bank;
   wire             full_shadow;
   wire             overdrive_mode;  
@@ -89,7 +95,6 @@ module cpld_ram512k_v110(
   wire             adr15_overdrive_w;
   wire             low512kb_mode;  
   wire             reset_b_w;
-
   
   /*  
    * DIP Switch Settings
@@ -134,10 +139,16 @@ module cpld_ram512k_v110(
   assign shadow_mode   = dip[0];
   assign full_shadow   = dip[0]&dip[1];
   assign low512kb_mode = dip2_lat_q & !dip[0]; // Low IO address not valid in shadow mode
-  
+
+
+`ifdef GATED_WCLK  
   // Create negedge clock on IO write event - clock low pulse will be suppressed if not an IOWR* event
   // but if the pulse is allowed through use the trailing (rising) edge to capture data
-  assign wclk    = !(clk|clken_lat_qb); 
+  assign wclk    = !(clk|clken_lat_qb);
+`else
+  assign register_select_w = (!iorq_b && !wr_b && !adr15 && data[6] && data[7]); 
+`endif
+                            
   assign reset_b_w = reset1_b_q & reset_b;
   
   // Dont drive address outputs during reset due to overlay of DIP switches    
@@ -223,13 +234,17 @@ module cpld_ram512k_v110(
       dip2_lat_q <= ramadrhi[3];
       dip3_lat_q <= ramadrhi[4];      
     end
-  
+
+`ifdef GATED_WCLK  
   always @ ( * )
     if ( clk ) 
       clken_lat_qb <= !(!iorq_b && !wr_b && !adr15 && data[6] && data[7]);
+`endif
+
   
   // Pre-decode mode 3 setting and noodle shadow bank alias if required to save decode
   // time after the Q
+`ifdef GATED_WCLK  
   always @ (posedge wclk )
     if (!reset_b_w) begin
       ramblock_q <= 6'b0;
@@ -245,6 +260,25 @@ module cpld_ram512k_v110(
       cardsel_q <= (low512kb_mode) ? !adr8 : adr8;      
       mode3_q <= (data[2:0] == 3'b011);
     end
+`else
+  always @ (negedge clk )
+    if (!reset_b_w) begin
+      ramblock_q <= 6'b0;
+      mode3_q <= 1'b0;
+      cardsel_q <= 1'b0;      
+    end        
+    else begin
+      if ( register_select_w ) begin
+        if ( shadow_mode && (data[5:3]==shadow_bank) )
+          ramblock_q <= {data[5:4],1'b0, data[2:0]};          
+        else
+          ramblock_q <= data[5:0] ;
+        // Use IO Port 7Fxx or 7Exx depending on low512kb_mode
+        cardsel_q <= (low512kb_mode) ? !adr8 : adr8;      
+        mode3_q <= (data[2:0] == 3'b011);
+      end
+    end
+`endif
   
   always @ ( * ) begin
     if ( shadow_mode )
