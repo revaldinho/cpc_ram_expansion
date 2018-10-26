@@ -44,6 +44,9 @@ tsim:
 # Generate the JEDEC file for programming
 jedec: 
 	hprep6  -s IEEE1149 -n ${project_name} -i ${project_name}
+	mv ${project_name}.jed ${project_name}_${target}.jed
+
+
 # dump a verilog netlist
 netgen:
 	netgen -w -ofmt verilog  -aka ${project_name}.ngd

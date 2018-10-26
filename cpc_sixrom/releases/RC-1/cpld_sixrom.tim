@@ -1,0 +1,626 @@
+                         Detailed Path Analysis Report
+                         -----------------------------
+
+Design:     cpld_sixrom
+Device:     XC9536-10-PC44
+Speed File: Version 3.0
+Program:    Timing Report Generator:  version L.70
+Date:       Fri Oct 26 14:11:22 2018
+
+Output will be sorted by decreasing path delays.
+Logical Path    Delay Type                              Delay        Cumulative
+------------    ----------                              -----        ----------
+                              ********************
+                              * Pad to Pad (tPD) *
+                              ********************
+From: adr14     -                                       :  0.0ns        (0.0ns)
+Thru: adr14_IBUF tIN                                    :  3.5ns        (3.5ns)
+Thru: romdis    tLOGI + tPTA + 1tPTA2 + tPDI            :  5.5ns        (9.0ns)
+  To: romdis    tOUT                                    :  3.0ns       (12.0ns)
+
+From: dip<0>    -                                       :  0.0ns        (0.0ns)
+Thru: dip_0_IBUF tIN                                    :  3.5ns        (3.5ns)
+Thru: romdis    tLOGI + tPTA + 1tPTA2 + tPDI            :  5.5ns        (9.0ns)
+  To: romdis    tOUT                                    :  3.0ns       (12.0ns)
+
+From: dip<3>    -                                       :  0.0ns        (0.0ns)
+Thru: dip_3_IBUF tIN                                    :  3.5ns        (3.5ns)
+Thru: romdis    tLOGI + tPTA + 1tPTA2 + tPDI            :  5.5ns        (9.0ns)
+  To: romdis    tOUT                                    :  3.0ns       (12.0ns)
+
+From: dip<6>    -                                       :  0.0ns        (0.0ns)
+Thru: dip_6_IBUF tIN                                    :  3.5ns        (3.5ns)
+Thru: romdis    tLOGI + tPTA + 1tPTA2 + tPDI            :  5.5ns        (9.0ns)
+  To: romdis    tOUT                                    :  3.0ns       (12.0ns)
+
+From: dip<7>    -                                       :  0.0ns        (0.0ns)
+Thru: dip_7_IBUF tIN                                    :  3.5ns        (3.5ns)
+Thru: romdis    tLOGI + tPTA + 1tPTA2 + tPDI            :  5.5ns        (9.0ns)
+  To: romdis    tOUT                                    :  3.0ns       (12.0ns)
+
+From: adr14     -                                       :  0.0ns        (0.0ns)
+Thru: adr14_IBUF tIN                                    :  3.5ns        (3.5ns)
+Thru: rom01cs_b tLOGI + tPTA + tPDI                     :  4.5ns        (8.0ns)
+  To: rom01cs_b tOUT                                    :  3.0ns       (11.0ns)
+
+From: adr14     -                                       :  0.0ns        (0.0ns)
+Thru: adr14_IBUF tIN                                    :  3.5ns        (3.5ns)
+Thru: rom23cs_b tLOGI + tPTA + tPDI                     :  4.5ns        (8.0ns)
+  To: rom23cs_b tOUT                                    :  3.0ns       (11.0ns)
+
+From: adr14     -                                       :  0.0ns        (0.0ns)
+Thru: adr14_IBUF tIN                                    :  3.5ns        (3.5ns)
+Thru: rom45cs_b tLOGI + tPTA + tPDI                     :  4.5ns        (8.0ns)
+  To: rom45cs_b tOUT                                    :  3.0ns       (11.0ns)
+
+From: adr14     -                                       :  0.0ns        (0.0ns)
+Thru: adr14_IBUF tIN                                    :  3.5ns        (3.5ns)
+Thru: roma14    tLOGI + tPTA + tPDI                     :  4.5ns        (8.0ns)
+  To: roma14    tOUT                                    :  3.0ns       (11.0ns)
+
+From: dip<0>    -                                       :  0.0ns        (0.0ns)
+Thru: dip_0_IBUF tIN                                    :  3.5ns        (3.5ns)
+Thru: rom01cs_b tLOGI + tPTA + tPDI                     :  4.5ns        (8.0ns)
+  To: rom01cs_b tOUT                                    :  3.0ns       (11.0ns)
+
+From: dip<1>    -                                       :  0.0ns        (0.0ns)
+Thru: dip_1_IBUF tIN                                    :  3.5ns        (3.5ns)
+Thru: rom01cs_b tLOGI + tPTA + tPDI                     :  4.5ns        (8.0ns)
+  To: rom01cs_b tOUT                                    :  3.0ns       (11.0ns)
+
+From: dip<1>    -                                       :  0.0ns        (0.0ns)
+Thru: dip_1_IBUF tIN                                    :  3.5ns        (3.5ns)
+Thru: roma14    tLOGI + tPTA + tPDI                     :  4.5ns        (8.0ns)
+  To: roma14    tOUT                                    :  3.0ns       (11.0ns)
+
+From: dip<1>    -                                       :  0.0ns        (0.0ns)
+Thru: dip_1_IBUF tIN                                    :  3.5ns        (3.5ns)
+Thru: romdis    tLOGI + tPTA + tPDI                     :  4.5ns        (8.0ns)
+  To: romdis    tOUT                                    :  3.0ns       (11.0ns)
+
+From: dip<2>    -                                       :  0.0ns        (0.0ns)
+Thru: dip_2_IBUF tIN                                    :  3.5ns        (3.5ns)
+Thru: romdis    tLOGI + tPTA + tPDI                     :  4.5ns        (8.0ns)
+  To: romdis    tOUT                                    :  3.0ns       (11.0ns)
+
+From: dip<3>    -                                       :  0.0ns        (0.0ns)
+Thru: dip_3_IBUF tIN                                    :  3.5ns        (3.5ns)
+Thru: rom23cs_b tLOGI + tPTA + tPDI                     :  4.5ns        (8.0ns)
+  To: rom23cs_b tOUT                                    :  3.0ns       (11.0ns)
+
+From: dip<3>    -                                       :  0.0ns        (0.0ns)
+Thru: dip_3_IBUF tIN                                    :  3.5ns        (3.5ns)
+Thru: roma14    tLOGI + tPTA + tPDI                     :  4.5ns        (8.0ns)
+  To: roma14    tOUT                                    :  3.0ns       (11.0ns)
+
+From: dip<4>    -                                       :  0.0ns        (0.0ns)
+Thru: dip_4_IBUF tIN                                    :  3.5ns        (3.5ns)
+Thru: rom45cs_b tLOGI + tPTA + tPDI                     :  4.5ns        (8.0ns)
+  To: rom45cs_b tOUT                                    :  3.0ns       (11.0ns)
+
+From: dip<4>    -                                       :  0.0ns        (0.0ns)
+Thru: dip_4_IBUF tIN                                    :  3.5ns        (3.5ns)
+Thru: romdis    tLOGI + tPTA + tPDI                     :  4.5ns        (8.0ns)
+  To: romdis    tOUT                                    :  3.0ns       (11.0ns)
+
+From: dip<5>    -                                       :  0.0ns        (0.0ns)
+Thru: dip_5_IBUF tIN                                    :  3.5ns        (3.5ns)
+Thru: romdis    tLOGI + tPTA + tPDI                     :  4.5ns        (8.0ns)
+  To: romdis    tOUT                                    :  3.0ns       (11.0ns)
+
+From: dip<6>    -                                       :  0.0ns        (0.0ns)
+Thru: dip_6_IBUF tIN                                    :  3.5ns        (3.5ns)
+Thru: rom01cs_b tLOGI + tPTA + tPDI                     :  4.5ns        (8.0ns)
+  To: rom01cs_b tOUT                                    :  3.0ns       (11.0ns)
+
+From: dip<6>    -                                       :  0.0ns        (0.0ns)
+Thru: dip_6_IBUF tIN                                    :  3.5ns        (3.5ns)
+Thru: rom23cs_b tLOGI + tPTA + tPDI                     :  4.5ns        (8.0ns)
+  To: rom23cs_b tOUT                                    :  3.0ns       (11.0ns)
+
+From: dip<6>    -                                       :  0.0ns        (0.0ns)
+Thru: dip_6_IBUF tIN                                    :  3.5ns        (3.5ns)
+Thru: rom45cs_b tLOGI + tPTA + tPDI                     :  4.5ns        (8.0ns)
+  To: rom45cs_b tOUT                                    :  3.0ns       (11.0ns)
+
+From: dip<6>    -                                       :  0.0ns        (0.0ns)
+Thru: dip_6_IBUF tIN                                    :  3.5ns        (3.5ns)
+Thru: roma14    tLOGI + tPTA + tPDI                     :  4.5ns        (8.0ns)
+  To: roma14    tOUT                                    :  3.0ns       (11.0ns)
+
+From: dip<7>    -                                       :  0.0ns        (0.0ns)
+Thru: dip_7_IBUF tIN                                    :  3.5ns        (3.5ns)
+Thru: rom01cs_b tLOGI + tPTA + tPDI                     :  4.5ns        (8.0ns)
+  To: rom01cs_b tOUT                                    :  3.0ns       (11.0ns)
+
+From: dip<7>    -                                       :  0.0ns        (0.0ns)
+Thru: dip_7_IBUF tIN                                    :  3.5ns        (3.5ns)
+Thru: rom23cs_b tLOGI + tPTA + tPDI                     :  4.5ns        (8.0ns)
+  To: rom23cs_b tOUT                                    :  3.0ns       (11.0ns)
+
+From: dip<7>    -                                       :  0.0ns        (0.0ns)
+Thru: dip_7_IBUF tIN                                    :  3.5ns        (3.5ns)
+Thru: rom45cs_b tLOGI + tPTA + tPDI                     :  4.5ns        (8.0ns)
+  To: rom45cs_b tOUT                                    :  3.0ns       (11.0ns)
+
+From: dip<7>    -                                       :  0.0ns        (0.0ns)
+Thru: dip_7_IBUF tIN                                    :  3.5ns        (3.5ns)
+Thru: roma14    tLOGI + tPTA + tPDI                     :  4.5ns        (8.0ns)
+  To: roma14    tOUT                                    :  3.0ns       (11.0ns)
+
+From: dip<2>    -                                       :  0.0ns        (0.0ns)
+Thru: dip_2_IBUF tIN                                    :  3.5ns        (3.5ns)
+Thru: rom23cs_b tLOGI + tPDI                            :  3.5ns        (7.0ns)
+  To: rom23cs_b tOUT                                    :  3.0ns       (10.0ns)
+
+From: dip<5>    -                                       :  0.0ns        (0.0ns)
+Thru: dip_5_IBUF tIN                                    :  3.5ns        (3.5ns)
+Thru: rom45cs_b tLOGI + tPDI                            :  3.5ns        (7.0ns)
+  To: rom45cs_b tOUT                                    :  3.0ns       (10.0ns)
+
+From: dip<5>    -                                       :  0.0ns        (0.0ns)
+Thru: dip_5_IBUF tIN                                    :  3.5ns        (3.5ns)
+Thru: roma14    tLOGI + tPDI                            :  3.5ns        (7.0ns)
+  To: roma14    tOUT                                    :  3.0ns       (10.0ns)
+
+From: romen_b   -                                       :  0.0ns        (0.0ns)
+Thru: romoe_b_OBUF tIN                                  :  3.5ns        (3.5ns)
+Thru: romoe_b   tLOGI + tPDI                            :  3.5ns        (7.0ns)
+  To: romoe_b   tOUT                                    :  3.0ns       (10.0ns)
+
+                       *********************************
+                       * Clock Pad to Output Pad (tCO) *
+                       *********************************
+From: clk       -                                       :  0.0ns        (0.0ns)
+Thru: clk_IBUF  tIN                                     :  3.5ns        (3.5ns)
+Thru: romsel_q<0> tPTCK + tCOI                          :  3.5ns        (7.0ns)
+Thru: romdis    tF + tLOGI + tPTA + 1tPTA2 + tPDI       : 15.0ns       (22.0ns)
+  To: romdis    tOUT                                    :  3.0ns       (25.0ns)
+
+From: clk       -                                       :  0.0ns        (0.0ns)
+Thru: clk_IBUF  tIN                                     :  3.5ns        (3.5ns)
+Thru: romsel_q<0> tPTCK + tCOI                          :  3.5ns        (7.0ns)
+Thru: rom01cs_b tF + tLOGI + tPTA + tPDI                : 14.0ns       (21.0ns)
+  To: rom01cs_b tOUT                                    :  3.0ns       (24.0ns)
+
+From: clk       -                                       :  0.0ns        (0.0ns)
+Thru: clk_IBUF  tIN                                     :  3.5ns        (3.5ns)
+Thru: romsel_q<0> tPTCK + tCOI                          :  3.5ns        (7.0ns)
+Thru: rom23cs_b tF + tLOGI + tPTA + tPDI                : 14.0ns       (21.0ns)
+  To: rom23cs_b tOUT                                    :  3.0ns       (24.0ns)
+
+From: clk       -                                       :  0.0ns        (0.0ns)
+Thru: clk_IBUF  tIN                                     :  3.5ns        (3.5ns)
+Thru: romsel_q<0> tPTCK + tCOI                          :  3.5ns        (7.0ns)
+Thru: rom45cs_b tF + tLOGI + tPTA + tPDI                : 14.0ns       (21.0ns)
+  To: rom45cs_b tOUT                                    :  3.0ns       (24.0ns)
+
+From: clk       -                                       :  0.0ns        (0.0ns)
+Thru: clk_IBUF  tIN                                     :  3.5ns        (3.5ns)
+Thru: romsel_q<0> tPTCK + tCOI                          :  3.5ns        (7.0ns)
+Thru: roma14    tF + tLOGI + tPTA + tPDI                : 14.0ns       (21.0ns)
+  To: roma14    tOUT                                    :  3.0ns       (24.0ns)
+
+                                ****************
+                                * Pad to Setup *
+                                ****************
+Destination clock net: romsel_q<0>.CLKF
+Worst case clock delay from origin clken_lat_qb.Q is 13.0ns
+Worst case clock delay from origin clk is 6.5ns
+From: data<0>   -                                       :  0.0ns        (0.0ns)
+Thru: data_0_IBUF tIN                                   :  3.5ns        (3.5ns)
+  To: romsel_q<0>.D tLOGI + tSUI                        :  5.0ns        (8.5ns)
+
+Destination clock net: romsel_q<1>.CLKF
+Worst case clock delay from origin clken_lat_qb.Q is 13.0ns
+Worst case clock delay from origin clk is 6.5ns
+From: data<1>   -                                       :  0.0ns        (0.0ns)
+Thru: data_1_IBUF tIN                                   :  3.5ns        (3.5ns)
+  To: romsel_q<1>.D tLOGI + tSUI                        :  5.0ns        (8.5ns)
+
+Destination clock net: romsel_q<2>.CLKF
+Worst case clock delay from origin clken_lat_qb.Q is 13.0ns
+Worst case clock delay from origin clk is 6.5ns
+From: data<2>   -                                       :  0.0ns        (0.0ns)
+Thru: data_2_IBUF tIN                                   :  3.5ns        (3.5ns)
+  To: romsel_q<2>.D tLOGI + tSUI                        :  5.0ns        (8.5ns)
+
+Destination clock net: romsel_q<3>.CLKF
+Worst case clock delay from origin clken_lat_qb.Q is 13.0ns
+Worst case clock delay from origin clk is 6.5ns
+From: data<3>   -                                       :  0.0ns        (0.0ns)
+Thru: data_3_IBUF tIN                                   :  3.5ns        (3.5ns)
+  To: romsel_q<3>.D tLOGI + tSUI                        :  5.0ns        (8.5ns)
+
+Destination clock net: romsel_q<4>.CLKF
+Worst case clock delay from origin clken_lat_qb.Q is 13.0ns
+Worst case clock delay from origin clk is 6.5ns
+From: data<4>   -                                       :  0.0ns        (0.0ns)
+Thru: data_4_IBUF tIN                                   :  3.5ns        (3.5ns)
+  To: romsel_q<4>.D tLOGI + tSUI                        :  5.0ns        (8.5ns)
+
+Destination clock net: romsel_q<5>.CLKF
+Worst case clock delay from origin clken_lat_qb.Q is 13.0ns
+Worst case clock delay from origin clk is 6.5ns
+From: data<5>   -                                       :  0.0ns        (0.0ns)
+Thru: data_5_IBUF tIN                                   :  3.5ns        (3.5ns)
+  To: romsel_q<5>.D tLOGI + tSUI                        :  5.0ns        (8.5ns)
+
+Destination clock net: romsel_q<6>.CLKF
+Worst case clock delay from origin clken_lat_qb.Q is 13.0ns
+Worst case clock delay from origin clk is 6.5ns
+From: data<6>   -                                       :  0.0ns        (0.0ns)
+Thru: data_6_IBUF tIN                                   :  3.5ns        (3.5ns)
+  To: romsel_q<6>.D tLOGI + tSUI                        :  5.0ns        (8.5ns)
+
+Destination clock net: romsel_q<7>.CLKF
+Worst case clock delay from origin clken_lat_qb.Q is 13.0ns
+Worst case clock delay from origin clk is 6.5ns
+From: data<7>   -                                       :  0.0ns        (0.0ns)
+Thru: data_7_IBUF tIN                                   :  3.5ns        (3.5ns)
+  To: romsel_q<7>.D tLOGI + tSUI                        :  5.0ns        (8.5ns)
+
+                                ****************
+                                * Clock to Pad *
+                                ****************
+Source clock net: romsel_q<0>.CLKF
+Worst case clock delay from origin clken_lat_qb.Q is 13.0ns
+Worst case clock delay from origin clk is 6.5ns
+From: romsel_q<0> tCOI                                  :  0.5ns        (0.5ns)
+Thru: romdis    tF + tLOGI + tPTA + 1tPTA2 + tPDI       : 15.0ns       (15.5ns)
+  To: romdis    tOUT                                    :  3.0ns       (18.5ns)
+
+Source clock net: romsel_q<1>.CLKF
+Worst case clock delay from origin clken_lat_qb.Q is 13.0ns
+Worst case clock delay from origin clk is 6.5ns
+From: romsel_q<1> tCOI                                  :  0.5ns        (0.5ns)
+Thru: romdis    tF + tLOGI + tPTA + 1tPTA2 + tPDI       : 15.0ns       (15.5ns)
+  To: romdis    tOUT                                    :  3.0ns       (18.5ns)
+
+Source clock net: romsel_q<2>.CLKF
+Worst case clock delay from origin clken_lat_qb.Q is 13.0ns
+Worst case clock delay from origin clk is 6.5ns
+From: romsel_q<2> tCOI                                  :  0.5ns        (0.5ns)
+Thru: romdis    tF + tLOGI + tPTA + 1tPTA2 + tPDI       : 15.0ns       (15.5ns)
+  To: romdis    tOUT                                    :  3.0ns       (18.5ns)
+
+Source clock net: romsel_q<3>.CLKF
+Worst case clock delay from origin clken_lat_qb.Q is 13.0ns
+Worst case clock delay from origin clk is 6.5ns
+From: romsel_q<3> tCOI                                  :  0.5ns        (0.5ns)
+Thru: romdis    tF + tLOGI + tPTA + 1tPTA2 + tPDI       : 15.0ns       (15.5ns)
+  To: romdis    tOUT                                    :  3.0ns       (18.5ns)
+
+Source clock net: romsel_q<4>.CLKF
+Worst case clock delay from origin clken_lat_qb.Q is 13.0ns
+Worst case clock delay from origin clk is 6.5ns
+From: romsel_q<4> tCOI                                  :  0.5ns        (0.5ns)
+Thru: romdis    tF + tLOGI + tPTA + 1tPTA2 + tPDI       : 15.0ns       (15.5ns)
+  To: romdis    tOUT                                    :  3.0ns       (18.5ns)
+
+Source clock net: romsel_q<5>.CLKF
+Worst case clock delay from origin clken_lat_qb.Q is 13.0ns
+Worst case clock delay from origin clk is 6.5ns
+From: romsel_q<5> tCOI                                  :  0.5ns        (0.5ns)
+Thru: romdis    tF + tLOGI + tPTA + 1tPTA2 + tPDI       : 15.0ns       (15.5ns)
+  To: romdis    tOUT                                    :  3.0ns       (18.5ns)
+
+Source clock net: romsel_q<6>.CLKF
+Worst case clock delay from origin clken_lat_qb.Q is 13.0ns
+Worst case clock delay from origin clk is 6.5ns
+From: romsel_q<6> tCOI                                  :  0.5ns        (0.5ns)
+Thru: romdis    tF + tLOGI + tPTA + 1tPTA2 + tPDI       : 15.0ns       (15.5ns)
+  To: romdis    tOUT                                    :  3.0ns       (18.5ns)
+
+Source clock net: romsel_q<7>.CLKF
+Worst case clock delay from origin clken_lat_qb.Q is 13.0ns
+Worst case clock delay from origin clk is 6.5ns
+From: romsel_q<7> tCOI                                  :  0.5ns        (0.5ns)
+Thru: romdis    tF + tLOGI + tPTA + 1tPTA2 + tPDI       : 15.0ns       (15.5ns)
+  To: romdis    tOUT                                    :  3.0ns       (18.5ns)
+
+Source clock net: romsel_q<0>.CLKF
+Worst case clock delay from origin clken_lat_qb.Q is 13.0ns
+Worst case clock delay from origin clk is 6.5ns
+From: romsel_q<0> tCOI                                  :  0.5ns        (0.5ns)
+Thru: rom01cs_b tF + tLOGI + tPTA + tPDI                : 14.0ns       (14.5ns)
+  To: rom01cs_b tOUT                                    :  3.0ns       (17.5ns)
+
+Source clock net: romsel_q<0>.CLKF
+Worst case clock delay from origin clken_lat_qb.Q is 13.0ns
+Worst case clock delay from origin clk is 6.5ns
+From: romsel_q<0> tCOI                                  :  0.5ns        (0.5ns)
+Thru: rom23cs_b tF + tLOGI + tPTA + tPDI                : 14.0ns       (14.5ns)
+  To: rom23cs_b tOUT                                    :  3.0ns       (17.5ns)
+
+Source clock net: romsel_q<0>.CLKF
+Worst case clock delay from origin clken_lat_qb.Q is 13.0ns
+Worst case clock delay from origin clk is 6.5ns
+From: romsel_q<0> tCOI                                  :  0.5ns        (0.5ns)
+Thru: rom45cs_b tF + tLOGI + tPTA + tPDI                : 14.0ns       (14.5ns)
+  To: rom45cs_b tOUT                                    :  3.0ns       (17.5ns)
+
+Source clock net: romsel_q<0>.CLKF
+Worst case clock delay from origin clken_lat_qb.Q is 13.0ns
+Worst case clock delay from origin clk is 6.5ns
+From: romsel_q<0> tCOI                                  :  0.5ns        (0.5ns)
+Thru: roma14    tF + tLOGI + tPTA + tPDI                : 14.0ns       (14.5ns)
+  To: roma14    tOUT                                    :  3.0ns       (17.5ns)
+
+Source clock net: romsel_q<1>.CLKF
+Worst case clock delay from origin clken_lat_qb.Q is 13.0ns
+Worst case clock delay from origin clk is 6.5ns
+From: romsel_q<1> tCOI                                  :  0.5ns        (0.5ns)
+Thru: rom01cs_b tF + tLOGI + tPTA + tPDI                : 14.0ns       (14.5ns)
+  To: rom01cs_b tOUT                                    :  3.0ns       (17.5ns)
+
+Source clock net: romsel_q<1>.CLKF
+Worst case clock delay from origin clken_lat_qb.Q is 13.0ns
+Worst case clock delay from origin clk is 6.5ns
+From: romsel_q<1> tCOI                                  :  0.5ns        (0.5ns)
+Thru: rom23cs_b tF + tLOGI + tPTA + tPDI                : 14.0ns       (14.5ns)
+  To: rom23cs_b tOUT                                    :  3.0ns       (17.5ns)
+
+Source clock net: romsel_q<1>.CLKF
+Worst case clock delay from origin clken_lat_qb.Q is 13.0ns
+Worst case clock delay from origin clk is 6.5ns
+From: romsel_q<1> tCOI                                  :  0.5ns        (0.5ns)
+Thru: rom45cs_b tF + tLOGI + tPTA + tPDI                : 14.0ns       (14.5ns)
+  To: rom45cs_b tOUT                                    :  3.0ns       (17.5ns)
+
+Source clock net: romsel_q<1>.CLKF
+Worst case clock delay from origin clken_lat_qb.Q is 13.0ns
+Worst case clock delay from origin clk is 6.5ns
+From: romsel_q<1> tCOI                                  :  0.5ns        (0.5ns)
+Thru: roma14    tF + tLOGI + tPTA + tPDI                : 14.0ns       (14.5ns)
+  To: roma14    tOUT                                    :  3.0ns       (17.5ns)
+
+Source clock net: romsel_q<2>.CLKF
+Worst case clock delay from origin clken_lat_qb.Q is 13.0ns
+Worst case clock delay from origin clk is 6.5ns
+From: romsel_q<2> tCOI                                  :  0.5ns        (0.5ns)
+Thru: rom01cs_b tF + tLOGI + tPTA + tPDI                : 14.0ns       (14.5ns)
+  To: rom01cs_b tOUT                                    :  3.0ns       (17.5ns)
+
+Source clock net: romsel_q<2>.CLKF
+Worst case clock delay from origin clken_lat_qb.Q is 13.0ns
+Worst case clock delay from origin clk is 6.5ns
+From: romsel_q<2> tCOI                                  :  0.5ns        (0.5ns)
+Thru: rom23cs_b tF + tLOGI + tPTA + tPDI                : 14.0ns       (14.5ns)
+  To: rom23cs_b tOUT                                    :  3.0ns       (17.5ns)
+
+Source clock net: romsel_q<2>.CLKF
+Worst case clock delay from origin clken_lat_qb.Q is 13.0ns
+Worst case clock delay from origin clk is 6.5ns
+From: romsel_q<2> tCOI                                  :  0.5ns        (0.5ns)
+Thru: rom45cs_b tF + tLOGI + tPTA + tPDI                : 14.0ns       (14.5ns)
+  To: rom45cs_b tOUT                                    :  3.0ns       (17.5ns)
+
+Source clock net: romsel_q<2>.CLKF
+Worst case clock delay from origin clken_lat_qb.Q is 13.0ns
+Worst case clock delay from origin clk is 6.5ns
+From: romsel_q<2> tCOI                                  :  0.5ns        (0.5ns)
+Thru: roma14    tF + tLOGI + tPTA + tPDI                : 14.0ns       (14.5ns)
+  To: roma14    tOUT                                    :  3.0ns       (17.5ns)
+
+Source clock net: romsel_q<3>.CLKF
+Worst case clock delay from origin clken_lat_qb.Q is 13.0ns
+Worst case clock delay from origin clk is 6.5ns
+From: romsel_q<3> tCOI                                  :  0.5ns        (0.5ns)
+Thru: rom01cs_b tF + tLOGI + tPTA + tPDI                : 14.0ns       (14.5ns)
+  To: rom01cs_b tOUT                                    :  3.0ns       (17.5ns)
+
+Source clock net: romsel_q<3>.CLKF
+Worst case clock delay from origin clken_lat_qb.Q is 13.0ns
+Worst case clock delay from origin clk is 6.5ns
+From: romsel_q<3> tCOI                                  :  0.5ns        (0.5ns)
+Thru: rom23cs_b tF + tLOGI + tPTA + tPDI                : 14.0ns       (14.5ns)
+  To: rom23cs_b tOUT                                    :  3.0ns       (17.5ns)
+
+Source clock net: romsel_q<3>.CLKF
+Worst case clock delay from origin clken_lat_qb.Q is 13.0ns
+Worst case clock delay from origin clk is 6.5ns
+From: romsel_q<3> tCOI                                  :  0.5ns        (0.5ns)
+Thru: rom45cs_b tF + tLOGI + tPTA + tPDI                : 14.0ns       (14.5ns)
+  To: rom45cs_b tOUT                                    :  3.0ns       (17.5ns)
+
+Source clock net: romsel_q<3>.CLKF
+Worst case clock delay from origin clken_lat_qb.Q is 13.0ns
+Worst case clock delay from origin clk is 6.5ns
+From: romsel_q<3> tCOI                                  :  0.5ns        (0.5ns)
+Thru: roma14    tF + tLOGI + tPTA + tPDI                : 14.0ns       (14.5ns)
+  To: roma14    tOUT                                    :  3.0ns       (17.5ns)
+
+Source clock net: romsel_q<4>.CLKF
+Worst case clock delay from origin clken_lat_qb.Q is 13.0ns
+Worst case clock delay from origin clk is 6.5ns
+From: romsel_q<4> tCOI                                  :  0.5ns        (0.5ns)
+Thru: rom01cs_b tF + tLOGI + tPTA + tPDI                : 14.0ns       (14.5ns)
+  To: rom01cs_b tOUT                                    :  3.0ns       (17.5ns)
+
+Source clock net: romsel_q<4>.CLKF
+Worst case clock delay from origin clken_lat_qb.Q is 13.0ns
+Worst case clock delay from origin clk is 6.5ns
+From: romsel_q<4> tCOI                                  :  0.5ns        (0.5ns)
+Thru: rom23cs_b tF + tLOGI + tPTA + tPDI                : 14.0ns       (14.5ns)
+  To: rom23cs_b tOUT                                    :  3.0ns       (17.5ns)
+
+Source clock net: romsel_q<4>.CLKF
+Worst case clock delay from origin clken_lat_qb.Q is 13.0ns
+Worst case clock delay from origin clk is 6.5ns
+From: romsel_q<4> tCOI                                  :  0.5ns        (0.5ns)
+Thru: rom45cs_b tF + tLOGI + tPTA + tPDI                : 14.0ns       (14.5ns)
+  To: rom45cs_b tOUT                                    :  3.0ns       (17.5ns)
+
+Source clock net: romsel_q<4>.CLKF
+Worst case clock delay from origin clken_lat_qb.Q is 13.0ns
+Worst case clock delay from origin clk is 6.5ns
+From: romsel_q<4> tCOI                                  :  0.5ns        (0.5ns)
+Thru: roma14    tF + tLOGI + tPTA + tPDI                : 14.0ns       (14.5ns)
+  To: roma14    tOUT                                    :  3.0ns       (17.5ns)
+
+Source clock net: romsel_q<5>.CLKF
+Worst case clock delay from origin clken_lat_qb.Q is 13.0ns
+Worst case clock delay from origin clk is 6.5ns
+From: romsel_q<5> tCOI                                  :  0.5ns        (0.5ns)
+Thru: rom01cs_b tF + tLOGI + tPTA + tPDI                : 14.0ns       (14.5ns)
+  To: rom01cs_b tOUT                                    :  3.0ns       (17.5ns)
+
+Source clock net: romsel_q<5>.CLKF
+Worst case clock delay from origin clken_lat_qb.Q is 13.0ns
+Worst case clock delay from origin clk is 6.5ns
+From: romsel_q<5> tCOI                                  :  0.5ns        (0.5ns)
+Thru: rom23cs_b tF + tLOGI + tPTA + tPDI                : 14.0ns       (14.5ns)
+  To: rom23cs_b tOUT                                    :  3.0ns       (17.5ns)
+
+Source clock net: romsel_q<5>.CLKF
+Worst case clock delay from origin clken_lat_qb.Q is 13.0ns
+Worst case clock delay from origin clk is 6.5ns
+From: romsel_q<5> tCOI                                  :  0.5ns        (0.5ns)
+Thru: rom45cs_b tF + tLOGI + tPTA + tPDI                : 14.0ns       (14.5ns)
+  To: rom45cs_b tOUT                                    :  3.0ns       (17.5ns)
+
+Source clock net: romsel_q<5>.CLKF
+Worst case clock delay from origin clken_lat_qb.Q is 13.0ns
+Worst case clock delay from origin clk is 6.5ns
+From: romsel_q<5> tCOI                                  :  0.5ns        (0.5ns)
+Thru: roma14    tF + tLOGI + tPTA + tPDI                : 14.0ns       (14.5ns)
+  To: roma14    tOUT                                    :  3.0ns       (17.5ns)
+
+Source clock net: romsel_q<6>.CLKF
+Worst case clock delay from origin clken_lat_qb.Q is 13.0ns
+Worst case clock delay from origin clk is 6.5ns
+From: romsel_q<6> tCOI                                  :  0.5ns        (0.5ns)
+Thru: rom01cs_b tF + tLOGI + tPTA + tPDI                : 14.0ns       (14.5ns)
+  To: rom01cs_b tOUT                                    :  3.0ns       (17.5ns)
+
+Source clock net: romsel_q<6>.CLKF
+Worst case clock delay from origin clken_lat_qb.Q is 13.0ns
+Worst case clock delay from origin clk is 6.5ns
+From: romsel_q<6> tCOI                                  :  0.5ns        (0.5ns)
+Thru: rom23cs_b tF + tLOGI + tPTA + tPDI                : 14.0ns       (14.5ns)
+  To: rom23cs_b tOUT                                    :  3.0ns       (17.5ns)
+
+Source clock net: romsel_q<6>.CLKF
+Worst case clock delay from origin clken_lat_qb.Q is 13.0ns
+Worst case clock delay from origin clk is 6.5ns
+From: romsel_q<6> tCOI                                  :  0.5ns        (0.5ns)
+Thru: rom45cs_b tF + tLOGI + tPTA + tPDI                : 14.0ns       (14.5ns)
+  To: rom45cs_b tOUT                                    :  3.0ns       (17.5ns)
+
+Source clock net: romsel_q<6>.CLKF
+Worst case clock delay from origin clken_lat_qb.Q is 13.0ns
+Worst case clock delay from origin clk is 6.5ns
+From: romsel_q<6> tCOI                                  :  0.5ns        (0.5ns)
+Thru: roma14    tF + tLOGI + tPTA + tPDI                : 14.0ns       (14.5ns)
+  To: roma14    tOUT                                    :  3.0ns       (17.5ns)
+
+Source clock net: romsel_q<7>.CLKF
+Worst case clock delay from origin clken_lat_qb.Q is 13.0ns
+Worst case clock delay from origin clk is 6.5ns
+From: romsel_q<7> tCOI                                  :  0.5ns        (0.5ns)
+Thru: rom01cs_b tF + tLOGI + tPTA + tPDI                : 14.0ns       (14.5ns)
+  To: rom01cs_b tOUT                                    :  3.0ns       (17.5ns)
+
+Source clock net: romsel_q<7>.CLKF
+Worst case clock delay from origin clken_lat_qb.Q is 13.0ns
+Worst case clock delay from origin clk is 6.5ns
+From: romsel_q<7> tCOI                                  :  0.5ns        (0.5ns)
+Thru: rom23cs_b tF + tLOGI + tPTA + tPDI                : 14.0ns       (14.5ns)
+  To: rom23cs_b tOUT                                    :  3.0ns       (17.5ns)
+
+Source clock net: romsel_q<7>.CLKF
+Worst case clock delay from origin clken_lat_qb.Q is 13.0ns
+Worst case clock delay from origin clk is 6.5ns
+From: romsel_q<7> tCOI                                  :  0.5ns        (0.5ns)
+Thru: rom45cs_b tF + tLOGI + tPTA + tPDI                : 14.0ns       (14.5ns)
+  To: rom45cs_b tOUT                                    :  3.0ns       (17.5ns)
+
+Source clock net: romsel_q<7>.CLKF
+Worst case clock delay from origin clken_lat_qb.Q is 13.0ns
+Worst case clock delay from origin clk is 6.5ns
+From: romsel_q<7> tCOI                                  :  0.5ns        (0.5ns)
+Thru: roma14    tF + tLOGI + tPTA + tPDI                : 14.0ns       (14.5ns)
+  To: roma14    tOUT                                    :  3.0ns       (17.5ns)
+
+                   *****************************************
+                   * Path Ending at Clock Pin of Flip-Flop *
+                   *****************************************
+From: clk       -                                       :  0.0ns        (0.0ns)
+Thru: clk_IBUF  tIN                                     :  3.5ns        (3.5ns)
+  To: romsel_q<0>.CLKF tPTCK                            :  3.0ns        (6.5ns)
+
+From: clk       -                                       :  0.0ns        (0.0ns)
+Thru: clk_IBUF  tIN                                     :  3.5ns        (3.5ns)
+  To: romsel_q<1>.CLKF tPTCK                            :  3.0ns        (6.5ns)
+
+From: clk       -                                       :  0.0ns        (0.0ns)
+Thru: clk_IBUF  tIN                                     :  3.5ns        (3.5ns)
+  To: romsel_q<2>.CLKF tPTCK                            :  3.0ns        (6.5ns)
+
+From: clk       -                                       :  0.0ns        (0.0ns)
+Thru: clk_IBUF  tIN                                     :  3.5ns        (3.5ns)
+  To: romsel_q<3>.CLKF tPTCK                            :  3.0ns        (6.5ns)
+
+From: clk       -                                       :  0.0ns        (0.0ns)
+Thru: clk_IBUF  tIN                                     :  3.5ns        (3.5ns)
+  To: romsel_q<4>.CLKF tPTCK                            :  3.0ns        (6.5ns)
+
+From: clk       -                                       :  0.0ns        (0.0ns)
+Thru: clk_IBUF  tIN                                     :  3.5ns        (3.5ns)
+  To: romsel_q<5>.CLKF tPTCK                            :  3.0ns        (6.5ns)
+
+From: clk       -                                       :  0.0ns        (0.0ns)
+Thru: clk_IBUF  tIN                                     :  3.5ns        (3.5ns)
+  To: romsel_q<6>.CLKF tPTCK                            :  3.0ns        (6.5ns)
+
+From: clk       -                                       :  0.0ns        (0.0ns)
+Thru: clk_IBUF  tIN                                     :  3.5ns        (3.5ns)
+  To: romsel_q<7>.CLKF tPTCK                            :  3.0ns        (6.5ns)
+
+Path Type Definition: 
+
+Pad to Pad (tPD) -                        Reports pad to pad paths that start 
+                                          at input pads and end at output pads. 
+                                          Paths are not traced through 
+                                          registers. 
+
+Clock Pad to Output Pad (tCO) -           Reports paths that start at input 
+                                          pads trace through clock inputs of 
+                                          registers and end at output pads. 
+                                          Paths are not traced through PRE/CLR 
+                                          inputs of registers. 
+
+Setup to Clock at Pad (tSU or tSUF) -     Reports external setup time of data 
+                                          to clock at pad. Data path starts at 
+                                          an input pad and ends at register 
+                                          (Fast Input Register for tSUF) D/T 
+                                          input. Clock path starts at input pad 
+                                          and ends at the register clock input. 
+                                          Paths are not traced through 
+                                          registers. Pin-to-pin setup 
+                                          requirement is not reported or 
+                                          guaranteed for product-term clocks 
+                                          derived from macrocell feedback 
+                                          signals. 
+
+Clock to Setup (tCYC) -                   Register to register cycle time. 
+                                          Include source register tCO and 
+                                          destination register tSU. Note that 
+                                          when the computed Maximum Clock Speed 
+                                          is limited by tCYC it is computed 
+                                          assuming that all registers are 
+                                          rising-edge sensitive. 
+
+Clock to Pad -                            Reports path starting at clock pin of 
+                                          register and ends at ouput pad. 
+
+Path Ending at Clock Pin of Flip-Flop -   Reports paths that start at input pad 
+                                          and end at clock input of flip-flop. 
+                                          Paths are not traced through 
+                                          registers. 
+
+Pad to Setup -                            Reports paths that start at pads and 
+                                          end at register D/T input. Paths are 
+                                          not traced through registers. 
+
