@@ -66,8 +66,8 @@ module z80tube(
     
   reg                 posen_q;
   reg                 negen_f_q;
-  reg [2:0]           state_f_q;
-  reg [2:0]           state_d;    
+  reg [1:0]           state_f_q;
+  reg [1:0]           state_d;    
   reg                 wr_b_q;
   reg                 wait_f_q;	
   reg [7:0]           status_q;
@@ -93,8 +93,9 @@ module z80tube(
   assign TUBE_ADR = ADR[2:0];
   assign TUBE_RNW_B = IOREQ_B | WR_B;
   assign TUBE_DATA = ( !wr_b_q & ((state_f_q==S1)|(state_f_q==S2)) & posen_q ) ? DATA : 8'bz;
-  
-  // MASTER - drive databus on reads
+  assign TUBE_INT_B = 1'b1 ; // Actually not wired up on PiTubeDirect
+
+  // HOST - drive databus on reads
   assign DATA = ( data_en_r ) ? data_r : 8'bzzzzzzzz ;
   assign NMI = 1'bz;
   assign INT = 1'bz;
