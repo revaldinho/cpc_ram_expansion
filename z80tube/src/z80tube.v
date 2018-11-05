@@ -4,12 +4,13 @@
 // Tube registers are &FC10-&FC17
 //
 
-`define PMOD_INPUT_REG      1 
+`define PMOD_INPUT_REG      1
+
 // Upper 12 bits oply
 `define PORT_ID_BASE 	   16'hFC10
 `define PORT_ID_BASE_TOP12 16'hFC1
-`define DATA_REG_ID  	    4'hE
-`define DIR_REG_ID  	    4'hD
+`define DATA_REG_ID  	    4'hF
+`define DIR_REG_ID  	    4'hE
 `define TUBE_REG0_ID	    4'h0
 `define TUBE_REG1_ID	    4'h1
 `define TUBE_REG2_ID	    4'h2
@@ -26,16 +27,15 @@ module z80tube(
                input        RD_B,
                input        WR_B, 
                input        IOREQ_B,
-               input        M1_B, 
                input        MREQ_B,
                input        WAIT_B,
                input        RESET_B,
                inout [7:0]  DATA,
-               inout        NMI_B, 
-               inout        INT_B,
-               input        BUSRQ_B,
-               input        BUSACK_B,
-               input        READY,
+//               inout        INT_B,
+//               input        BUSRQ_B,
+//               input        BUSACK_B,
+//               input        READY,
+//               input        M1_B, 
 
                // PMOD Port
                inout [7:0]  PMOD_GPIO,
@@ -93,8 +93,8 @@ module z80tube(
   reg                 rd_b_q;    
   reg [7:0]           pmod_dir_f_q;
   reg [7:0]           pmod_dout_f_q;
-`ifdef PMOD_INPUT_REG  
-  reg [7:0]           pmod_din_q;
+`ifdef PMOD_INPUT_REG
+  reg [7:0] pmod_din_q;
 `endif  
   reg [7:0]           data_r;
   reg                 data_en_r;
@@ -116,23 +116,25 @@ module z80tube(
   assign TUBE_RNW_B = IOREQ_B | WR_B;
   assign TUBE_DATA = ( !wr_b_q & ((state_f_q==S1)|(state_f_q==S2)) & posen_q ) ? DATA : 8'bz;
 
+  // Send Tube a reset on start up but allow user to cause a reset by writing '0' to PMOD_GPIO[0] also 
+  assign TUBE_RST_B = reset_b_w & ((pmod_dir_f_q[0]) ? pmod_dout_f_q[0]: 1'b1) ; 
+  
   // HOST - drive databus on reads
   assign DATA = ( data_en_r ) ? data_r : 8'bzzzzzzzz ;
-  assign NMI = 1'bz;
-  assign INT = 1'bz;
   
   // Synchronized reset release to posedge of clock
   assign reset_b_w = RESET_B & reset_b_q[0];
 
-  assign PMOD_GPIO[7] = (pmod_dir_f_q[7]) ? pmod_dout_f_q[7] : 1'bz;
-  assign PMOD_GPIO[6] = (pmod_dir_f_q[6]) ? pmod_dout_f_q[6] : 1'bz;
-  assign PMOD_GPIO[5] = (pmod_dir_f_q[5]) ? pmod_dout_f_q[5] : 1'bz;
-  assign PMOD_GPIO[4] = (pmod_dir_f_q[4]) ? pmod_dout_f_q[4] : 1'bz;
+//   assign PMOD_GPIO[7] = (pmod_dir_f_q[7]) ? pmod_dout_f_q[7] : 1'bz;
+//   assign PMOD_GPIO[6] = (pmod_dir_f_q[6]) ? pmod_dout_f_q[6] : 1'bz;
+//   assign PMOD_GPIO[5] = (pmod_dir_f_q[5]) ? pmod_dout_f_q[5] : 1'bz;
+//   assign PMOD_GPIO[4] = (pmod_dir_f_q[4]) ? pmod_dout_f_q[4] : 1'bz;
+  assign PMOD_GPIO[7:4] = 4'bz;  
   assign PMOD_GPIO[3] = (pmod_dir_f_q[3]) ? pmod_dout_f_q[3] : 1'bz;
   assign PMOD_GPIO[2] = (pmod_dir_f_q[2]) ? pmod_dout_f_q[2] : 1'bz;
   assign PMOD_GPIO[1] = (pmod_dir_f_q[1]) ? pmod_dout_f_q[1] : 1'bz;
   assign PMOD_GPIO[0] = (pmod_dir_f_q[0]) ? pmod_dout_f_q[0] : 1'bz;
-  
+
   
   // Data mux to service IO Reads by the CPC Z80 Host
   always @ ( * )
@@ -143,25 +145,16 @@ module z80tube(
 `else        
         `DATA_REG_ID: { data_en_r, data_r } = { 1'b1, PMOD_GPIO } ;
 `endif        
-
         `DIR_REG_ID: { data_en_r, data_r } = { 1'b1, pmod_dir_f_q } ;
-        `TUBE_REG7_ID, 
-        `TUBE_REG6_ID, 
-        `TUBE_REG5_ID, 
-        `TUBE_REG4_ID, 
-        `TUBE_REG3_ID, 
-        `TUBE_REG2_ID, 
-        `TUBE_REG1_ID, 
-        `TUBE_REG0_ID: { data_en_r, data_r } = { 1'b1, TUBE_DATA } ;
-        default: { data_en_r, data_r } = { 1'b0, 8'bx } ;
+        default: { data_en_r, data_r } = { 1'b1, TUBE_DATA } ;
       endcase
     else
       { data_en_r, data_r } = { 1'b0, 8'bx } ;              
 
   always @ ( negedge CLK )
     case (state_f_q)
-      IDLE:  state_d = ( !IOREQ_B) ? S0 : IDLE ;
-      S0  :  state_d = (!WAIT_B) ? S1 : S0;
+      IDLE:  state_d = (!IOREQ_B) ? S0 : IDLE ;
+      S0  :  state_d = (!WAIT_B) ? S0 : S1;
       S1  :  state_d = S2;
       S2  :  state_d = IDLE;
       default: state_d = IDLE;
