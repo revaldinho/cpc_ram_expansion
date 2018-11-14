@@ -37,57 +37,62 @@
  * 1. Keeping a net in synthesis
  * //synthesis attribute keep of input_a_reg is "true"
  * BUF mybuf (.I(input_a_reg),.O(comb));
+ * 
  */
 
-
-// `define GATED_WCLK 1
+`define M4_COMPATIBILITY  1
+`ifdef M4_COMPATIBILITY
+  `define OVERDRIVE_WR_B   1
+`endif
 
 module cpld_ram512k_v110(
-  input        rfsh_b,
-  inout        adr15,
-  inout        adr15_aux, 
-  input        adr14,
-  input        adr8, 
-  input        iorq_b,
-  input        mreq_b,
-  input        ramrd_b,
-  input        reset_b,
-  input        wr_b,
-  inout        rd_b,
-  inout        rd_b_aux, 
-  input [7:0]  data,
-  input        ready,
-  input        clk,
-  input        m1_b,
-  input [1:0]  dip,
+  input       rfsh_b,
+  inout       adr15,
+  inout       adr15_aux, 
+  input       adr14,
+  input       adr8, 
+  input       iorq_b,
+  input       mreq_b, 
+  input       ramrd_b,
+  input       reset_b,
+`ifdef  OVERDRIVE_WR_B                        
+  inout       wr_b,
+`else                         
+  input       wr_b,
+`endif                         
+  inout       rd_b,
+  inout       rd_b_aux,
+  input [7:0] data,
+  input       ready,
+  input       clk,
+  input       m1_b,
+  input [1:0] dip,
     
-  inout        ramdis,
-  output       ramcs_b,
-  inout [4:0]  ramadrhi, // bits 4,3 also connected to DIP switches 2,1 resp and read on startup
-  output       ramoe_b,
-  output       ramwe_b
+  inout       ramdis,
+  output      ramcs_b,
+  inout [4:0] ramadrhi, // bits 4,3 also connected to DIP switches 2,1 resp and read on startup
+  output      ramoe_b,
+  output      ramwe_b
 );
   
   reg [5:0]        ramblock_q;
   reg [4:0]        ramadrhi_r;
   reg              dip3_lat_q, dip2_lat_q;
   reg              cardsel_q;              
-  reg              mode3_q;              
+  reg              mode3_q;
+`ifdef OVERDRIVE_WR_B  
+  reg              mwr_cyc1_q;
+`endif
   reg              mwr_cyc_q;
-  reg              mwr_cyc_f_q;  
+  reg              mwr_cyc_f_q;
   reg              ramcs_b_r;
   reg              adr15_q;
   reg              exp_ram_r;
-  reg              mreq_b_q, mreq_b_f_q;
+  reg              mreq_b_q;  
   reg              reset_b_q;
-  reg              reset1_b_q;  
+  reg              reset1_b_q;
 
-`ifdef GATED_WCLK  
-  reg              clken_lat_qb;
-  wire             wclk;
-`else
   wire             register_select_w;            
-`endif  
   wire [2:0]       shadow_bank;
   wire             full_shadow;
   wire             overdrive_mode;  
@@ -135,22 +140,13 @@ module cpld_ram512k_v110(
    */
   
   assign overdrive_mode= dip[0] | dip[1];
-  assign shadow_bank   = {dip3_lat_q,2'b11};  
+  assign shadow_bank   = {dip3_lat_q,2'b11};
   assign shadow_mode   = dip[0];
   assign full_shadow   = dip[0]&dip[1];
   assign low512kb_mode = dip2_lat_q & !dip[0]; // Low IO address not valid in shadow mode
-
-
-`ifdef GATED_WCLK  
-  // Create negedge clock on IO write event - clock low pulse will be suppressed if not an IOWR* event
-  // but if the pulse is allowed through use the trailing (rising) edge to capture data
-  assign wclk    = !(clk|clken_lat_qb);
-`else
-  assign register_select_w = (!iorq_b && !wr_b && !adr15 && data[6] && data[7]); 
-`endif
-                            
-  assign reset_b_w = reset1_b_q & reset_b;
   
+  assign register_select_w = (!iorq_b && !wr_b && !adr15 && data[6] && data[7] );
+  assign reset_b_w = reset1_b_q & reset_b;
   // Dont drive address outputs during reset due to overlay of DIP switches    
   assign ramadrhi = (reset_b_w) ? ramadrhi_r : 5'bzzzzz ; 
   assign ramwe_b  = wr_b ;
@@ -173,15 +169,21 @@ module cpld_ram512k_v110(
    * MWR_CYC    _______/    .    :    .    :    .    \______  FF'd Version 
    * State    _IDLE____X___T1____X____T1___X___T2____X_END__
    */
-  
-  // overdrive rd_b for all expansion write accesses only - extend overdrive to trailing edge following mreq going high
-  assign { rd_b, rd_b_aux }    = ( overdrive_mode & exp_ram_r & cardsel_q & (mwr_cyc_q|mwr_cyc_f_q)) ? 2'b00 : 2'bzz ;
-  
+
+  // mwr_cyc_d feeds into mwr_cyc_q pipeline and signals expansion RAM write in overdrive mode
+  assign mwr_cyc_d = mreq_b_q & !mreq_b & rfsh_b & rd_b & m1_b & exp_ram_r & cardsel_q;  
+
+`ifdef OVERDRIVE_WR_B  
+  // overdrive wr_b for the first part of an expansion RAM write to fool the M4 card
+  assign wr_b = ( overdrive_mode & mwr_cyc1_q ) ? 1'b0 : 1'bz;  
+`endif
+
+  // overdrive rd_b for all expansion write accesses only - extend overdrive to trailing edge following mreq going high  
+  assign { rd_b, rd_b_aux }    = (overdrive_mode & (mwr_cyc_q|mwr_cyc_f_q)) ? 2'b00 : 2'bzz ;
   // Overdrive A15 for writes only in shadow modes (full and partial) but for all access types otherwise
   // Need to compute whether A15 will need to be driven before the first rising edge of the MREQ cycle for the
   // gate array to act on it. Cant wait to sample mwr_cyc_q after it has been set initially.
-  assign mwr_cyc_d = (mreq_b_f_q | mreq_b_q) & !mreq_b & rfsh_b & rd_b & m1_b ;  
-  assign adr15_overdrive_w   =  overdrive_mode & cardsel_q & mode3_q & adr14 & rfsh_b & ((shadow_mode) ? (mwr_cyc_q|mwr_cyc_d): !mreq_b) ;
+  assign adr15_overdrive_w   =  overdrive_mode & mode3_q & adr14 & rfsh_b & ((shadow_mode) ? (mwr_cyc_q|mwr_cyc_d): !mreq_b) ; 
   assign { adr15, adr15_aux} = (adr15_overdrive_w  ) ? 2'b11 : 2'bzz; 
   
   // Never, ever use internal RAM for reads in full shadow mode - allow tristate if card not selected otherwise
@@ -189,7 +191,7 @@ module cpld_ram512k_v110(
   
   // In full shadow mode SRAM is always enabled for all real memory accesses but dont clash with ROM access (ramrd_b will control oe_b)
   assign ramcs_b = !( ((!ramcs_b_r) & cardsel_q) | full_shadow) | mreq_b | !rfsh_b ;
-  
+
   always @ (posedge clk)
     if ( !reset_b_w )
       mwr_cyc_q <= 1'b0;
@@ -199,23 +201,19 @@ module cpld_ram512k_v110(
       else if (mreq_b)
         mwr_cyc_q <= 1'b0;
     end
+  
+`ifdef OVERDRIVE_WR_B
+  // Mark the first clock tick after the mwr_cyc_d valid
+  always @ (posedge clk)
+    mwr_cyc1_q <= mwr_cyc_d;  
+`endif
 
   always @ (negedge clk)
-    if ( !reset_b_w ) begin
-      mreq_b_f_q = 1'b1;
-      mwr_cyc_f_q <= 1'b0;      
-   end     
-    else begin
-      mreq_b_f_q = mreq_b;
       mwr_cyc_f_q <= mwr_cyc_q;            
-    end
-  
-  always @ (posedge clk)
-    if ( !reset_b_w ) 
-      mreq_b_q = 1'b1;
-    else 
-      mreq_b_q = mreq_b;
 
+  always @ (posedge clk)  
+      mreq_b_q = mreq_b;
+  
   always @ (posedge clk)
     if ( !reset_b ) 
       { reset1_b_q, reset_b_q}  = 2'b0;
@@ -223,44 +221,17 @@ module cpld_ram512k_v110(
       { reset1_b_q, reset_b_q} = { reset_b_q, reset_b};
   
   always @ (negedge mreq_b ) 
-    if ( !reset_b_w ) 
-      adr15_q <= 1'b0;
-    else
       adr15_q <= adr15;
-  
+
   // Latch DIP switch settings on first stage of reset - need a CPC power down/up.
   always @ ( posedge clk )
     if ( !reset_b_q ) begin
       dip2_lat_q <= ramadrhi[3];
       dip3_lat_q <= ramadrhi[4];      
     end
-
-`ifdef GATED_WCLK  
-  always @ ( * )
-    if ( clk ) 
-      clken_lat_qb <= !(!iorq_b && !wr_b && !adr15 && data[6] && data[7]);
-`endif
-
   
   // Pre-decode mode 3 setting and noodle shadow bank alias if required to save decode
   // time after the Q
-`ifdef GATED_WCLK  
-  always @ (posedge wclk )
-    if (!reset_b_w) begin
-      ramblock_q <= 6'b0;
-      mode3_q <= 1'b0;
-      cardsel_q <= 1'b0;      
-    end        
-    else begin
-      if ( shadow_mode && (data[5:3]==shadow_bank) )
-        ramblock_q <= {data[5:4],1'b0, data[2:0]};          
-      else
-        ramblock_q <= data[5:0] ;
-      // Use IO Port 7Fxx or 7Exx depending on low512kb_mode
-      cardsel_q <= (low512kb_mode) ? !adr8 : adr8;      
-      mode3_q <= (data[2:0] == 3'b011);
-    end
-`else
   always @ (negedge clk )
     if (!reset_b_w) begin
       ramblock_q <= 6'b0;
@@ -278,7 +249,6 @@ module cpld_ram512k_v110(
         mode3_q <= (data[2:0] == 3'b011);
       end
     end
-`endif
   
   always @ ( * ) begin
     if ( shadow_mode )
