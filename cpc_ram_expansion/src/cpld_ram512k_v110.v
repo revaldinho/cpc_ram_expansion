@@ -91,6 +91,7 @@ module cpld_ram512k_v110(
   reg              exp_ram_r;
   reg              mreq_b_q;  
   reg              reset_b_q;
+  reg              reset1_b_q;
   reg              exp_ram_q;
 
   wire             register_select_w;            
@@ -147,7 +148,7 @@ module cpld_ram512k_v110(
   assign low512kb_mode = dip2_lat_q & !dip[0]; // Low IO address not valid in shadow mode
   
   assign register_select_w = (!iorq_b && !wr_b && !adr15 && data[6] && data[7] );
-  assign reset_b_w = reset_b_q & reset_b;
+  assign reset_b_w = reset1_b_q & reset_b;
   // Dont drive address outputs during reset due to overlay of DIP switches    
   assign ramadrhi = (reset_b_w) ? ramadrhi_r : 5'bzzzzz ; 
   assign ramwe_b  = wr_b ;
@@ -207,38 +208,26 @@ module cpld_ram512k_v110(
 `endif
 
   always @ (negedge clk)
-    if ( !reset_b_w )
-      mwr_cyc_f_q <= 1'b0;      
-    else
       mwr_cyc_f_q <= mwr_cyc_q;            
   
   always @ (posedge clk)
-    if ( !reset_b_w ) 
-      mreq_b_q = 1'b1;
-    else 
       mreq_b_q = mreq_b;
 
   always @ (posedge clk)
-    if ( !reset_b_w ) 
-      exp_ram_q = 1'b0;
-    else 
       exp_ram_q = exp_ram_r;
   
   always @ (posedge clk)
     if ( !reset_b ) 
-      reset_b_q  = 1'b0;
+      {reset1_b_q, reset_b_q}  = 2'b00;
     else 
-      reset_b_q = reset_b;
+      {reset1_b_q, reset_b_q}  = {reset_b_q, reset_b};
   
   always @ (negedge mreq_b ) 
-    if ( !reset_b_w ) 
-      adr15_q <= 1'b0;
-    else
       adr15_q <= adr15;
 
   // Latch DIP switch settings on first stage of reset - need a CPC power down/up.
   always @ ( posedge clk )
-    if ( !reset_b ) begin
+    if ( !reset_b_q ) begin
       dip2_lat_q <= ramadrhi[3];
       dip3_lat_q <= ramadrhi[4];      
     end
