@@ -41,6 +41,7 @@
  */
 
 `define M4_COMPATIBILITY  1
+// Assume that MREQ is latched HIGH on a rising clock edge before a write to RAM
 `ifdef M4_COMPATIBILITY
   `define OVERDRIVE_WR_B   1
 `endif
@@ -90,7 +91,7 @@ module cpld_ram512k_v110(
   reg              exp_ram_r;
   reg              mreq_b_q;  
   reg              reset_b_q;
-  reg              reset1_b_q;
+  reg              exp_ram_q;
 
   wire             register_select_w;            
   wire [2:0]       shadow_bank;
@@ -146,7 +147,7 @@ module cpld_ram512k_v110(
   assign low512kb_mode = dip2_lat_q & !dip[0]; // Low IO address not valid in shadow mode
   
   assign register_select_w = (!iorq_b && !wr_b && !adr15 && data[6] && data[7] );
-  assign reset_b_w = reset1_b_q & reset_b;
+  assign reset_b_w = reset_b_q & reset_b;
   // Dont drive address outputs during reset due to overlay of DIP switches    
   assign ramadrhi = (reset_b_w) ? ramadrhi_r : 5'bzzzzz ; 
   assign ramwe_b  = wr_b ;
@@ -170,20 +171,17 @@ module cpld_ram512k_v110(
    * State    _IDLE____X___T1____X____T1___X___T2____X_END__
    */
 
-  // mwr_cyc_d feeds into mwr_cyc_q pipeline and signals expansion RAM write in overdrive mode
-  assign mwr_cyc_d = mreq_b_q & !mreq_b & rfsh_b & rd_b & m1_b & exp_ram_r & cardsel_q;  
-
 `ifdef OVERDRIVE_WR_B  
   // overdrive wr_b for the first part of an expansion RAM write to fool the M4 card
-  assign wr_b = ( overdrive_mode & mwr_cyc1_q ) ? 1'b0 : 1'bz;  
+  assign wr_b = ( overdrive_mode & exp_ram_q & cardsel_q & mwr_cyc1_q ) ? 1'b0 : 1'bz;  
 `endif
 
-  // overdrive rd_b for all expansion write accesses only - extend overdrive to trailing edge following mreq going high  
-  assign { rd_b, rd_b_aux }    = (overdrive_mode & (mwr_cyc_q|mwr_cyc_f_q)) ? 2'b00 : 2'bzz ;
+  assign { rd_b, rd_b_aux }    = ( overdrive_mode & exp_ram_q & cardsel_q & (mwr_cyc_q|mwr_cyc_f_q)) ? 2'b00 : 2'bzz ; 
   // Overdrive A15 for writes only in shadow modes (full and partial) but for all access types otherwise
   // Need to compute whether A15 will need to be driven before the first rising edge of the MREQ cycle for the
   // gate array to act on it. Cant wait to sample mwr_cyc_q after it has been set initially.
-  assign adr15_overdrive_w   =  overdrive_mode & mode3_q & adr14 & rfsh_b & ((shadow_mode) ? (mwr_cyc_q|mwr_cyc_d): !mreq_b) ; 
+  assign mwr_cyc_d = mreq_b_q & !mreq_b & rfsh_b & rd_b & m1_b ;  
+  assign adr15_overdrive_w   =  overdrive_mode & cardsel_q & mode3_q & adr14 & rfsh_b & ((shadow_mode) ? (mwr_cyc_q|mwr_cyc_d): !mreq_b) ; 
   assign { adr15, adr15_aux} = (adr15_overdrive_w  ) ? 2'b11 : 2'bzz; 
   
   // Never, ever use internal RAM for reads in full shadow mode - allow tristate if card not selected otherwise
@@ -191,7 +189,7 @@ module cpld_ram512k_v110(
   
   // In full shadow mode SRAM is always enabled for all real memory accesses but dont clash with ROM access (ramrd_b will control oe_b)
   assign ramcs_b = !( ((!ramcs_b_r) & cardsel_q) | full_shadow) | mreq_b | !rfsh_b ;
-
+  
   always @ (posedge clk)
     if ( !reset_b_w )
       mwr_cyc_q <= 1'b0;
@@ -201,7 +199,7 @@ module cpld_ram512k_v110(
       else if (mreq_b)
         mwr_cyc_q <= 1'b0;
     end
-  
+
 `ifdef OVERDRIVE_WR_B
   // Mark the first clock tick after the mwr_cyc_d valid
   always @ (posedge clk)
@@ -209,23 +207,38 @@ module cpld_ram512k_v110(
 `endif
 
   always @ (negedge clk)
+    if ( !reset_b_w )
+      mwr_cyc_f_q <= 1'b0;      
+    else
       mwr_cyc_f_q <= mwr_cyc_q;            
-
-  always @ (posedge clk)  
+  
+  always @ (posedge clk)
+    if ( !reset_b_w ) 
+      mreq_b_q = 1'b1;
+    else 
       mreq_b_q = mreq_b;
+
+  always @ (posedge clk)
+    if ( !reset_b_w ) 
+      exp_ram_q = 1'b0;
+    else 
+      exp_ram_q = exp_ram_r;
   
   always @ (posedge clk)
     if ( !reset_b ) 
-      { reset1_b_q, reset_b_q}  = 2'b0;
+      reset_b_q  = 1'b0;
     else 
-      { reset1_b_q, reset_b_q} = { reset_b_q, reset_b};
+      reset_b_q = reset_b;
   
   always @ (negedge mreq_b ) 
+    if ( !reset_b_w ) 
+      adr15_q <= 1'b0;
+    else
       adr15_q <= adr15;
 
   // Latch DIP switch settings on first stage of reset - need a CPC power down/up.
   always @ ( posedge clk )
-    if ( !reset_b_q ) begin
+    if ( !reset_b ) begin
       dip2_lat_q <= ramadrhi[3];
       dip3_lat_q <= ramadrhi[4];      
     end
