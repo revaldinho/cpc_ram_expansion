@@ -81,9 +81,6 @@ module cpld_ram512k_v110(
   reg              dip3_lat_q, dip2_lat_q;
   reg              cardsel_q;              
   reg              mode3_q;
-`ifdef OVERDRIVE_WR_B  
-  reg              mwr_cyc1_q;
-`endif
   reg              mwr_cyc_q;
   reg              mwr_cyc_f_q;
   reg              ramcs_b_r;
@@ -173,8 +170,8 @@ module cpld_ram512k_v110(
    */
 
 `ifdef OVERDRIVE_WR_B  
-  // overdrive wr_b for the first part of an expansion RAM write to fool the M4 card
-  assign wr_b = ( overdrive_mode & exp_ram_q & cardsel_q & mwr_cyc1_q ) ? 1'b0 : 1'bz;  
+  // overdrive wr_b for the first CLK high phase of an expansion RAM write to fool the M4 card
+  assign wr_b = ( overdrive_mode & exp_ram_q & cardsel_q & (mwr_cyc_q & !mwr_cyc_f_q) ) ? 1'b0 : 1'bz;  
 `endif
 
   assign { rd_b, rd_b_aux }    = ( overdrive_mode & exp_ram_q & cardsel_q & (mwr_cyc_q|mwr_cyc_f_q)) ? 2'b00 : 2'bzz ; 
@@ -201,19 +198,22 @@ module cpld_ram512k_v110(
         mwr_cyc_q <= 1'b0;
     end
 
-`ifdef OVERDRIVE_WR_B
-  // Mark the first clock tick after the mwr_cyc_d valid
-  always @ (posedge clk)
-    mwr_cyc1_q <= mwr_cyc_d;  
-`endif
-
   always @ (negedge clk)
+    if ( !reset_b_w )
+      mwr_cyc_f_q <= 1'b0;      
+    else
       mwr_cyc_f_q <= mwr_cyc_q;            
   
   always @ (posedge clk)
+    if ( !reset_b_w ) 
+      mreq_b_q = 1'b1;
+    else 
       mreq_b_q = mreq_b;
 
   always @ (posedge clk)
+    if ( !reset_b_w ) 
+      exp_ram_q = 1'b0;
+    else 
       exp_ram_q = exp_ram_r;
   
   always @ (posedge clk)
@@ -223,6 +223,9 @@ module cpld_ram512k_v110(
       {reset1_b_q, reset_b_q}  = {reset_b_q, reset_b};
   
   always @ (negedge mreq_b ) 
+    if ( !reset_b_w ) 
+      adr15_q <= 1'b0;
+    else
       adr15_q <= adr15;
 
   // Latch DIP switch settings on first stage of reset - need a CPC power down/up.
