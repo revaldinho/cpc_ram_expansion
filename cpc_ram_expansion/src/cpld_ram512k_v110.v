@@ -139,15 +139,16 @@ module cpld_ram512k_v110(
    */
   
   assign overdrive_mode= dip[0] | dip[1];
-  assign shadow_bank   = {dip3_lat_q,2'b11};
   assign shadow_mode   = dip[0];
   assign full_shadow   = dip[0]&dip[1];
-  assign low512kb_mode = dip2_lat_q & !dip[0]; // Low IO address not valid in shadow mode
+  assign shadow_bank   = {dip3_lat_q,2'b11};
+  assign low512kb_mode = dip2_lat_q ;
   
   assign register_select_w = (!iorq_b && !wr_b && !adr15 && data[6] && data[7] );
-  assign reset_b_w = reset1_b_q & reset_b;
+  assign reset_b_w = reset1_b_q & reset_b & reset_b_q;
   // Dont drive address outputs during reset due to overlay of DIP switches    
-  assign ramadrhi = (reset_b_w) ? ramadrhi_r : 5'bzzzzz ; 
+  assign ramadrhi =  { (!reset_b_w) ? 2'bzz : ramadrhi_r[4:3], ramadrhi_r[2:0]};
+  
   assign ramwe_b  = wr_b ;
   // Combination of RAMCS and RAMRD determine whether RAM output is enabled 
   assign ramoe_b = ramrd_b ;
@@ -170,16 +171,16 @@ module cpld_ram512k_v110(
    */
 
 `ifdef OVERDRIVE_WR_B  
-  // overdrive wr_b for the first CLK high phase of an expansion RAM write to fool the M4 card
-  assign wr_b = ( overdrive_mode & exp_ram_q & cardsel_q & (mwr_cyc_q & !mwr_cyc_f_q) ) ? 1'b0 : 1'bz;  
+  // overdrive wr_b for the first high phase of CLK of an expansion RAM write to fool the M4 card
+  assign wr_b = ( overdrive_mode & exp_ram_q & (mwr_cyc_q & !mwr_cyc_f_q)) ? 1'b0 : 1'bz;  
 `endif
 
-  assign { rd_b, rd_b_aux }    = ( overdrive_mode & exp_ram_q & cardsel_q & (mwr_cyc_q|mwr_cyc_f_q)) ? 2'b00 : 2'bzz ; 
+  assign { rd_b, rd_b_aux }    = ( overdrive_mode & exp_ram_q & (mwr_cyc_q|mwr_cyc_f_q)) ? 2'b00 : 2'bzz ; 
   // Overdrive A15 for writes only in shadow modes (full and partial) but for all access types otherwise
   // Need to compute whether A15 will need to be driven before the first rising edge of the MREQ cycle for the
   // gate array to act on it. Cant wait to sample mwr_cyc_q after it has been set initially.
   assign mwr_cyc_d = mreq_b_q & !mreq_b & rfsh_b & rd_b & m1_b ;  
-  assign adr15_overdrive_w   =  overdrive_mode & cardsel_q & mode3_q & adr14 & rfsh_b & ((shadow_mode) ? (mwr_cyc_q|mwr_cyc_d): !mreq_b) ; 
+  assign adr15_overdrive_w   =  overdrive_mode & mode3_q & adr14 & rfsh_b & ((shadow_mode) ? (mwr_cyc_q|mwr_cyc_d): !mreq_b) ; 
   assign { adr15, adr15_aux} = (adr15_overdrive_w  ) ? 2'b11 : 2'bzz; 
   
   // Never, ever use internal RAM for reads in full shadow mode - allow tristate if card not selected otherwise
@@ -189,14 +190,10 @@ module cpld_ram512k_v110(
   assign ramcs_b = !( ((!ramcs_b_r) & cardsel_q) | full_shadow) | mreq_b | !rfsh_b ;
   
   always @ (posedge clk)
-    if ( !reset_b_w )
+    if ( mwr_cyc_d ) 
+      mwr_cyc_q <= 1'b1;
+    else if (mreq_b)
       mwr_cyc_q <= 1'b0;
-    else begin
-      if ( mwr_cyc_d ) 
-        mwr_cyc_q <= 1'b1;
-      else if (mreq_b)
-        mwr_cyc_q <= 1'b0;
-    end
 
   always @ (negedge clk)
     if ( !reset_b_w )
@@ -216,12 +213,12 @@ module cpld_ram512k_v110(
     else 
       exp_ram_q = exp_ram_r;
   
-  always @ (posedge clk)
-    if ( !reset_b ) 
-      {reset1_b_q, reset_b_q}  = 2'b00;
-    else 
-      {reset1_b_q, reset_b_q}  = {reset_b_q, reset_b};
-  
+   always @ (posedge clk)
+     if ( !reset_b ) 
+       {reset1_b_q, reset_b_q}  = 2'b00;
+     else 
+       {reset1_b_q, reset_b_q}  = {reset_b_q, reset_b};
+   
   always @ (negedge mreq_b ) 
     if ( !reset_b_w ) 
       adr15_q <= 1'b0;
@@ -230,7 +227,7 @@ module cpld_ram512k_v110(
 
   // Latch DIP switch settings on first stage of reset - need a CPC power down/up.
   always @ ( posedge clk )
-    if ( !reset_b_q ) begin
+    if ( !reset_b_q  ) begin
       dip2_lat_q <= ramadrhi[3];
       dip3_lat_q <= ramadrhi[4];      
     end
