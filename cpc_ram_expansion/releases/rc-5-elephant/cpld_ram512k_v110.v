@@ -39,17 +39,23 @@
  * BUF mybuf (.I(input_a_reg),.O(comb));
  * 
  */
-
+//`define USE_A15_AUX 1
+//`define USE_RDB_AUX 1 
 `define M4_COMPATIBILITY  1
 // Assume that MREQ is latched HIGH on a rising clock edge before a write to RAM
 `ifdef M4_COMPATIBILITY
   `define OVERDRIVE_WR_B   1
 `endif
 
+
 module cpld_ram512k_v110(
   input       rfsh_b,
   inout       adr15,
-  inout       adr15_aux, 
+`ifdef USE_A15_AUX
+  inout       adr15_aux,
+`else                   
+  input       adr15_aux, 
+`endif                        
   input       adr14,
   input       adr8, 
   input       iorq_b,
@@ -62,7 +68,11 @@ module cpld_ram512k_v110(
   input       wr_b,
 `endif                         
   inout       rd_b,
+`ifdef USE_RDB_AUX                         
   inout       rd_b_aux,
+`else                         
+  input       rd_b_aux,
+`endif                         
   input [7:0] data,
   input       ready,
   input       clk,
@@ -174,14 +184,24 @@ module cpld_ram512k_v110(
   // overdrive wr_b for the first high phase of CLK of an expansion RAM write to fool the M4 card
   assign wr_b = ( overdrive_mode & exp_ram_q & (mwr_cyc_q & !mwr_cyc_f_q)) ? 1'b0 : 1'bz;  
 `endif
-
-  assign { rd_b, rd_b_aux }    = ( overdrive_mode & exp_ram_q & (mwr_cyc_q|mwr_cyc_f_q)) ? 2'b00 : 2'bzz ; 
+  
+`ifdef USE_RDB_AUX
+  assign {rd_b, rd_b_aux} = ( overdrive_mode & exp_ram_q & (mwr_cyc_q|mwr_cyc_f_q)) ? 2'b00 : 2'bzz ;  
+`else  
+  assign rd_b = ( overdrive_mode & exp_ram_q & (mwr_cyc_q|mwr_cyc_f_q)) ? 1'b0 : 1'bz ;
+`endif
+  
   // Overdrive A15 for writes only in shadow modes (full and partial) but for all access types otherwise
   // Need to compute whether A15 will need to be driven before the first rising edge of the MREQ cycle for the
   // gate array to act on it. Cant wait to sample mwr_cyc_q after it has been set initially.
   assign mwr_cyc_d = mreq_b_q & !mreq_b & rfsh_b & rd_b & m1_b ;  
-  assign adr15_overdrive_w   =  overdrive_mode & mode3_q & adr14 & rfsh_b & ((shadow_mode) ? (mwr_cyc_q|mwr_cyc_d): !mreq_b) ; 
+  assign adr15_overdrive_w   =  overdrive_mode & mode3_q & adr14 & rfsh_b & ((shadow_mode) ? (mwr_cyc_q|mwr_cyc_d): !mreq_b) ;
+
+`ifdef USE_A15_AUX  
   assign { adr15, adr15_aux} = (adr15_overdrive_w  ) ? 2'b11 : 2'bzz; 
+`else
+  assign adr15 = (adr15_overdrive_w  ) ? 1'b1 : 1'bz; 
+`endif
   
   // Never, ever use internal RAM for reads in full shadow mode - allow tristate if card not selected otherwise
   assign ramdis = (full_shadow) ? 1'b1 :  (((!ramcs_b_r) & cardsel_q) ? 1'b1 : 1'bz);
@@ -227,7 +247,7 @@ module cpld_ram512k_v110(
 
   // Latch DIP switch settings on first stage of reset - need a CPC power down/up.
   always @ ( posedge clk )
-    if ( !reset_b_q  ) begin
+    if ( !reset1_b_q  ) begin
       dip2_lat_q <= ramadrhi[3];
       dip3_lat_q <= ramadrhi[4];      
     end

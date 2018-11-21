@@ -5,14 +5,14 @@ Parameter TMPDIR set to tmp
 
 
 Total REAL time to Xst completion: 0.00 secs
-Total CPU time to Xst completion: 0.03 secs
+Total CPU time to Xst completion: 0.04 secs
  
 --> 
 Parameter xsthdpdir set to xst
 
 
 Total REAL time to Xst completion: 0.00 secs
-Total CPU time to Xst completion: 0.03 secs
+Total CPU time to Xst completion: 0.04 secs
  
 --> 
 Reading design: cpld_ram512k_v110.prj
@@ -105,8 +105,12 @@ Performing bidirectional port resolution...
 
 Synthesizing Unit <cpld_ram512k_v110>.
     Related source file is "../src/cpld_ram512k_v110.v".
+WARNING:Xst:647 - Input <rd_b_aux> is never used. This port will be preserved and left unconnected if it belongs to a top-level block or it belongs to a sub-block and the hierarchy of this sub-block is preserved.
+WARNING:Xst:647 - Input <adr15_aux> is never used. This port will be preserved and left unconnected if it belongs to a top-level block or it belongs to a sub-block and the hierarchy of this sub-block is preserved.
 WARNING:Xst:647 - Input <ready> is never used. This port will be preserved and left unconnected if it belongs to a top-level block or it belongs to a sub-block and the hierarchy of this sub-block is preserved.
+    Found 1-bit tristate buffer for signal <adr15>.
     Found 1-bit tristate buffer for signal <ramdis>.
+    Found 1-bit tristate buffer for signal <rd_b>.
     Found 1-bit tristate buffer for signal <wr_b>.
     Found 1-bit register for signal <adr15_q>.
     Found 1-bit register for signal <cardsel_q>.
@@ -117,15 +121,15 @@ WARNING:Xst:647 - Input <ready> is never used. This port will be preserved and l
     Found 1-bit register for signal <mreq_b_q>.
     Found 1-bit register for signal <mwr_cyc_f_q>.
     Found 1-bit register for signal <mwr_cyc_q>.
-    Found 2-bit tristate buffer for signal <ramadrhi$mux0000> created at line 150.
+    Found 2-bit tristate buffer for signal <ramadrhi$mux0000> created at line 160.
     Found 6-bit register for signal <ramblock_q>.
-    Found 3-bit comparator equal for signal <ramblock_q$cmp_eq0000> created at line 245.
+    Found 3-bit comparator equal for signal <ramblock_q$cmp_eq0000> created at line 265.
     Found 1-bit register for signal <reset1_b_q>.
     Found 1-bit register for signal <reset_b_q>.
     Summary:
 	inferred   2 D-type flip-flop(s).
 	inferred   1 Comparator(s).
-	inferred   8 Tristate(s).
+	inferred   6 Tristate(s).
 Unit <cpld_ram512k_v110> synthesized.
 
 
@@ -139,8 +143,8 @@ Macro Statistics
 # Comparators                                          : 1
  3-bit comparator equal                                : 1
 # Tristates                                            : 5
- 1-bit tristate buffer                                 : 2
- 2-bit tristate buffer                                 : 3
+ 1-bit tristate buffer                                 : 4
+ 2-bit tristate buffer                                 : 1
 
 =========================================================================
 
@@ -207,23 +211,23 @@ Cell Usage :
 #      XOR2                        : 2
 # FlipFlops/Latches                : 17
 #      FD                          : 17
-# IO Buffers                       : 33
+# IO Buffers                       : 31
 #      IBUF                        : 19
 #      IOBUFE                      : 5
 #      OBUF                        : 6
-#      OBUFE                       : 3
+#      OBUFE                       : 1
 =========================================================================
 
 
 Total REAL time to Xst completion: 2.00 secs
-Total CPU time to Xst completion: 1.56 secs
+Total CPU time to Xst completion: 1.42 secs
  
 --> 
 
 
-Total memory usage is 128840 kilobytes
+Total memory usage is 128832 kilobytes
 
 Number of errors   :    0 (   0 filtered)
-Number of warnings :    1 (   0 filtered)
+Number of warnings :    3 (   0 filtered)
 Number of infos    :    0 (   0 filtered)
 
