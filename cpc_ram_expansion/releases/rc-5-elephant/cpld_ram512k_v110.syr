@@ -4,14 +4,14 @@ Copyright (c) 1995-2009 Xilinx, Inc.  All rights reserved.
 Parameter TMPDIR set to tmp
 
 
-Total REAL time to Xst completion: 1.00 secs
-Total CPU time to Xst completion: 0.04 secs
+Total REAL time to Xst completion: 0.00 secs
+Total CPU time to Xst completion: 0.03 secs
  
 --> 
 Parameter xsthdpdir set to xst
 
 
-Total REAL time to Xst completion: 1.00 secs
+Total REAL time to Xst completion: 0.00 secs
 Total CPU time to Xst completion: 0.04 secs
  
 --> 
@@ -199,13 +199,13 @@ Design Statistics
 # IOs                              : 34
 
 Cell Usage :
-# BELS                             : 309
-#      AND2                        : 130
+# BELS                             : 307
+#      AND2                        : 128
 #      AND3                        : 8
 #      AND4                        : 2
 #      GND                         : 1
-#      INV                         : 99
-#      OR2                         : 61
+#      INV                         : 98
+#      OR2                         : 62
 #      OR3                         : 5
 #      VCC                         : 1
 #      XOR2                        : 2
@@ -220,12 +220,12 @@ Cell Usage :
 
 
 Total REAL time to Xst completion: 2.00 secs
-Total CPU time to Xst completion: 1.52 secs
+Total CPU time to Xst completion: 1.80 secs
  
 --> 
 
 
-Total memory usage is 128856 kilobytes
+Total memory usage is 128852 kilobytes
 
 Number of errors   :    0 (   0 filtered)
 Number of warnings :    3 (   0 filtered)

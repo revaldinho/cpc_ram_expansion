@@ -5,7 +5,7 @@ Design:     cpld_ram512k_v110
 Device:     XC9536-10-PC44
 Speed File: Version 3.0
 Program:    Timing Report Generator:  version L.70
-Date:       Thu Nov 22 22:39:37 2018
+Date:       Thu Nov 22 22:46:08 2018
 
 Output will be sorted by decreasing path delays.
 Logical Path    Delay Type                              Delay        Cumulative
@@ -27,7 +27,7 @@ Thru: ramdis    tF + tPTTS                              : 16.0ns       (24.0ns)
 
 From: dip<0>    -                                       :  0.0ns        (0.0ns)
 Thru: dip_0_IBUF tIN                                    :  3.5ns        (3.5ns)
-Thru: $OpTx$FX_DC$17.UIM tLOGI + tPDI                   :  3.5ns        (7.0ns)
+Thru: $OpTx$FX_DC$19.UIM tLOGI + tPDI                   :  3.5ns        (7.0ns)
 Thru: adr15     tF + tPTTS                              : 16.0ns       (23.0ns)
   To: adr15     tEN                                     :  0.0ns       (23.0ns)
 
@@ -45,13 +45,13 @@ Thru: rd_b      tF + tPTTS                              : 16.0ns       (23.0ns)
 
 From: dip<0>    -                                       :  0.0ns        (0.0ns)
 Thru: dip_0_IBUF tIN                                    :  3.5ns        (3.5ns)
-Thru: $OpTx$$OpTx$FX_DC$12_INV$111.UIM tLOGI + tPDI     :  3.5ns        (7.0ns)
+Thru: $OpTx$$OpTx$FX_DC$14_INV$113.UIM tLOGI + tPDI     :  3.5ns        (7.0ns)
 Thru: wr_b      tF + tPTTS                              : 16.0ns       (23.0ns)
   To: wr_b      tEN                                     :  0.0ns       (23.0ns)
 
 From: dip<1>    -                                       :  0.0ns        (0.0ns)
 Thru: dip_1_IBUF tIN                                    :  3.5ns        (3.5ns)
-Thru: $OpTx$FX_DC$17.UIM tLOGI + tPDI                   :  3.5ns        (7.0ns)
+Thru: $OpTx$FX_DC$19.UIM tLOGI + tPDI                   :  3.5ns        (7.0ns)
 Thru: adr15     tF + tPTTS                              : 16.0ns       (23.0ns)
   To: adr15     tEN                                     :  0.0ns       (23.0ns)
 
@@ -69,37 +69,37 @@ Thru: rd_b      tF + tPTTS                              : 16.0ns       (23.0ns)
 
 From: dip<1>    -                                       :  0.0ns        (0.0ns)
 Thru: dip_1_IBUF tIN                                    :  3.5ns        (3.5ns)
-Thru: $OpTx$$OpTx$FX_DC$12_INV$111.UIM tLOGI + tPDI     :  3.5ns        (7.0ns)
+Thru: $OpTx$$OpTx$FX_DC$14_INV$113.UIM tLOGI + tPDI     :  3.5ns        (7.0ns)
 Thru: wr_b      tF + tPTTS                              : 16.0ns       (23.0ns)
   To: wr_b      tEN                                     :  0.0ns       (23.0ns)
 
 From: m1_b      -                                       :  0.0ns        (0.0ns)
 Thru: m1_b_IBUF tIN                                     :  3.5ns        (3.5ns)
-Thru: $OpTx$FX_DC$17.UIM tLOGI + tPDI                   :  3.5ns        (7.0ns)
+Thru: $OpTx$FX_DC$19.UIM tLOGI + tPDI                   :  3.5ns        (7.0ns)
 Thru: adr15     tF + tPTTS                              : 16.0ns       (23.0ns)
   To: adr15     tEN                                     :  0.0ns       (23.0ns)
 
 From: mreq_b    -                                       :  0.0ns        (0.0ns)
 Thru: mreq_b_IBUF tIN                                   :  3.5ns        (3.5ns)
-Thru: $OpTx$FX_DC$17.UIM tLOGI + tPDI                   :  3.5ns        (7.0ns)
+Thru: $OpTx$FX_DC$19.UIM tLOGI + tPDI                   :  3.5ns        (7.0ns)
 Thru: adr15     tF + tPTTS                              : 16.0ns       (23.0ns)
   To: adr15     tEN                                     :  0.0ns       (23.0ns)
 
 From: rd_b      -                                       :  0.0ns        (0.0ns)
 Thru: N3        tIN                                     :  3.5ns        (3.5ns)
-Thru: $OpTx$FX_DC$17.UIM tLOGI + tPDI                   :  3.5ns        (7.0ns)
+Thru: $OpTx$FX_DC$19.UIM tLOGI + tPDI                   :  3.5ns        (7.0ns)
 Thru: adr15     tF + tPTTS                              : 16.0ns       (23.0ns)
   To: adr15     tEN                                     :  0.0ns       (23.0ns)
 
 From: reset_b   -                                       :  0.0ns        (0.0ns)
 Thru: reset_b_IBUF tIN                                  :  3.5ns        (3.5ns)
-Thru: ramadrhi_4_IOBUFE/ramadrhi_4_IOBUFE_TRST__$INT.UIM tLOGI + tPDI :  3.5ns        (7.0ns)
+Thru: ramadrhi_4_IOBUFE/ramadrhi_4_IOBUFE_TRST.UIM tLOGI + tPDI :  3.5ns        (7.0ns)
 Thru: ramadrhi<3> tF + tPTTS                            : 16.0ns       (23.0ns)
   To: ramadrhi<3> tEN                                   :  0.0ns       (23.0ns)
 
 From: reset_b   -                                       :  0.0ns        (0.0ns)
 Thru: reset_b_IBUF tIN                                  :  3.5ns        (3.5ns)
-Thru: ramadrhi_4_IOBUFE/ramadrhi_4_IOBUFE_TRST__$INT.UIM tLOGI + tPDI :  3.5ns        (7.0ns)
+Thru: ramadrhi_4_IOBUFE/ramadrhi_4_IOBUFE_TRST.UIM tLOGI + tPDI :  3.5ns        (7.0ns)
 Thru: ramadrhi<4> tF + tPTTS                            : 16.0ns       (23.0ns)
   To: ramadrhi<4> tEN                                   :  0.0ns       (23.0ns)
 
@@ -125,11 +125,6 @@ Thru: ramadrhi<4> tLOGI + tPTA + 1tPTA2 + tPDI          :  5.5ns        (9.0ns)
 
 From: dip<0>    -                                       :  0.0ns        (0.0ns)
 Thru: dip_0_IBUF tIN                                    :  3.5ns        (3.5ns)
-Thru: ramadrhi<3> tLOGI + tPTA + 1tPTA2 + tPDI          :  5.5ns        (9.0ns)
-  To: ramadrhi<3> tOUT                                  :  3.0ns       (12.0ns)
-
-From: dip<0>    -                                       :  0.0ns        (0.0ns)
-Thru: dip_0_IBUF tIN                                    :  3.5ns        (3.5ns)
 Thru: ramadrhi<4> tLOGI + tPTA + 1tPTA2 + tPDI          :  5.5ns        (9.0ns)
   To: ramadrhi<4> tOUT                                  :  3.0ns       (12.0ns)
 
@@ -182,6 +177,11 @@ From: dip<0>    -                                       :  0.0ns        (0.0ns)
 Thru: dip_0_IBUF tIN                                    :  3.5ns        (3.5ns)
 Thru: ramadrhi<2> tLOGI + tPTA + tPDI                   :  4.5ns        (8.0ns)
   To: ramadrhi<2> tOUT                                  :  3.0ns       (11.0ns)
+
+From: dip<0>    -                                       :  0.0ns        (0.0ns)
+Thru: dip_0_IBUF tIN                                    :  3.5ns        (3.5ns)
+Thru: ramadrhi<3> tLOGI + tPTA + tPDI                   :  4.5ns        (8.0ns)
+  To: ramadrhi<3> tOUT                                  :  3.0ns       (11.0ns)
 
 From: mreq_b    -                                       :  0.0ns        (0.0ns)
 Thru: mreq_b_IBUF tIN                                   :  3.5ns        (3.5ns)
@@ -248,21 +248,21 @@ Thru: ramdis    tF + tPTTS                              : 16.0ns       (33.0ns)
 From: clk       -                                       :  0.0ns        (0.0ns)
 Thru: FCLKIO_1  tGCK                                    :  2.5ns        (2.5ns)
 Thru: mwr_cyc_q tCOI                                    :  0.5ns        (3.0ns)
-Thru: $OpTx$FX_DC$17.UIM tF + tLOGI + tPDI              : 13.0ns       (16.0ns)
+Thru: $OpTx$FX_DC$19.UIM tF + tLOGI + tPDI              : 13.0ns       (16.0ns)
 Thru: adr15     tF + tPTTS                              : 16.0ns       (32.0ns)
   To: adr15     tEN                                     :  0.0ns       (32.0ns)
 
 From: clk       -                                       :  0.0ns        (0.0ns)
 Thru: FCLKIO_1  tGCK                                    :  2.5ns        (2.5ns)
-Thru: reset_b_q tCOI                                    :  0.5ns        (3.0ns)
-Thru: ramadrhi_4_IOBUFE/ramadrhi_4_IOBUFE_TRST__$INT.UIM tF + tLOGI + tPDI : 13.0ns       (16.0ns)
+Thru: reset1_b_q tCOI                                   :  0.5ns        (3.0ns)
+Thru: ramadrhi_4_IOBUFE/ramadrhi_4_IOBUFE_TRST.UIM tF + tLOGI + tPDI : 13.0ns       (16.0ns)
 Thru: ramadrhi<3> tF + tPTTS                            : 16.0ns       (32.0ns)
   To: ramadrhi<3> tEN                                   :  0.0ns       (32.0ns)
 
 From: clk       -                                       :  0.0ns        (0.0ns)
 Thru: FCLKIO_1  tGCK                                    :  2.5ns        (2.5ns)
-Thru: reset_b_q tCOI                                    :  0.5ns        (3.0ns)
-Thru: ramadrhi_4_IOBUFE/ramadrhi_4_IOBUFE_TRST__$INT.UIM tF + tLOGI + tPDI : 13.0ns       (16.0ns)
+Thru: reset1_b_q tCOI                                   :  0.5ns        (3.0ns)
+Thru: ramadrhi_4_IOBUFE/ramadrhi_4_IOBUFE_TRST.UIM tF + tLOGI + tPDI : 13.0ns       (16.0ns)
 Thru: ramadrhi<4> tF + tPTTS                            : 16.0ns       (32.0ns)
   To: ramadrhi<4> tEN                                   :  0.0ns       (32.0ns)
 
@@ -317,7 +317,7 @@ Thru: ramadrhi<0> tF + tLOGI + tPTA + tPDI              : 14.0ns       (17.0ns)
 
 From: clk       -                                       :  0.0ns        (0.0ns)
 Thru: FCLK-IO_0 tGCK                                    :  2.5ns        (2.5ns)
-Thru: ramblock_q<0> tCOI                                :  0.5ns        (3.0ns)
+Thru: ramblock_q<1> tCOI                                :  0.5ns        (3.0ns)
 Thru: ramadrhi<1> tF + tLOGI + tPTA + tPDI              : 14.0ns       (17.0ns)
   To: ramadrhi<1> tOUT                                  :  3.0ns       (20.0ns)
 
@@ -1300,7 +1300,7 @@ Thru: rd_b      tF + tPTTS                              : 16.0ns       (29.5ns)
 Source clock net: FCLKIO_1
 Worst case clock delay from origin clk is 2.5ns
 From: mreq_b_q  tCOI                                    :  0.5ns        (0.5ns)
-Thru: $OpTx$FX_DC$17.UIM tF + tLOGI + tPDI              : 13.0ns       (13.5ns)
+Thru: $OpTx$FX_DC$19.UIM tF + tLOGI + tPDI              : 13.0ns       (13.5ns)
 Thru: adr15     tF + tPTTS                              : 16.0ns       (29.5ns)
   To: adr15     tEN                                     :  0.0ns       (29.5ns)
 
@@ -1314,7 +1314,7 @@ Thru: rd_b      tF + tPTTS                              : 16.0ns       (29.5ns)
 Source clock net: FCLKIO_1
 Worst case clock delay from origin clk is 2.5ns
 From: mwr_cyc_q tCOI                                    :  0.5ns        (0.5ns)
-Thru: $OpTx$FX_DC$17.UIM tF + tLOGI + tPDI              : 13.0ns       (13.5ns)
+Thru: $OpTx$FX_DC$19.UIM tF + tLOGI + tPDI              : 13.0ns       (13.5ns)
 Thru: adr15     tF + tPTTS                              : 16.0ns       (29.5ns)
   To: adr15     tEN                                     :  0.0ns       (29.5ns)
 
@@ -1335,28 +1335,28 @@ Thru: rd_b      tF + tPTTS                              : 16.0ns       (29.5ns)
 Source clock net: FCLKIO_1
 Worst case clock delay from origin clk is 2.5ns
 From: reset1_b_q tCOI                                   :  0.5ns        (0.5ns)
-Thru: ramadrhi_4_IOBUFE/ramadrhi_4_IOBUFE_TRST__$INT.UIM tF + tLOGI + tPDI : 13.0ns       (13.5ns)
+Thru: ramadrhi_4_IOBUFE/ramadrhi_4_IOBUFE_TRST.UIM tF + tLOGI + tPDI : 13.0ns       (13.5ns)
 Thru: ramadrhi<3> tF + tPTTS                            : 16.0ns       (29.5ns)
   To: ramadrhi<3> tEN                                   :  0.0ns       (29.5ns)
 
 Source clock net: FCLKIO_1
 Worst case clock delay from origin clk is 2.5ns
 From: reset1_b_q tCOI                                   :  0.5ns        (0.5ns)
-Thru: ramadrhi_4_IOBUFE/ramadrhi_4_IOBUFE_TRST__$INT.UIM tF + tLOGI + tPDI : 13.0ns       (13.5ns)
+Thru: ramadrhi_4_IOBUFE/ramadrhi_4_IOBUFE_TRST.UIM tF + tLOGI + tPDI : 13.0ns       (13.5ns)
 Thru: ramadrhi<4> tF + tPTTS                            : 16.0ns       (29.5ns)
   To: ramadrhi<4> tEN                                   :  0.0ns       (29.5ns)
 
 Source clock net: FCLKIO_1
 Worst case clock delay from origin clk is 2.5ns
 From: reset_b_q tCOI                                    :  0.5ns        (0.5ns)
-Thru: ramadrhi_4_IOBUFE/ramadrhi_4_IOBUFE_TRST__$INT.UIM tF + tLOGI + tPDI : 13.0ns       (13.5ns)
+Thru: ramadrhi_4_IOBUFE/ramadrhi_4_IOBUFE_TRST.UIM tF + tLOGI + tPDI : 13.0ns       (13.5ns)
 Thru: ramadrhi<3> tF + tPTTS                            : 16.0ns       (29.5ns)
   To: ramadrhi<3> tEN                                   :  0.0ns       (29.5ns)
 
 Source clock net: FCLKIO_1
 Worst case clock delay from origin clk is 2.5ns
 From: reset_b_q tCOI                                    :  0.5ns        (0.5ns)
-Thru: ramadrhi_4_IOBUFE/ramadrhi_4_IOBUFE_TRST__$INT.UIM tF + tLOGI + tPDI : 13.0ns       (13.5ns)
+Thru: ramadrhi_4_IOBUFE/ramadrhi_4_IOBUFE_TRST.UIM tF + tLOGI + tPDI : 13.0ns       (13.5ns)
 Thru: ramadrhi<4> tF + tPTTS                            : 16.0ns       (29.5ns)
   To: ramadrhi<4> tEN                                   :  0.0ns       (29.5ns)
 
