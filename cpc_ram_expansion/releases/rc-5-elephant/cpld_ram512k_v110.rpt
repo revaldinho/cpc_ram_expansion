@@ -1,7 +1,7 @@
  
 cpldfit:  version L.70                              Xilinx Inc.
                                   Fitter Report
-Design Name: cpld_ram512k_v110                   Date: 11-21-2018,  7:51PM
+Design Name: cpld_ram512k_v110                   Date: 11-22-2018, 10:39PM
 Device Used: XC9536-10-PC44
 Fitting Status: Successful
 
@@ -9,16 +9,16 @@ Fitting Status: Successful
 
 Macrocells     Product Terms    Function Block   Registers      Pins           
 Used/Tot       Used/Tot         Inps Used/Tot    Used/Tot       Used/Tot       
-33 /36  ( 92%) 134 /180  ( 74%) 64 /72  ( 89%)   17 /36  ( 47%) 31 /34  ( 91%)
+34 /36  ( 94%) 135 /180  ( 75%) 65 /72  ( 90%)   17 /36  ( 47%) 31 /34  ( 91%)
 
 ** Function Block Resources **
 
 Function    Mcells      FB Inps     Signals     Pterms      IO          
 Block       Used/Tot    Used/Tot    Used        Used/Tot    Used/Tot    
-FB1          15/18       29/36       29          86/90       7/17
-FB2          18/18*      35/36       35          48/90       5/17
+FB1          16/18       31/36       31          88/90       7/17
+FB2          18/18*      34/36       34          47/90       5/17
              -----       -----                   -----       -----     
-             33/36       64/72                  134/180     12/34 
+             34/36       65/72                  135/180     12/34 
 
 * - Resource is exhausted
 
@@ -44,7 +44,7 @@ GSR           :    0           0    |
 
 ** Power Data **
 
-There are 33 macrocells in high performance mode (MCHP).
+There are 34 macrocells in high performance mode (MCHP).
 There are 0 macrocells in low power mode (MCLP).
 End of Mapped Resource Summary
 **************************  Errors and Warnings  ***************************
@@ -56,70 +56,71 @@ INFO:Cpld:994 - Exhaustive fitting is trying pterm limit: 18 and input limit: 18
 
 ** 12 Outputs **
 
-Signal                       Total Total Loc     Pin  Pin     Pin     Pwr  Slew Reg Init
-Name                         Pts   Inps          No.  Type    Use     Mode Rate State
-ramdis                       1     1     FB1_5   6    GCK/I/O O       STD  FAST 
-ramadrhi<4>                  11    12    FB1_9   11   I/O     I/O     STD  FAST 
-ramadrhi<3>                  11    11    FB1_11  13   I/O     I/O     STD  FAST 
-ramadrhi<2>                  10    8     FB1_13  18   I/O     O       STD  FAST 
-ramadrhi<1>                  6     7     FB1_14  19   I/O     O       STD  FAST 
-ramwe_b                      1     1     FB1_16  22   I/O     O       STD  FAST 
-ramadrhi<0>                  6     7     FB1_17  24   I/O     O       STD  FAST 
-rd_b                         1     1     FB2_4   43   I/O     I/O     STD  FAST 
-wr_b                         1     4     FB2_5   40   GTS/I/O I/O     STD  FAST 
-ramcs_b                      7     12    FB2_14  28   I/O     O       STD  FAST 
-ramoe_b                      1     1     FB2_15  27   I/O     O       STD  FAST 
-adr15                        1     4     FB2_17  25   I/O     I/O     STD  FAST 
+Signal                                          Total Total Loc     Pin  Pin     Pin     Pwr  Slew Reg Init
+Name                                            Pts   Inps          No.  Type    Use     Mode Rate State
+ramdis                                          1     1     FB1_5   6    GCK/I/O O       STD  FAST 
+ramadrhi<4>                                     11    12    FB1_9   11   I/O     I/O     STD  FAST 
+ramadrhi<3>                                     11    11    FB1_11  13   I/O     I/O     STD  FAST 
+ramadrhi<2>                                     10    8     FB1_13  18   I/O     O       STD  FAST 
+ramadrhi<1>                                     6     7     FB1_14  19   I/O     O       STD  FAST 
+ramwe_b                                         1     1     FB1_16  22   I/O     O       STD  FAST 
+ramadrhi<0>                                     6     7     FB1_17  24   I/O     O       STD  FAST 
+rd_b                                            1     1     FB2_4   43   I/O     I/O     STD  FAST 
+wr_b                                            1     4     FB2_5   40   GTS/I/O I/O     STD  FAST 
+ramcs_b                                         7     12    FB2_14  28   I/O     O       STD  FAST 
+ramoe_b                                         1     1     FB2_15  27   I/O     O       STD  FAST 
+adr15                                           1     4     FB2_17  25   I/O     I/O     STD  FAST 
 
-** 21 Buried Nodes **
+** 22 Buried Nodes **
 
-Signal                       Total Total Loc     Pwr  Reg Init
-Name                         Pts   Inps          Mode State
-dip2_lat_q                   2     3     FB1_2   STD  RESET
-ramblock_q<5>                5     10    FB1_3   STD  RESET
-ramblock_q<4>                5     10    FB1_4   STD  RESET
-ramblock_q<2>                5     10    FB1_6   STD  RESET
-ramblock_q<1>                5     10    FB1_7   STD  RESET
-ramblock_q<0>                5     10    FB1_12  STD  RESET
-mode3_q                      6     12    FB1_15  STD  RESET
-cardsel_q                    7     11    FB1_18  STD  RESET
-reset_b_q                    1     1     FB2_1   STD  RESET
-reset1_b_q                   1     2     FB2_2   STD  RESET
-mwr_cyc_f_q                  1     4     FB2_3   STD  RESET
-mreq_b_q                     1     4     FB2_6   STD  RESET
-$OpTx$$OpTx$FX_DC$9_INV$108  1     2     FB2_7   STD  
-mwr_cyc_q                    2     6     FB2_8   STD  RESET
-dip3_lat_q                   2     3     FB2_9   STD  RESET
-adr15_q                      2     5     FB2_10  STD  RESET
-N0$BUF0/N0$BUF0_TRST__$INT   3     5     FB2_11  STD  
-$OpTx$FX_DC$14               3     7     FB2_12  STD  
-exp_ram_q                    4     9     FB2_13  STD  RESET
-N1/N1_TRST                   7     10    FB2_16  STD  
-ramblock_q<3>                9     14    FB2_18  STD  RESET
+Signal                                          Total Total Loc     Pwr  Reg Init
+Name                                            Pts   Inps          Mode State
+dip3_lat_q                                      2     3     FB1_1   STD  RESET
+dip2_lat_q                                      2     3     FB1_2   STD  RESET
+ramblock_q<5>                                   5     10    FB1_3   STD  RESET
+ramblock_q<4>                                   5     10    FB1_4   STD  RESET
+ramblock_q<2>                                   5     10    FB1_6   STD  RESET
+ramblock_q<1>                                   5     10    FB1_7   STD  RESET
+ramblock_q<0>                                   5     10    FB1_12  STD  RESET
+mode3_q                                         6     12    FB1_15  STD  RESET
+cardsel_q                                       7     11    FB1_18  STD  RESET
+reset_b_q                                       1     1     FB2_1   STD  RESET
+reset1_b_q                                      1     2     FB2_2   STD  RESET
+ramadrhi_4_IOBUFE/ramadrhi_4_IOBUFE_TRST__$INT  1     3     FB2_3   STD  
+mwr_cyc_f_q                                     1     4     FB2_6   STD  RESET
+mreq_b_q                                        1     4     FB2_7   STD  RESET
+$OpTx$$OpTx$FX_DC$12_INV$111                    1     2     FB2_8   STD  
+mwr_cyc_q                                       2     6     FB2_9   STD  RESET
+adr15_q                                         2     5     FB2_10  STD  RESET
+N0$BUF0/N0$BUF0_TRST__$INT                      3     5     FB2_11  STD  
+$OpTx$FX_DC$17                                  3     7     FB2_12  STD  
+exp_ram_q                                       4     9     FB2_13  STD  RESET
+N1/N1_TRST                                      7     10    FB2_16  STD  
+ramblock_q<3>                                   9     14    FB2_18  STD  RESET
 
 ** 19 Inputs **
 
-Signal                       Loc     Pin  Pin     Pin     
-Name                                 No.  Type    Use     
-iorq_b                       FB1_1   2    I/O     I
-clk                          FB1_3   5    GCK/I/O GCK
-ramrd_b                      FB1_4   4    I/O     I
-dip<1>                       FB1_6   8    I/O     I
-dip<0>                       FB1_7   7    GCK/I/O I
-m1_b                         FB1_8   9    I/O     I
-rfsh_b                       FB1_10  12   I/O     I
-adr14                        FB1_12  14   I/O     I
-adr8                         FB1_15  20   I/O     I
-mreq_b                       FB2_1   1    I/O     I
-data<0>                      FB2_3   42   GTS/I/O I
-reset_b                      FB2_6   39   GSR/I/O I
-data<1>                      FB2_7   38   I/O     I
-data<2>                      FB2_8   37   I/O     I
-data<3>                      FB2_9   36   I/O     I
-data<4>                      FB2_10  35   I/O     I
-data<5>                      FB2_11  34   I/O     I
-data<6>                      FB2_12  33   I/O     I
-data<7>                      FB2_13  29   I/O     I
+Signal                                          Loc     Pin  Pin     Pin     
+Name                                                    No.  Type    Use     
+iorq_b                                          FB1_1   2    I/O     I
+clk                                             FB1_3   5    GCK/I/O GCK
+ramrd_b                                         FB1_4   4    I/O     I
+dip<1>                                          FB1_6   8    I/O     I
+dip<0>                                          FB1_7   7    GCK/I/O I
+m1_b                                            FB1_8   9    I/O     I
+rfsh_b                                          FB1_10  12   I/O     I
+adr14                                           FB1_12  14   I/O     I
+adr8                                            FB1_15  20   I/O     I
+mreq_b                                          FB2_1   1    I/O     I
+data<0>                                         FB2_3   42   GTS/I/O I
+reset_b                                         FB2_6   39   GSR/I/O I
+data<1>                                         FB2_7   38   I/O     I
+data<2>                                         FB2_8   37   I/O     I
+data<3>                                         FB2_9   36   I/O     I
+data<4>                                         FB2_10  35   I/O     I
+data<5>                                         FB2_11  34   I/O     I
+data<6>                                         FB2_12  33   I/O     I
+data<7>                                         FB2_13  29   I/O     I
 
 Legend:
 Pin No. - ~ - User Assigned
@@ -139,12 +140,12 @@ X(@)         - Signal used as input (wire-AND input) to the macrocell logic.
                Used due to wire-ANDing in the switch matrix.
 Pin No.      - ~  - User Assigned
 *********************************** FB1  ***********************************
-Number of function block inputs used/remaining:               29/7
-Number of signals used by logic mapping into function block:  29
+Number of function block inputs used/remaining:               31/5
+Number of signals used by logic mapping into function block:  31
 Signal              Total   Imp   Exp Unused  Loc     Pin   Pin     Pin
 Name                Pt      Pt    Pt  Pt               #    Type    Use
-(unused)              0       0   /\4   1     FB1_1   2     I/O     I
-dip2_lat_q            2       0     0   3     FB1_2   3     I/O     (b)
+dip3_lat_q            2       1<- /\4   0     FB1_1   2     I/O     I
+dip2_lat_q            2       0   /\1   2     FB1_2   3     I/O     (b)
 ramblock_q<5>         5       0     0   0     FB1_3   5     GCK/I/O GCK
 ramblock_q<4>         5       0     0   0     FB1_4   4     I/O     I
 ramdis                1       0   \/4   0     FB1_5   6     GCK/I/O O
@@ -163,55 +164,58 @@ ramadrhi<0>           6       2<- /\1   0     FB1_17  24    I/O     O
 cardsel_q             7       4<- /\2   0     FB1_18        (b)     (b)
 
 Signals Used by Logic in Function Block
-  1: ramadrhi<3>.PIN   11: data<4>           21: ramblock_q<1> 
-  2: N1/N1_TRST        12: data<5>           22: ramblock_q<2> 
-  3: adr15.PIN         13: data<6>           23: ramblock_q<3> 
-  4: adr14             14: data<7>           24: ramblock_q<4> 
-  5: adr15_q           15: dip2_lat_q        25: ramblock_q<5> 
-  6: adr8              16: dip3_lat_q        26: wr_b.PIN 
-  7: cardsel_q         17: dip<0>            27: reset1_b_q 
-  8: data<0>           18: iorq_b            28: reset_b 
-  9: data<1>           19: mode3_q           29: reset_b_q 
- 10: data<2>           20: ramblock_q<0>    
+  1: ramadrhi<3>.PIN   12: data<4>                                         22: ramblock_q<0> 
+  2: N1/N1_TRST        13: data<5>                                         23: ramblock_q<1> 
+  3: ramadrhi<4>.PIN   14: data<6>                                         24: ramblock_q<2> 
+  4: adr15.PIN         15: data<7>                                         25: ramblock_q<3> 
+  5: adr14             16: dip2_lat_q                                      26: ramblock_q<4> 
+  6: adr15_q           17: dip3_lat_q                                      27: ramblock_q<5> 
+  7: adr8              18: dip<0>                                          28: wr_b.PIN 
+  8: cardsel_q         19: iorq_b                                          29: reset1_b_q 
+  9: data<0>           20: mode3_q                                         30: reset_b 
+ 10: data<1>           21: ramadrhi_4_IOBUFE/ramadrhi_4_IOBUFE_TRST__$INT  31: reset_b_q 
+ 11: data<2>          
 
 Signal                        1         2         3         4 Signals FB
 Name                0----+----0----+----0----+----0----+----0 Used    Inputs
-dip2_lat_q           X.............X...........X............. 3       3
-ramblock_q<5>        ..X........XXX...X......XXXXX........... 10      10
-ramblock_q<4>        ..X.......X.XX...X.....X.XXXX........... 10      10
+dip3_lat_q           ..X.............X...........X........... 3       3
+dip2_lat_q           X..............X............X........... 3       3
+ramblock_q<5>        ...X........XXX...X.......XXXXX......... 10      10
+ramblock_q<4>        ...X.......X.XX...X......X.XXXX......... 10      10
 ramdis               .X...................................... 1       1
-ramblock_q<2>        ..X......X..XX...X...X...XXXX........... 10      10
-ramblock_q<1>        ..X.....X...XX...X..X....XXXX........... 10      10
-ramadrhi<4>          ..XXX..........XX..XXX..X.XXX........... 12      12
-ramadrhi<3>          ..XXX...........X..XXX.X..XXX........... 11      11
-ramblock_q<0>        ..X....X....XX...X.X.....XXXX........... 10      10
-ramadrhi<2>          ..XXX...........X..XXXX................. 8       8
-ramadrhi<1>          ..XXX...........X..XXX.................. 7       7
-mode3_q              ..X....XXX..XX...XX......XXXX........... 12      12
-ramwe_b              .........................X.............. 1       1
-ramadrhi<0>          ..XXX...........X..XXX.................. 7       7
-cardsel_q            ..X..XX.....XXX..X.......XXXX........... 11      11
+ramblock_q<2>        ...X......X..XX...X....X...XXXX......... 10      10
+ramblock_q<1>        ...X.....X...XX...X...X....XXXX......... 10      10
+ramadrhi<4>          ...XXX..........XX..XXXX..X..XX......... 12      12
+ramadrhi<3>          ...XXX...........X..XXXX.X...XX......... 11      11
+ramblock_q<0>        ...X....X....XX...X..X.....XXXX......... 10      10
+ramadrhi<2>          ...XXX...........X...XXXX............... 8       8
+ramadrhi<1>          ...XXX...........X...XXX................ 7       7
+mode3_q              ...X....XXX..XX...XX.......XXXX......... 12      12
+ramwe_b              ...........................X............ 1       1
+ramadrhi<0>          ...XXX...........X...XXX................ 7       7
+cardsel_q            ...X..XX.....XXX..X........XXXX......... 11      11
                     0----+----1----+----2----+----3----+----4
                               0         0         0         0
 *********************************** FB2  ***********************************
-Number of function block inputs used/remaining:               35/1
-Number of signals used by logic mapping into function block:  35
+Number of function block inputs used/remaining:               34/2
+Number of signals used by logic mapping into function block:  34
 Signal              Total   Imp   Exp Unused  Loc     Pin   Pin     Pin
 Name                Pt      Pt    Pt  Pt               #    Type    Use
 reset_b_q             1       0   /\4   0     FB2_1   1     I/O     I
 reset1_b_q            1       0     0   4     FB2_2   44    I/O     (b)
-mwr_cyc_f_q           1       0     0   4     FB2_3   42    GTS/I/O I
+ramadrhi_4_IOBUFE/ramadrhi_4_IOBUFE_TRST__$INT
+                      1       0     0   4     FB2_3   42    GTS/I/O I
 rd_b                  1       0     0   4     FB2_4   43    I/O     I/O
 wr_b                  1       0     0   4     FB2_5   40    GTS/I/O I/O
-mreq_b_q              1       0     0   4     FB2_6   39    GSR/I/O I
-$OpTx$$OpTx$FX_DC$9_INV$108
-                      1       0     0   4     FB2_7   38    I/O     I
-mwr_cyc_q             2       0     0   3     FB2_8   37    I/O     I
-dip3_lat_q            2       0     0   3     FB2_9   36    I/O     I
+mwr_cyc_f_q           1       0     0   4     FB2_6   39    GSR/I/O I
+mreq_b_q              1       0     0   4     FB2_7   38    I/O     I
+$OpTx$$OpTx$FX_DC$12_INV$111
+                      1       0     0   4     FB2_8   37    I/O     I
+mwr_cyc_q             2       0     0   3     FB2_9   36    I/O     I
 adr15_q               2       0     0   3     FB2_10  35    I/O     I
 N0$BUF0/N0$BUF0_TRST__$INT
                       3       0     0   2     FB2_11  34    I/O     I
-$OpTx$FX_DC$14        3       0     0   2     FB2_12  33    I/O     I
+$OpTx$FX_DC$17        3       0     0   2     FB2_12  33    I/O     I
 exp_ram_q             4       0   \/1   0     FB2_13  29    I/O     I
 ramcs_b               7       2<-   0   0     FB2_14  28    I/O     O
 ramoe_b               1       0   /\1   3     FB2_15  27    I/O     O
@@ -220,41 +224,42 @@ adr15                 1       0   /\2   2     FB2_17  25    I/O     I/O
 ramblock_q<3>         9       4<-   0   0     FB2_18        (b)     (b)
 
 Signals Used by Logic in Function Block
-  1: $OpTx$$OpTx$FX_DC$9_INV$108  13: data<6>           25: mwr_cyc_q 
-  2: $OpTx$FX_DC$14               14: data<7>           26: ramblock_q<0> 
-  3: N0$BUF0/N0$BUF0_TRST__$INT   15: dip3_lat_q        27: ramblock_q<1> 
-  4: ramadrhi<4>.PIN              16: dip<0>            28: ramblock_q<2> 
-  5: adr15.PIN                    17: dip<1>            29: ramblock_q<3> 
-  6: rd_b.PIN                     18: exp_ram_q         30: ramrd_b 
-  7: adr14                        19: iorq_b            31: wr_b.PIN 
-  8: adr15_q                      20: m1_b              32: reset1_b_q 
-  9: cardsel_q                    21: mode3_q           33: reset_b 
- 10: data<3>                      22: mreq_b            34: reset_b_q 
- 11: data<4>                      23: mreq_b_q          35: rfsh_b 
- 12: data<5>                      24: mwr_cyc_f_q      
+  1: $OpTx$$OpTx$FX_DC$12_INV$111  13: data<7>           24: mwr_cyc_q 
+  2: $OpTx$FX_DC$17                14: dip3_lat_q        25: ramblock_q<0> 
+  3: N0$BUF0/N0$BUF0_TRST__$INT    15: dip<0>            26: ramblock_q<1> 
+  4: adr15.PIN                     16: dip<1>            27: ramblock_q<2> 
+  5: rd_b.PIN                      17: exp_ram_q         28: ramblock_q<3> 
+  6: adr14                         18: iorq_b            29: ramrd_b 
+  7: adr15_q                       19: m1_b              30: wr_b.PIN 
+  8: cardsel_q                     20: mode3_q           31: reset1_b_q 
+  9: data<3>                       21: mreq_b            32: reset_b 
+ 10: data<4>                       22: mreq_b_q          33: reset_b_q 
+ 11: data<5>                       23: mwr_cyc_f_q       34: rfsh_b 
+ 12: data<6>                      
 
 Signal                        1         2         3         4 Signals FB
 Name                0----+----0----+----0----+----0----+----0 Used    Inputs
-reset_b_q            ................................X....... 1       1
-reset1_b_q           ................................XX...... 2       2
-mwr_cyc_f_q          ........................X......XXX...... 4       4
+reset_b_q            ...............................X........ 1       1
+reset1_b_q           ...............................XX....... 2       2
+ramadrhi_4_IOBUFE/ramadrhi_4_IOBUFE_TRST__$INT 
+                     ..............................XXX....... 3       3
 rd_b                 ..X..................................... 1       1
-wr_b                 X................X.....XX............... 4       4
-mreq_b_q             .....................X.........XXX...... 4       4
-$OpTx$$OpTx$FX_DC$9_INV$108 
-                     ...............XX....................... 2       2
-mwr_cyc_q            .....X.............X.XX.X.........X..... 6       6
-dip3_lat_q           ...X..........X................X........ 3       3
-adr15_q              ....X................X.........XXX...... 5       5
+wr_b                 X...............X.....XX................ 4       4
+mwr_cyc_f_q          .......................X......XXX....... 4       4
+mreq_b_q             ....................X.........XXX....... 4       4
+$OpTx$$OpTx$FX_DC$12_INV$111 
+                     ..............XX........................ 2       2
+mwr_cyc_q            ....X.............X.XX.X.........X...... 6       6
+adr15_q              ...X................X.........XXX....... 5       5
 N0$BUF0/N0$BUF0_TRST__$INT 
-                     ...............XXX.....XX............... 5       5
-$OpTx$FX_DC$14       .....X.........XX..X.XX.X............... 7       7
-exp_ram_q            ....X.XX.................XXX...XXX...... 9       9
-ramcs_b              ....X.XXX......XX....X..XXXX......X..... 12      12
-ramoe_b              .............................X.......... 1       1
-N1/N1_TRST           ....X.XXX......XX.......XXXX............ 10      10
-adr15                .X....X.............X.............X..... 4       4
-ramblock_q<3>        ....X....XXXXXXX..X.........X.XXXX...... 14      14
+                     ..............XXX.....XX................ 5       5
+$OpTx$FX_DC$17       ....X.........XX..X.XX.X................ 7       7
+exp_ram_q            ...X.XX.................XXX...XXX....... 9       9
+ramcs_b              ...X.XXX......XX....X..XXXX......X...... 12      12
+ramoe_b              ............................X........... 1       1
+N1/N1_TRST           ...X.XXX......XX.......XXXX............. 10      10
+adr15                .X...X.............X.............X...... 4       4
+ramblock_q<3>        ...X....XXXXXXX..X.........X.XXXX....... 14      14
                     0----+----1----+----2----+----3----+----4
                               0         0         0         0
 *******************************  Equations  ********************************
@@ -262,14 +267,12 @@ ramblock_q<3>        ....X....XXXXXXX..X.........X.XXXX...... 14      14
 ********** Mapped Logic **********
 
 
-$OpTx$$OpTx$FX_DC$9_INV$108 <= (NOT dip(0) AND NOT dip(1));
+$OpTx$$OpTx$FX_DC$12_INV$111 <= (NOT dip(0) AND NOT dip(1));
 
 
-$OpTx$FX_DC$14 <= ((dip(0) AND mwr_cyc_q)
+$OpTx$FX_DC$17 <= ((dip(0) AND mwr_cyc_q)
 	OR (NOT dip(0) AND dip(1) AND NOT mreq_b)
 	OR (rd_b.PIN AND m1_b AND dip(0) AND NOT mreq_b AND mreq_b_q));
-
-
 
 
 
@@ -296,7 +299,7 @@ N1/N1_TRST <= ((NOT ramblock_q(2) AND ramblock_q(1) AND adr15_q AND
 
 adr15_I <= '1';
 adr15 <= adr15_I when adr15_OE = '1' else 'Z';
-adr15_OE <= (rfsh_b AND mode3_q AND adr14 AND $OpTx$FX_DC$14);
+adr15_OE <= (rfsh_b AND mode3_q AND adr14 AND $OpTx$FX_DC$17);
 
 FDCPE_adr15_q: FDCPE port map (adr15_q,adr15_q_D,NOT mreq_b,'0','0');
 adr15_q_D <= (adr15.PIN AND reset_b AND reset1_b_q AND reset_b_q);
@@ -306,10 +309,10 @@ cardsel_q_D <= ((reset_b AND reset1_b_q AND cardsel_q AND reset_b_q AND
 	wr_b.PIN)
 	OR (reset_b AND reset1_b_q AND cardsel_q AND reset_b_q AND 
 	iorq_b)
-	OR (NOT adr15.PIN AND reset_b AND reset1_b_q AND dip2_lat_q AND 
-	reset_b_q AND NOT adr8 AND data(7) AND data(6) AND NOT wr_b.PIN AND NOT iorq_b)
-	OR (NOT adr15.PIN AND reset_b AND reset1_b_q AND NOT dip2_lat_q AND 
-	reset_b_q AND adr8 AND data(7) AND data(6) AND NOT wr_b.PIN AND NOT iorq_b)
+	OR (NOT adr15.PIN AND reset_b AND reset1_b_q AND reset_b_q AND 
+	dip2_lat_q AND NOT adr8 AND data(7) AND data(6) AND NOT wr_b.PIN AND NOT iorq_b)
+	OR (NOT adr15.PIN AND reset_b AND reset1_b_q AND reset_b_q AND 
+	NOT dip2_lat_q AND adr8 AND data(7) AND data(6) AND NOT wr_b.PIN AND NOT iorq_b)
 	OR (adr15.PIN AND reset_b AND reset1_b_q AND cardsel_q AND 
 	reset_b_q)
 	OR (reset_b AND reset1_b_q AND cardsel_q AND reset_b_q AND 
@@ -322,8 +325,8 @@ dip2_lat_q_D <= ((reset1_b_q AND dip2_lat_q)
 	OR (NOT reset1_b_q AND ramadrhi(3).PIN));
 
 FDCPE_dip3_lat_q: FDCPE port map (dip3_lat_q,dip3_lat_q_D,clk,'0','0');
-dip3_lat_q_D <= ((reset1_b_q AND dip3_lat_q)
-	OR (NOT reset1_b_q AND ramadrhi(4).PIN));
+dip3_lat_q_D <= ((NOT reset1_b_q AND ramadrhi(4).PIN)
+	OR (reset1_b_q AND dip3_lat_q));
 
 FDCPE_exp_ram_q: FDCPE port map (exp_ram_q,exp_ram_q_D,clk,'0','0');
 exp_ram_q_D <= ((NOT adr15.PIN AND reset_b AND ramblock_q(2) AND 
@@ -336,18 +339,18 @@ exp_ram_q_D <= ((NOT adr15.PIN AND reset_b AND ramblock_q(2) AND
 	ramblock_q(0) AND NOT ramblock_q(1) AND reset1_b_q AND reset_b_q AND adr14));
 
 FDCPE_mode3_q: FDCPE port map (mode3_q,mode3_q_D,NOT clk,'0','0');
-mode3_q_D <= ((adr15.PIN AND reset_b AND reset1_b_q AND mode3_q AND 
-	reset_b_q)
-	OR (reset_b AND reset1_b_q AND mode3_q AND reset_b_q AND 
+mode3_q_D <= ((adr15.PIN AND reset_b AND reset1_b_q AND reset_b_q AND 
+	mode3_q)
+	OR (reset_b AND reset1_b_q AND reset_b_q AND mode3_q AND 
 	NOT data(7))
-	OR (reset_b AND reset1_b_q AND mode3_q AND reset_b_q AND 
+	OR (reset_b AND reset1_b_q AND reset_b_q AND mode3_q AND 
 	wr_b.PIN)
-	OR (reset_b AND reset1_b_q AND mode3_q AND reset_b_q AND 
+	OR (reset_b AND reset1_b_q AND reset_b_q AND mode3_q AND 
 	iorq_b)
 	OR (NOT adr15.PIN AND reset_b AND reset1_b_q AND reset_b_q AND 
 	data(1) AND data(0) AND NOT data(2) AND data(7) AND data(6) AND 
 	NOT wr_b.PIN AND NOT iorq_b)
-	OR (reset_b AND reset1_b_q AND mode3_q AND reset_b_q AND 
+	OR (reset_b AND reset1_b_q AND reset_b_q AND mode3_q AND 
 	NOT data(6)));
 
 FDCPE_mreq_b_q: FDCPE port map (mreq_b_q,mreq_b_q_D,clk,'0','0');
@@ -403,34 +406,44 @@ ramadrhi(2) <= NOT (((NOT dip(0) AND ramblock_q(2) AND NOT adr14)
 	NOT ramblock_q(3) AND adr14)));
 
 
-ramadrhi_I(3) <= ((ramadrhi_r(4).EXP)
-	OR (dip(0) AND adr15.PIN AND ramblock_q(2))
-	OR (dip(0) AND ramblock_q(2) AND NOT adr14)
-	OR (dip(0) AND ramblock_q(0) AND NOT adr14)
-	OR (dip(0) AND NOT adr15.PIN AND NOT ramblock_q(2) AND 
-	NOT ramblock_q(1))
-	OR (dip(0) AND NOT ramblock_q(2) AND ramblock_q(0) AND 
-	ramblock_q(1) AND NOT adr15_q)
-	OR (dip(0) AND NOT ramblock_q(2) AND NOT ramblock_q(0) AND 
-	NOT ramblock_q(1))
-	OR (NOT ramblock_q(2) AND ramblock_q(1) AND adr15_q AND 
-	ramblock_q(4) AND adr14));
+ramadrhi_I(3) <= ((ramadrhi_4_IOBUFE.EXP)
+	OR (dip(0) AND adr15.PIN AND reset_b AND ramblock_q(2) AND 
+	reset_b_q)
+	OR (dip(0) AND reset_b AND ramblock_q(2) AND reset_b_q AND 
+	NOT adr14)
+	OR (dip(0) AND reset_b AND ramblock_q(0) AND reset_b_q AND 
+	NOT adr14)
+	OR (reset_b AND NOT ramblock_q(2) AND NOT ramblock_q(0) AND 
+	ramblock_q(1) AND reset_b_q AND ramblock_q(4))
+	OR (dip(0) AND reset_b AND NOT ramblock_q(2) AND 
+	ramblock_q(0) AND ramblock_q(1) AND NOT adr15_q AND reset_b_q)
+	OR (dip(0) AND reset_b AND NOT ramblock_q(2) AND 
+	NOT ramblock_q(0) AND NOT ramblock_q(1) AND reset_b_q)
+	OR (reset_b AND NOT ramblock_q(2) AND ramblock_q(1) AND 
+	adr15_q AND reset_b_q AND ramblock_q(4) AND adr14));
 ramadrhi(3) <= ramadrhi_I(3) when ramadrhi_OE(3) = '1' else 'Z';
-ramadrhi_OE(3) <= (reset_b AND reset1_b_q AND reset_b_q);
+ramadrhi_OE(3) <= NOT ramadrhi_4_IOBUFE/ramadrhi_4_IOBUFE_TRST__$INT;
 
 
 ramadrhi_I(4) <= ((ramblock_q(1).EXP)
-	OR (dip(0) AND adr15.PIN AND ramblock_q(2) AND dip3_lat_q)
-	OR (dip(0) AND ramblock_q(2) AND dip3_lat_q AND NOT adr14)
-	OR (dip(0) AND ramblock_q(0) AND dip3_lat_q AND NOT adr14)
-	OR (NOT ramblock_q(2) AND ramblock_q(1) AND adr15_q AND 
-	ramblock_q(5) AND adr14)
-	OR (dip(0) AND NOT ramblock_q(2) AND ramblock_q(0) AND 
-	ramblock_q(1) AND NOT adr15_q AND dip3_lat_q)
-	OR (dip(0) AND NOT ramblock_q(2) AND NOT ramblock_q(0) AND 
-	NOT ramblock_q(1) AND dip3_lat_q));
+	OR (dip(0) AND adr15.PIN AND reset_b AND ramblock_q(2) AND 
+	dip3_lat_q AND reset_b_q)
+	OR (dip(0) AND reset_b AND ramblock_q(2) AND dip3_lat_q AND 
+	reset_b_q AND NOT adr14)
+	OR (dip(0) AND reset_b AND ramblock_q(0) AND dip3_lat_q AND 
+	reset_b_q AND NOT adr14)
+	OR (reset_b AND NOT ramblock_q(2) AND ramblock_q(1) AND 
+	adr15_q AND reset_b_q AND ramblock_q(5) AND adr14)
+	OR (dip(0) AND reset_b AND NOT ramblock_q(2) AND 
+	ramblock_q(0) AND ramblock_q(1) AND NOT adr15_q AND dip3_lat_q AND 
+	reset_b_q)
+	OR (dip(0) AND reset_b AND NOT ramblock_q(2) AND 
+	NOT ramblock_q(0) AND NOT ramblock_q(1) AND dip3_lat_q AND reset_b_q));
 ramadrhi(4) <= ramadrhi_I(4) when ramadrhi_OE(4) = '1' else 'Z';
-ramadrhi_OE(4) <= (reset_b AND reset1_b_q AND reset_b_q);
+ramadrhi_OE(4) <= NOT ramadrhi_4_IOBUFE/ramadrhi_4_IOBUFE_TRST__$INT;
+
+
+ramadrhi_4_IOBUFE/ramadrhi_4_IOBUFE_TRST__$INT <= (reset_b AND NOT reset1_b_q AND reset_b_q);
 
 FTCPE_ramblock_q0: FTCPE port map (ramblock_q(0),ramblock_q_T(0),NOT clk,'0','0');
 ramblock_q_T(0) <= ((NOT adr15.PIN AND ramblock_q(0) AND NOT data(0) AND data(7) AND 
@@ -475,36 +488,36 @@ ramblock_q_D(3) <= ((NOT dip(0) AND data(3) AND NOT adr15.PIN AND reset_b AND
 	OR (data(3) AND NOT adr15.PIN AND reset_b AND reset1_b_q AND 
 	NOT dip3_lat_q AND reset_b_q AND data(5) AND data(7) AND data(6) AND 
 	NOT wr_b.PIN AND NOT iorq_b)
-	OR (adr15.PIN AND reset_b AND reset1_b_q AND 
-	ramblock_q(3) AND reset_b_q)
-	OR (reset_b AND reset1_b_q AND ramblock_q(3) AND 
-	reset_b_q AND NOT data(7))
-	OR (reset_b AND reset1_b_q AND ramblock_q(3) AND 
-	reset_b_q AND NOT data(6))
-	OR (reset_b AND reset1_b_q AND ramblock_q(3) AND 
-	reset_b_q AND wr_b.PIN)
-	OR (reset_b AND reset1_b_q AND ramblock_q(3) AND 
-	reset_b_q AND iorq_b));
+	OR (adr15.PIN AND reset_b AND reset1_b_q AND reset_b_q AND 
+	ramblock_q(3))
+	OR (reset_b AND reset1_b_q AND reset_b_q AND 
+	ramblock_q(3) AND NOT data(7))
+	OR (reset_b AND reset1_b_q AND reset_b_q AND 
+	ramblock_q(3) AND NOT data(6))
+	OR (reset_b AND reset1_b_q AND reset_b_q AND 
+	ramblock_q(3) AND wr_b.PIN)
+	OR (reset_b AND reset1_b_q AND reset_b_q AND 
+	ramblock_q(3) AND iorq_b));
 
 FTCPE_ramblock_q4: FTCPE port map (ramblock_q(4),ramblock_q_T(4),NOT clk,'0','0');
 ramblock_q_T(4) <= ((NOT reset_b AND ramblock_q(4))
 	OR (NOT reset1_b_q AND ramblock_q(4))
-	OR (ramblock_q(4) AND NOT reset_b_q)
+	OR (NOT reset_b_q AND ramblock_q(4))
 	OR (NOT data(4) AND NOT adr15.PIN AND ramblock_q(4) AND data(7) AND 
 	data(6) AND NOT wr_b.PIN AND NOT iorq_b)
 	OR (data(4) AND NOT adr15.PIN AND reset_b AND reset1_b_q AND 
-	NOT ramblock_q(4) AND reset_b_q AND data(7) AND data(6) AND NOT wr_b.PIN AND 
+	reset_b_q AND NOT ramblock_q(4) AND data(7) AND data(6) AND NOT wr_b.PIN AND 
 	NOT iorq_b));
 
 FTCPE_ramblock_q5: FTCPE port map (ramblock_q(5),ramblock_q_T(5),NOT clk,'0','0');
 ramblock_q_T(5) <= ((NOT reset_b AND ramblock_q(5))
 	OR (NOT reset1_b_q AND ramblock_q(5))
-	OR (ramblock_q(5) AND NOT reset_b_q)
+	OR (NOT reset_b_q AND ramblock_q(5))
 	OR (NOT adr15.PIN AND ramblock_q(5) AND NOT data(5) AND data(7) AND 
 	data(6) AND NOT wr_b.PIN AND NOT iorq_b)
-	OR (NOT adr15.PIN AND reset_b AND reset1_b_q AND 
-	NOT ramblock_q(5) AND reset_b_q AND data(5) AND data(7) AND data(6) AND 
-	NOT wr_b.PIN AND NOT iorq_b));
+	OR (NOT adr15.PIN AND reset_b AND reset1_b_q AND reset_b_q AND 
+	NOT ramblock_q(5) AND data(5) AND data(7) AND data(6) AND NOT wr_b.PIN AND 
+	NOT iorq_b));
 
 
 ramcs_b <= NOT (((rfsh_b AND NOT adr15.PIN AND NOT mreq_b AND ramblock_q(2) AND 
@@ -546,7 +559,7 @@ FDCPE_reset_b_q: FDCPE port map (reset_b_q,reset_b,clk,'0','0');
 wr_b_I <= '0';
 wr_b <= wr_b_I when wr_b_OE = '1' else 'Z';
 wr_b_OE <= (mwr_cyc_q AND exp_ram_q AND NOT mwr_cyc_f_q AND 
-	NOT $OpTx$$OpTx$FX_DC$9_INV$108);
+	NOT $OpTx$$OpTx$FX_DC$12_INV$111);
 
 Register Legend:
  FDCPE (Q,D,C,CLR,PRE); 

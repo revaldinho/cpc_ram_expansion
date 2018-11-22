@@ -157,7 +157,8 @@ module cpld_ram512k_v110(
   assign register_select_w = (!iorq_b && !wr_b && !adr15 && data[6] && data[7] );
   assign reset_b_w = reset1_b_q & reset_b & reset_b_q;
   // Dont drive address outputs during reset due to overlay of DIP switches    
-  assign ramadrhi =  { (!reset_b_w) ? 2'bzz : ramadrhi_r[4:3], ramadrhi_r[2:0]};
+  //  assign ramadrhi =  { (!reset_b_w) ? 2'bzz : ramadrhi_r[4:3], ramadrhi_r[2:0]};
+  assign ramadrhi =  { (!(reset_b & reset_b_q))  ? 2'b00 : ( !reset_b_w ) ? 2'bzz : ramadrhi_r[4:3], ramadrhi_r[2:0]};  
   
   assign ramwe_b  = wr_b ;
   // Combination of RAMCS and RAMRD determine whether RAM output is enabled 
