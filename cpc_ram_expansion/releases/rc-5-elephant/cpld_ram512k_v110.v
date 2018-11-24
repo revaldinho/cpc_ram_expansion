@@ -39,7 +39,7 @@
  * BUF mybuf (.I(input_a_reg),.O(comb));
  * 
  */
-//`define USE_A15_AUX 1
+`define USE_A15_AUX 1
 //`define USE_RDB_AUX 1 
 `define M4_COMPATIBILITY  1
 // Assume that MREQ is latched HIGH on a rising clock edge before a write to RAM
