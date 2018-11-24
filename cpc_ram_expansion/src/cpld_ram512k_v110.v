@@ -129,12 +129,12 @@ module cpld_ram512k_v110(
    *--------|----|---------|----|------------|------|------|---|----|---------------------------------
    *   8    |1000| ON      |7Fxx| partial/lo | No   | No   |448|AMS |464 full 6128 compatible  w/ SiDisk
    *   9    |1001| ON      |7Fxx| partial/hi | No   | No   |448|AMS |464 full 6128 compatible  
-   *  10    |1010| ON      |7Fxx| partial/lo | No   | No   |448|AMS |464 full 6128 compatible  w/ SiDisk
-   *  11    |1011| ON      |7Fxx| partial/hi | No   | No   |448|AMS |464 full 6128 compatible           
+   *  10    |1010| ON      |7Exx| partial/lo | No   | No   |448|AMS |464 full 6128 compatible  w/ SiDisk
+   *  11    |1011| ON      |7Exx| partial/hi | No   | No   |448|AMS |464 full 6128 compatible           
    *  12    |1100| ON      |7Fxx| full/   lo | No   | No   |448|AMS |464 full 6128 compatible  w/ faulty base RAM w/ SiDisk    
    *  13    |1101| ON      |7Fxx| full/   hi | No   | No   |448|AMS |464 full 6128 compatible           
-   *  14    |1110| ON      |7Fxx| full/   lo | No   | No   |448|AMS |464 full 6128 compatible  w/ faulty base RAM w/SiDisk
-   *  15    |1111| ON      |7Fxx| full/   hi | No   | No   |448|AMS |464 full 6128 compatible           
+   *  14    |1110| ON      |7Exx| full/   lo | No   | No   |448|AMS |464 full 6128 compatible  w/ faulty base RAM w/SiDisk
+   *  15    |1111| ON      |7Exx| full/   hi | No   | No   |448|AMS |464 full 6128 compatible           
    *--------+----+---------+----+------------+------+------+---+----+---------------------------------
    *
    * Notes 
@@ -158,7 +158,7 @@ module cpld_ram512k_v110(
   assign reset_b_w = reset1_b_q & reset_b & reset_b_q;
   // Dont drive address outputs during reset due to overlay of DIP switches    
   //  assign ramadrhi =  { (!reset_b_w) ? 2'bzz : ramadrhi_r[4:3], ramadrhi_r[2:0]};
-  assign ramadrhi =  { (!reset_b)  ? 2'b00 : ( !reset_b_w ) ? 2'bzz : ramadrhi_r[4:3], ramadrhi_r[2:0]};  
+  assign ramadrhi =  ( !reset_b_w ) ? 5'bzzzzz : ramadrhi_r[4:0];  
   
   assign ramwe_b  = wr_b ;
   // Combination of RAMCS and RAMRD determine whether RAM output is enabled 
