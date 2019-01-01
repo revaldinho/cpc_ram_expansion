@@ -1,5 +1,4 @@
 // 
-// t35_romboard netlist
 // 
 // netlister.py format
 // 
@@ -15,8 +14,6 @@ module cpc_backplane ();
   // wire declarations
   supply0 VSS;
   supply1 VDD_CPC;
-  supply1 VDD3;
-  supply1 VDD2;  
   supply1 VDD_EXT;
   supply1 VDD1;
 
@@ -57,11 +54,6 @@ module cpc_backplane ();
                    .p2(VDD1),
                    .p3(VDD_EXT)
                    );
-  hdr1x03      L1 (
-                   .p1(VDD_CPC),
-                   .p2(VDD2),
-                   .p3(VDD_EXT)
-                   );
 
   // 3 pin Tabbed power connector for external 5V power
   powerheader3   PCONN (
@@ -72,7 +64,7 @@ module cpc_backplane ();
 
   // Radial electolytics
   cap22uf         CAP22UF_0(.minus(VSS),.plus(VDD1));
-  cap22uf         CAP22UF_1(.minus(VSS),.plus(VDD2));
+  cap22uf         CAP22UF_1(.minus(VSS),.plus(VDD1));
   
   // Amstrad CPC Edge Connector
   //
@@ -149,7 +141,7 @@ module cpc_backplane ();
                       .p30(D5),      .p29(D4),
                       .p28(D3),      .p27(D2),
                       .p26(D1),      .p25(D0),
-                      .p24(VDD2),    .p23(MREQ_B),
+                      .p24(VDD1),    .p23(MREQ_B),
                       .p22(M1_B),    .p21(RFSH_B),
                       .p20(IOREQ_B), .p19(RD_B),
                       .p18(WR_B),    .p17(HALT_B),
@@ -176,7 +168,7 @@ module cpc_backplane ();
                       .p30(D5),      .p29(D4),
                       .p28(D3),      .p27(D2),
                       .p26(D1),      .p25(D0),
-                      .p24(VDD2),    .p23(MREQ_B),
+                      .p24(VDD1),    .p23(MREQ_B),
                       .p22(M1_B),    .p21(RFSH_B),
                       .p20(IOREQ_B), .p19(RD_B),
                       .p18(WR_B),    .p17(HALT_B),
@@ -204,7 +196,7 @@ module cpc_backplane ();
                       .p30(D5),      .p29(D4),
                       .p28(D3),      .p27(D2),
                       .p26(D1),      .p25(D0),
-                      .p24(VDD2),    .p23(MREQ_B),
+                      .p24(VDD1),    .p23(MREQ_B),
                       .p22(M1_B),    .p21(RFSH_B),
                       .p20(IOREQ_B), .p19(RD_B),
                       .p18(WR_B),    .p17(HALT_B),
