@@ -9,7 +9,7 @@ In fact there are several mini-projects in here and each has its own local READM
     * A CPLD based card able compatible with all Amstrad CPC computers and able to provide full 6128 compatibility on a 464
   * [CPC 4 ROM Expansion Card](https://github.com/revaldinho/cpc_ram_expansion/blob/master/cpc_fourrom/README.md )
   * [CPC 6 ROM Expansion Card](https://github.com/revaldinho/cpc_ram_expansion/blob/master/cpc_sixrom/README.md )
-  * [CPC 3 slot expansion backplane](https://github.com/revaldinho/cpc_ram_expansion/blob/master/cpc_backplane/README.md "CPC 3 slot expansion backplane")
+  * [CPC Expansion backplane](https://github.com/revaldinho/cpc_ram_expansion/blob/master/cpc_backplane/README.md "CPC 3 and 4 slot expansion backplanes")
 
 All of the above projects have been built and tested.
 
