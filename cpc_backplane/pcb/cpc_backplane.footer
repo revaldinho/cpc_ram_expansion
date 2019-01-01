@@ -12,26 +12,26 @@ CLASS 0 signal 0.012 0.010 ;
 CLASS 1 supply 0.050 0.020 ;
 
 ROTATE =R180 PCONN;
-MOVE PCONN         (0.65 3.05) ;
+MOVE PCONN         (0.65 3.00) ;
 
 ROTATE =R90 CONN0 ;
-MOVE CONN0         (0.25 1.60) ;
+MOVE CONN0         (0.25 1.55) ;
 ROTATE =R270 CONN1 ;
-MOVE CONN1         (1.25 1.55) ;
+MOVE CONN1         (1.25 1.50) ;
 ROTATE =R270 CONN2 ;
-MOVE CONN2         (2.15 1.55) ;
+MOVE CONN2         (2.15 1.50) ;
 ROTATE =R270 CONN3 ;
-MOVE CONN3         (2.90 1.55) ;
+MOVE CONN3         (2.90 1.50) ;
 ROTATE =R270 CONN4 ;
-MOVE CONN4         (3.65 1.55) ;
+MOVE CONN4         (3.65 1.50) ;
 
 ROTATE =R90 L0 ;
-MOVE L0            (0.95 2.95);
+MOVE L0            (0.95 2.90);
 
 ROTATE =R90 CAP22UF_0 ;
-MOVE CAP22UF_0            (1.60 3.0);
+MOVE CAP22UF_0            (1.60 2.95);
 ROTATE =R90 CAP22UF_1 ;
-MOVE CAP22UF_1            (3.30 3.0);
+MOVE CAP22UF_1            (3.30 2.95);
 
 Layer tPlace ;
 CHANGE FONT PROPORTIONAL ; 
@@ -48,7 +48,7 @@ AUTO load /tmp/autorouter_74.ctl;
 
 layer bottom;
 wire  0.05;
-wire  'VDD1' (1.60 2.95) ( 3.30 2.95) ;
+wire  'VDD1' (1.60 2.90) ( 3.30 2.90) ;
 
 AUTO ;
 
