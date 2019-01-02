@@ -1,3 +1,22 @@
+/*
+ * This code is part of the cpc_ram_expansion set of Amstrad CPC peripherals.
+ * https://github.com/revaldinho/cpc_ram_expansion
+ * 
+ * Copyright (C) 2018 Revaldinho
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ */
 module cpld_fourrom(dip, reset_b,adr15,adr14,adr13,ioreq_b,mreq_b,romen_b,wr_b,rd_b,data,romdis,rom01cs_b,rom23cs_b, clk, romoe_b, skt01p27, skt23p27, roma14);
 
 
