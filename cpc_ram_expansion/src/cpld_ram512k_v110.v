@@ -2,7 +2,7 @@
  * This code is part of the cpc_ram_expansion set of Amstrad CPC peripherals.
  * https://github.com/revaldinho/cpc_ram_expansion
  * 
- * Copyright (C) 2018 Revaldinho
+ * Copyright (C) 2018,2019 Revaldinho
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -206,7 +206,7 @@ module cpld_ram512k_v110(
 `endif
   
 `ifdef USE_RDB_AUX
-  assign {rd_b, rd_b_aux} = ( overdrive_mode & exp_ram_q & (mwr_cyc_q|mwr_cyc_f_q)) ? 2'b00 : 2'bzz ;  
+  assign {rd_b, rd_b_aux} = ( overdrive_mode & exp_ram_q & (mwr_cyc_q|mwr_cyc_f_q)) ? 2'b00 : 2'bzz ;
 `else  
   assign rd_b = ( overdrive_mode & exp_ram_q & (mwr_cyc_q|mwr_cyc_f_q)) ? 1'b0 : 1'bz ;
 `endif
@@ -214,8 +214,10 @@ module cpld_ram512k_v110(
   // Overdrive A15 for writes only in shadow modes (full and partial) but for all access types otherwise
   // Need to compute whether A15 will need to be driven before the first rising edge of the MREQ cycle for the
   // gate array to act on it. Cant wait to sample mwr_cyc_q after it has been set initially.
-  assign mwr_cyc_d = mreq_b_q & !mreq_b & rfsh_b & rd_b & m1_b ;  
-  assign adr15_overdrive_w   =  overdrive_mode & mode3_q & adr14 & rfsh_b & ((shadow_mode) ? (mwr_cyc_q|mwr_cyc_d): !mreq_b) ;
+//  assign mwr_cyc_d = mreq_b_q & !mreq_b & rfsh_b & rd_b & m1_b ;
+  assign mwr_cyc_d = mreq_b_q & !mreq_b & rd_b;     
+//  assign adr15_overdrive_w   =  overdrive_mode & mode3_q & adr14 & rfsh_b & ((shadow_mode) ? (mwr_cyc_q|mwr_cyc_d): !mreq_b) ;
+  assign adr15_overdrive_w   =  overdrive_mode & mode3_q & adr14 & rfsh_b & ((shadow_mode) ? (mwr_cyc_q|mwr_cyc_d): !mreq_b) ;   
 
 `ifdef USE_A15_AUX  
   assign { adr15, adr15_aux} = (adr15_overdrive_w  ) ? 2'b11 : 2'bzz; 

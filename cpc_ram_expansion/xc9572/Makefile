@@ -1,4 +1,4 @@
-project_name ?= cpld_ram512k
+project_name ?= cpld_ram512k_v110
 #target ?= xc9572-10-PC44
 target ?= xc9536-10-PC44
 
