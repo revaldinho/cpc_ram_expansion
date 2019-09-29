@@ -1,11 +1,11 @@
 # CPC 512K RAM Expansion
 
-This is a small project which contains three different implementations of a DK'Tronics compatible 512K Byte RAM expansion card for the Amstrad CPC computers.
+This contains two different implementations of a DK'Tronics compatible 512K Byte RAM expansion card for the Amstrad CPC computers.
 
   1. A 74 Series based 'Old School' card intended for DIYers for the 6128 and Plus machines
   2. An XC9572/36 CPLD based universal card which is fully compatible with all CPC machines, including the older 464/664
 
-All variants have been built and tested on either CPC464 and/or CPC6128 as appropriate.
+Both variants have been built and tested on either CPC464 and/or CPC6128 as appropriate.
 
 Project files are split into 6 directories
 
