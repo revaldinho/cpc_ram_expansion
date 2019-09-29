@@ -88,15 +88,14 @@ module cpc_ram512k_v110 ();
 
   // High value pull down to be overridden by pull up when switch closed
   // and allow  IO to be used for driving probes
-
-  r10k_sil5   sil0 (
+  r6k8_sil5   sil0 (
                     .common(VSS),
                     .p0(dip0),
                     .p1(dip1),
                     .p2(HIADR3),
                     .p3(HIADR4),
                     );
-  r10k_sil5   sil1 (
+  r3k3_sil5   sil1 (
                     .common(VDD),
                     .p0(dip3_pu),
                     .p1(dip2_pu),
