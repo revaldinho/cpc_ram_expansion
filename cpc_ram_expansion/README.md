@@ -16,6 +16,6 @@ Project files are split into 6 directories
   * src/ - Verilog source code for the CPLD versions of the boards
   * xc9572/ - Xilinx ISE project and Makefiles for the CPLD versions of the boards
 
-Full information on the project are on the [Project Wiki Page](https://github.com/revaldinho/cpc_ram_expansion/wiki/CPC-512K-RAM-Expansion)
+Full information on the project are on the [Project Wiki Page](https://github.com/revaldinho/cpc_ram_expansion/wiki)
 
 
