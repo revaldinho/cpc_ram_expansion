@@ -58,14 +58,20 @@
  * BUF mybuf (.I(input_a_reg),.O(comb));
  * 
  */
+
+// Enable this option to drive A15 with two pins
 `define USE_A15_AUX 1
-//`define USE_RDB_AUX 1 
+//`define USE_RDB_AUX 1
 `define M4_COMPATIBILITY  1
 // Assume that MREQ is latched HIGH on a rising clock edge before a write to RAM
 `ifdef M4_COMPATIBILITY
   `define OVERDRIVE_WR_B   1
 `endif
 
+// Select this option to track ROM/RAM enabling locally rather than waiting on RAMRD_B signal from ULA
+`define LOCAL_RAMEN 1
+// Disable reading of DIP switches 2 and 3 to save macrocells and fit a XC9536 if necessary
+`define DISABLE_DIP23 1
 
 module cpld_ram512k_v110(
   input       rfsh_b,
@@ -78,8 +84,10 @@ module cpld_ram512k_v110(
   input       adr14,
   input       adr8, 
   input       iorq_b,
-  input       mreq_b, 
+  input       mreq_b,
+`ifndef LOCAL_RAMEN
   input       ramrd_b,
+`endif                         
   input       reset_b,
 `ifdef  OVERDRIVE_WR_B                        
   inout       wr_b,
@@ -100,14 +108,20 @@ module cpld_ram512k_v110(
     
   inout       ramdis,
   output      ramcs_b,
+`ifdef DISABLE_DIP23                         
+  output [4:0] ramadrhi, 
+`else                         
   inout [4:0] ramadrhi, // bits 4,3 also connected to DIP switches 2,1 resp and read on startup
+`endif
   output      ramoe_b,
   output      ramwe_b
 );
   
   reg [5:0]        ramblock_q;
   reg [4:0]        ramadrhi_r;
+`ifndef DISABLE_DIP23   
   reg              dip3_lat_q, dip2_lat_q;
+`endif   
   reg              cardsel_q;              
   reg              mode3_q;
   reg              mwr_cyc_q;
@@ -119,8 +133,9 @@ module cpld_ram512k_v110(
   reg              reset_b_q;
   reg              reset1_b_q;
   reg              exp_ram_q;
-
-  wire             register_select_w;            
+  
+  wire             ram_ctrl_select_w;
+  wire             rom_ctrl_select_w;              
   wire [2:0]       shadow_bank;
   wire             full_shadow;
   wire             overdrive_mode;  
@@ -128,6 +143,12 @@ module cpld_ram512k_v110(
   wire             adr15_overdrive_w;
   wire             low512kb_mode;  
   wire             reset_b_w;
+  
+`ifdef LOCAL_RAMEN
+  reg 	           urom_disable_q;
+  reg 	           lrom_disable_q;    
+  wire             ramen ;
+`endif  
   
   /*  
    * DIP Switch Settings
@@ -170,18 +191,33 @@ module cpld_ram512k_v110(
   assign overdrive_mode= dip[0] | dip[1];
   assign shadow_mode   = dip[0];
   assign full_shadow   = dip[0]&dip[1];
+`ifdef DISABLE_DIP23   
+  assign shadow_bank   = {3'b111};
+  assign low512kb_mode = 1'b0 ;
+  assign ramadrhi = ramadrhi_r[4:0];  
+`else
   assign shadow_bank   = {dip3_lat_q,2'b11};
   assign low512kb_mode = dip2_lat_q ;
-  
-  assign register_select_w = (!iorq_b && !wr_b && !adr15 && data[6] && data[7] );
-  assign reset_b_w = reset1_b_q & reset_b & reset_b_q;
   // Dont drive address outputs during reset due to overlay of DIP switches    
   //  assign ramadrhi =  { (!reset_b_w) ? 2'bzz : ramadrhi_r[4:3], ramadrhi_r[2:0]};
   assign ramadrhi =  ( !reset_b_w ) ? 5'bzzzzz : ramadrhi_r[4:0];  
+`endif
   
+  assign ram_ctrl_select_w = (!iorq_b && !wr_b && !adr15 && data[6] && data[7] );
+  assign rom_ctrl_select_w = (!iorq_b && !wr_b && !adr15 && !data[6] && data[7] );
+
+  assign reset_b_w = reset1_b_q & reset_b & reset_b_q;
+  
+`ifdef LOCAL_RAMEN  
+  // RAMEN - high if any memory access is potentially a RAM access rather than ROM access
+  assign ramen   = !mreq_b & (( !urom_disable_q & adr15) | (!lrom_disable_q & !adr15));  // May want to shorten this wr_b (is overdriven - see below)
+  assign ramwe_b = !ramen | wr_b ;  
+  assign ramoe_b = !ramen | rd_b ;  
+`else
   assign ramwe_b  = wr_b ;
   // Combination of RAMCS and RAMRD determine whether RAM output is enabled 
-  assign ramoe_b = ramrd_b ;
+  assign ramoe_b = ramrd_b ;  
+`endif
   
   /* Memory Data Access
    *          ____      ____      ____      ____      ____  
@@ -267,12 +303,14 @@ module cpld_ram512k_v110(
     else
       adr15_q <= adr15;
 
+`ifndef DISABLE_DIP23   
   // Latch DIP switch settings on first stage of reset - need a CPC power down/up.
   always @ ( posedge clk )
     if ( !reset1_b_q  ) begin
       dip2_lat_q <= ramadrhi[3];
       dip3_lat_q <= ramadrhi[4];      
     end
+`endif   
   
   // Pre-decode mode 3 setting and noodle shadow bank alias if required to save decode
   // time after the Q
@@ -280,10 +318,10 @@ module cpld_ram512k_v110(
     if (!reset_b_w) begin
       ramblock_q <= 6'b0;
       mode3_q <= 1'b0;
-      cardsel_q <= 1'b0;      
+      cardsel_q <= 1'b0;
     end        
     else begin
-      if ( register_select_w ) begin
+      if ( ram_ctrl_select_w ) begin
         if ( shadow_mode && (data[5:3]==shadow_bank) )
           ramblock_q <= {data[5:4],1'b0, data[2:0]};          
         else
@@ -291,8 +329,21 @@ module cpld_ram512k_v110(
         // Use IO Port 7Fxx or 7Exx depending on low512kb_mode
         cardsel_q <= (low512kb_mode) ? !adr8 : adr8;      
         mode3_q <= (data[2:0] == 3'b011);
-      end
+      end      
     end
+
+`ifdef LOCAL_RAMEN
+  // Bits 3 and 2 of the data word written to the ROM control register determine
+  // whether upper and lower ROMs are enabled
+  always @ (negedge clk )
+    if (!reset_b_w) begin
+      urom_disable_q <= 1'b0;
+      lrom_disable_q <= 1'b0;      
+    end        
+    else if ( rom_ctrl_select_w ) begin
+      { urom_disable_q, lrom_disable_q } <= data[3:2];
+    end
+`endif
   
   always @ ( * ) begin
     if ( shadow_mode )
