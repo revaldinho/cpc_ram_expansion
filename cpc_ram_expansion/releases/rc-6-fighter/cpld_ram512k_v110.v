@@ -186,7 +186,7 @@ module cpld_ram512k_v110(
   assign shadow_mode   = dip[0];
   assign full_shadow   = dip[0]&dip[1];
 `ifdef DISABLE_DIP23   
-  assign shadow_bank   = {3'b111};
+  assign shadow_bank   = {3'b011}; // pick lower bank because DK'Tronics SiDisc doesn't do a good job of detecting RAM
   assign low512kb_mode = 1'b0 ;
   assign ramadrhi      = ramadrhi_r[4:0];     
 `else
