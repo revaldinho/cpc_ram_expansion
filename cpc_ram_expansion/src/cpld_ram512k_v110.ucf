@@ -33,3 +33,6 @@ PIN "wr_b"      LOC = P40 ; # GTS2
 PIN "data[0]"   LOC = P42 ; # GTS1
 PIN "rd_b"      LOC = P43 ;
 PIN "rd_b_aux"	LOC = P44 ;
+
+
+NET adr15 FAST ;

@@ -68,59 +68,55 @@
   `define OVERDRIVE_WR_B   1
 `endif
 
-// Select this option to track ROM/RAM enabling locally rather than waiting on RAMRD_B signal from ULA
-`define LOCAL_RAMEN 1
 // Disable reading of DIP switches 2 and 3 to save macrocells and fit a XC9536 if necessary
 `define DISABLE_DIP23 1
 
 module cpld_ram512k_v110(
-  input       rfsh_b,
-  inout       adr15,
+  input        rfsh_b,
+  inout        adr15,
 `ifdef USE_A15_AUX
-  inout       adr15_aux,
+  inout        adr15_aux,
 `else                   
-  input       adr15_aux, 
+  input        adr15_aux, 
 `endif                        
-  input       adr14,
-  input       adr8, 
-  input       iorq_b,
-  input       mreq_b,
-`ifndef LOCAL_RAMEN
-  input       ramrd_b,
-`endif                         
-  input       reset_b,
+  input        adr14,
+  input        adr8, 
+  input        iorq_b,
+  input        mreq_b,
+  input        reset_b,
 `ifdef  OVERDRIVE_WR_B                        
-  inout       wr_b,
+  inout        wr_b,
 `else                         
-  input       wr_b,
+  input        wr_b,
 `endif                         
-  inout       rd_b,
+  inout        rd_b,
 `ifdef USE_RDB_AUX                         
-  inout       rd_b_aux,
+  inout        rd_b_aux,
 `else                         
-  input       rd_b_aux,
+  input        rd_b_aux,
 `endif                         
-  input [7:0] data,
-  input       ready,
-  input       clk,
-  input       m1_b,
-  input [1:0] dip,
+  input [7:0]  data,
+  input        ready,
+  input        clk,
+  input        m1_b,
+  input [1:0]  dip,
     
-  inout       ramdis,
-  output      ramcs_b,
-`ifdef DISABLE_DIP23                         
-  output [4:0] ramadrhi, 
+  inout        ramdis,
+  output       ramcs_b,
+`ifdef DISABLE_DIP23
+  output [4:0] ramadrhi,
 `else                         
-  inout [4:0] ramadrhi, // bits 4,3 also connected to DIP switches 2,1 resp and read on startup
-`endif
-  output      ramoe_b,
-  output      ramwe_b
+  inout [4:0]  ramadrhi, // bits 4,3 also connected to DIP switches 2,1 resp and read on startup
+`endif                         
+  output       ramoe_b,
+  output       ramwe_b
 );
   
   reg [5:0]        ramblock_q;
   reg [4:0]        ramadrhi_r;
 `ifndef DISABLE_DIP23   
-  reg              dip3_lat_q, dip2_lat_q;
+  reg              dip3_lat_q;
+  reg              dip2_lat_q;
 `endif   
   reg              cardsel_q;              
   reg              mode3_q;
@@ -133,6 +129,9 @@ module cpld_ram512k_v110(
   reg              reset_b_q;
   reg              reset1_b_q;
   reg              exp_ram_q;
+  reg 	           urom_disable_q;
+  reg 	           lrom_disable_q;
+  reg              int_ramrd_r ;    // compute local ramrd signal rather than wait on one from ULA
   
   wire             ram_ctrl_select_w;
   wire             rom_ctrl_select_w;              
@@ -144,11 +143,6 @@ module cpld_ram512k_v110(
   wire             low512kb_mode;  
   wire             reset_b_w;
   
-`ifdef LOCAL_RAMEN
-  reg 	           urom_disable_q;
-  reg 	           lrom_disable_q;    
-  wire             ramen ;
-`endif  
   
   /*  
    * DIP Switch Settings
@@ -194,30 +188,32 @@ module cpld_ram512k_v110(
 `ifdef DISABLE_DIP23   
   assign shadow_bank   = {3'b111};
   assign low512kb_mode = 1'b0 ;
-  assign ramadrhi = ramadrhi_r[4:0];  
+  assign ramadrhi      = ramadrhi_r[4:0];     
 `else
   assign shadow_bank   = {dip3_lat_q,2'b11};
-  assign low512kb_mode = dip2_lat_q ;
+  assign low512kb_mode = dip2_lat_q ;   
   // Dont drive address outputs during reset due to overlay of DIP switches    
-  //  assign ramadrhi =  { (!reset_b_w) ? 2'bzz : ramadrhi_r[4:3], ramadrhi_r[2:0]};
-  assign ramadrhi =  ( !reset_b_w ) ? 5'bzzzzz : ramadrhi_r[4:0];  
+  assign ramadrhi =  ( !reset_b_w ) ? 5'bzzzzz : ramadrhi_r[4:0];     
 `endif
   
   assign ram_ctrl_select_w = (!iorq_b && !wr_b && !adr15 && data[6] && data[7] );
   assign rom_ctrl_select_w = (!iorq_b && !wr_b && !adr15 && !data[6] && data[7] );
-
   assign reset_b_w = reset1_b_q & reset_b & reset_b_q;
   
-`ifdef LOCAL_RAMEN  
-  // RAMEN - high if any memory access is potentially a RAM access rather than ROM access
-  assign ramen   = !mreq_b & (( !urom_disable_q & adr15) | (!lrom_disable_q & !adr15));  // May want to shorten this wr_b (is overdriven - see below)
-  assign ramwe_b = !ramen | wr_b ;  
-  assign ramoe_b = !ramen | rd_b ;  
-`else
-  assign ramwe_b  = wr_b ;
-  // Combination of RAMCS and RAMRD determine whether RAM output is enabled 
-  assign ramoe_b = ramrd_b ;  
-`endif
+  // NB mode 3 DK'T  0x4000 -> remapped to 0xC000, will overlap ROM - so check adr15 and overdrive state
+  always @ ( * ) begin
+    int_ramrd_r = 1'b0 ; 	 // default disable RAM accesses
+    if ( rfsh_b & !mreq_b )
+      if ( (adr15_q|adr15_overdrive_w) != adr14 )
+        int_ramrd_r = 1'b1; // RAM in range 0x4000 - 0xBFFF never overlapped by ROM
+      else if ( urom_disable_q & ( {(adr15_q|adr15_overdrive_w),adr14} == 2'b11 ))
+        int_ramrd_r = 1'b1; // RAM read in 0xC000 - 0xFFFF only if UROM disabled
+      else if ( lrom_disable_q & ( {(adr15_q|adr15_overdrive_w),adr14} == 2'b00 ))
+        int_ramrd_r = 1'b1; // RAM read in 0x0000 - 0x3FFF only if LROM disabled
+  end
+   
+  assign ramwe_b = wr_b ;  
+  assign ramoe_b = (!int_ramrd_r) | rd_b ;  
   
   /* Memory Data Access
    *          ____      ____      ____      ____      ____  
@@ -250,10 +246,8 @@ module cpld_ram512k_v110(
   // Overdrive A15 for writes only in shadow modes (full and partial) but for all access types otherwise
   // Need to compute whether A15 will need to be driven before the first rising edge of the MREQ cycle for the
   // gate array to act on it. Cant wait to sample mwr_cyc_q after it has been set initially.
-//  assign mwr_cyc_d = mreq_b_q & !mreq_b & rfsh_b & rd_b & m1_b ;
-  assign mwr_cyc_d = mreq_b_q & !mreq_b & rd_b;     
-//  assign adr15_overdrive_w   =  overdrive_mode & mode3_q & adr14 & rfsh_b & ((shadow_mode) ? (mwr_cyc_q|mwr_cyc_d): !mreq_b) ;
-  assign adr15_overdrive_w   =  overdrive_mode & mode3_q & adr14 & rfsh_b & ((shadow_mode) ? (mwr_cyc_q|mwr_cyc_d): !mreq_b) ;   
+ assign mwr_cyc_d = mreq_b_q & !mreq_b & rd_b;     
+ assign adr15_overdrive_w = overdrive_mode & mode3_q & !adr15_q & adr14 & rfsh_b & ((shadow_mode) ? (mwr_cyc_q|mwr_cyc_d): !mreq_b) ;
 
 `ifdef USE_A15_AUX  
   assign { adr15, adr15_aux} = (adr15_overdrive_w  ) ? 2'b11 : 2'bzz; 
@@ -273,77 +267,67 @@ module cpld_ram512k_v110(
     else if (mreq_b)
       mwr_cyc_q <= 1'b0;
 
-  always @ (negedge clk)
-    if ( !reset_b_w )
+  always @ (negedge clk or negedge reset_b_w)
+    if ( !reset_b_w ) 
       mwr_cyc_f_q <= 1'b0;      
     else
       mwr_cyc_f_q <= mwr_cyc_q;            
   
-  always @ (posedge clk)
-    if ( !reset_b_w ) 
+  always @ (posedge clk or negedge reset_b_w)
+     if ( !reset_b_w ) begin
       mreq_b_q = 1'b1;
-    else 
-      mreq_b_q = mreq_b;
-
-  always @ (posedge clk)
-    if ( !reset_b_w ) 
       exp_ram_q = 1'b0;
-    else 
-      exp_ram_q = exp_ram_r;
-  
-   always @ (posedge clk)
+    end       
+    else begin 
+      mreq_b_q = mreq_b;
+       exp_ram_q = exp_ram_r;
+    end
+     
+   always @ (posedge clk or negedge reset_b)
      if ( !reset_b ) 
        {reset1_b_q, reset_b_q}  = 2'b00;
      else 
        {reset1_b_q, reset_b_q}  = {reset_b_q, reset_b};
-   
-  always @ (negedge mreq_b ) 
+
+  always @ (negedge clk or negedge reset_b_w )
     if ( !reset_b_w ) 
       adr15_q <= 1'b0;
     else
-      adr15_q <= adr15;
-
-`ifndef DISABLE_DIP23   
+      adr15_q <= (mreq_b_q) ? adr15 : adr15_q;
+   
+`ifndef DISABLE_DIP23          
   // Latch DIP switch settings on first stage of reset - need a CPC power down/up.
-  always @ ( posedge clk )
-    if ( !reset1_b_q  ) begin
+  always @ ( posedge clk or negedge reset_b)
+    if ( !reset_b  ) begin
       dip2_lat_q <= ramadrhi[3];
-      dip3_lat_q <= ramadrhi[4];      
+      dip3_lat_q <= ramadrhi[4];
     end
-`endif   
-  
+`endif  
+
   // Pre-decode mode 3 setting and noodle shadow bank alias if required to save decode
   // time after the Q
-  always @ (negedge clk )
+  always @ (negedge clk or negedge reset_b_w)
     if (!reset_b_w) begin
       ramblock_q <= 6'b0;
       mode3_q <= 1'b0;
       cardsel_q <= 1'b0;
+      urom_disable_q <= 1'b0;
+      lrom_disable_q <= 1'b0;             
     end        
     else begin
-      if ( ram_ctrl_select_w ) begin
-        if ( shadow_mode && (data[5:3]==shadow_bank) )
-          ramblock_q <= {data[5:4],1'b0, data[2:0]};          
-        else
-          ramblock_q <= data[5:0] ;
-        // Use IO Port 7Fxx or 7Exx depending on low512kb_mode
-        cardsel_q <= (low512kb_mode) ? !adr8 : adr8;      
-        mode3_q <= (data[2:0] == 3'b011);
-      end      
+       if ( ram_ctrl_select_w ) begin
+          if ( shadow_mode && (data[5:3]==shadow_bank) )
+            ramblock_q <= {data[5:4],1'b0, data[2:0]};          
+          else
+            ramblock_q <= data[5:0] ;
+          // Use IO Port 7Fxx or 7Exx depending on low512kb_mode
+          cardsel_q <= (low512kb_mode) ? !adr8 : adr8;      
+          mode3_q <= (data[2:0] == 3'b011);
+       end
+       else if ( rom_ctrl_select_w ) begin
+          { urom_disable_q, lrom_disable_q } <= data[3:2];
+       end       
     end
-
-`ifdef LOCAL_RAMEN
-  // Bits 3 and 2 of the data word written to the ROM control register determine
-  // whether upper and lower ROMs are enabled
-  always @ (negedge clk )
-    if (!reset_b_w) begin
-      urom_disable_q <= 1'b0;
-      lrom_disable_q <= 1'b0;      
-    end        
-    else if ( rom_ctrl_select_w ) begin
-      { urom_disable_q, lrom_disable_q } <= data[3:2];
-    end
-`endif
   
   always @ ( * ) begin
     if ( shadow_mode )
