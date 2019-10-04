@@ -5,14 +5,14 @@ Parameter TMPDIR set to tmp
 
 
 Total REAL time to Xst completion: 0.00 secs
-Total CPU time to Xst completion: 0.04 secs
+Total CPU time to Xst completion: 0.03 secs
  
 --> 
 Parameter xsthdpdir set to xst
 
 
 Total REAL time to Xst completion: 0.00 secs
-Total CPU time to Xst completion: 0.04 secs
+Total CPU time to Xst completion: 0.03 secs
  
 --> 
 Reading design: cpld_ram512k_v110.prj
@@ -106,18 +106,19 @@ Performing bidirectional port resolution...
 Synthesizing Unit <cpld_ram512k_v110>.
     Related source file is "../src/cpld_ram512k_v110.v".
 WARNING:Xst:647 - Input <m1_b> is never used. This port will be preserved and left unconnected if it belongs to a top-level block or it belongs to a sub-block and the hierarchy of this sub-block is preserved.
+WARNING:Xst:647 - Input <ramrd_b> is never used. This port will be preserved and left unconnected if it belongs to a top-level block or it belongs to a sub-block and the hierarchy of this sub-block is preserved.
 WARNING:Xst:647 - Input <rd_b_aux> is never used. This port will be preserved and left unconnected if it belongs to a top-level block or it belongs to a sub-block and the hierarchy of this sub-block is preserved.
 WARNING:Xst:647 - Input <ready> is never used. This port will be preserved and left unconnected if it belongs to a top-level block or it belongs to a sub-block and the hierarchy of this sub-block is preserved.
+WARNING:Xst:646 - Signal <mreq_b_q> is assigned but never used. This unconnected signal will be trimmed during the optimization process.
     Found 1-bit tristate buffer for signal <ramdis>.
     Found 1-bit tristate buffer for signal <rd_b>.
     Found 1-bit tristate buffer for signal <wr_b>.
     Found 1-bit register for signal <adr15_q>.
     Found 1-bit register for signal <cardsel_q>.
     Found 1-bit register for signal <exp_ram_q>.
-    Found 1-bit xor2 for signal <int_ramrd_r$xor0000> created at line 207.
+    Found 1-bit xor2 for signal <int_ramrd_r$xor0000> created at line 209.
     Found 1-bit register for signal <lrom_disable_q>.
     Found 1-bit register for signal <mode3_q>.
-    Found 1-bit register for signal <mreq_b_q>.
     Found 1-bit register for signal <mwr_cyc_f_q>.
     Found 1-bit register for signal <mwr_cyc_q>.
     Found 6-bit register for signal <ramblock_q>.
@@ -125,7 +126,7 @@ WARNING:Xst:647 - Input <ready> is never used. This port will be preserved and l
     Found 1-bit register for signal <reset_b_q>.
     Found 1-bit register for signal <urom_disable_q>.
     Summary:
-	inferred  10 D-type flip-flop(s).
+	inferred   9 D-type flip-flop(s).
 	inferred   1 Xor(s).
 	inferred   5 Tristate(s).
 Unit <cpld_ram512k_v110> synthesized.
@@ -135,8 +136,8 @@ Unit <cpld_ram512k_v110> synthesized.
 HDL Synthesis Report
 
 Macro Statistics
-# Registers                                            : 12
- 1-bit register                                        : 11
+# Registers                                            : 11
+ 1-bit register                                        : 10
  6-bit register                                        : 1
 # Tristates                                            : 4
  1-bit tristate buffer                                 : 3
@@ -155,8 +156,8 @@ Macro Statistics
 Advanced HDL Synthesis Report
 
 Macro Statistics
-# Registers                                            : 10
- Flip-Flops                                            : 10
+# Registers                                            : 9
+ Flip-Flops                                            : 9
 
 =========================================================================
 
@@ -192,24 +193,23 @@ XOR Preserve                       : YES
 wysiwyg                            : NO
 
 Design Statistics
-# IOs                              : 33
+# IOs                              : 34
 
 Cell Usage :
 # BELS                             : 288
 #      AND2                        : 113
-#      AND3                        : 11
+#      AND3                        : 10
 #      AND4                        : 1
 #      AND5                        : 1
 #      GND                         : 1
-#      INV                         : 97
+#      INV                         : 98
 #      OR2                         : 56
 #      OR3                         : 6
 #      VCC                         : 1
 #      XOR2                        : 1
-# FlipFlops/Latches                : 17
+# FlipFlops/Latches                : 16
 #      FD                          : 1
 #      FDC                         : 15
-#      FDP                         : 1
 # IO Buffers                       : 30
 #      IBUF                        : 17
 #      IOBUFE                      : 3
@@ -218,15 +218,15 @@ Cell Usage :
 =========================================================================
 
 
-Total REAL time to Xst completion: 3.00 secs
-Total CPU time to Xst completion: 2.16 secs
+Total REAL time to Xst completion: 2.00 secs
+Total CPU time to Xst completion: 2.15 secs
  
 --> 
 
 
-Total memory usage is 509652 kilobytes
+Total memory usage is 509608 kilobytes
 
 Number of errors   :    0 (   0 filtered)
-Number of warnings :    3 (   0 filtered)
+Number of warnings :    5 (   0 filtered)
 Number of infos    :    0 (   0 filtered)
 

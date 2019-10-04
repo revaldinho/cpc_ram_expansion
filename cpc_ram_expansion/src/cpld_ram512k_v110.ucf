@@ -2,7 +2,7 @@
 PIN "mreq_b"	LOC = P1 ;
 PIN "iorq_b"	LOC = P2 ;
 PIN "ready"	LOC = P3 ;
-#PIN "ramrd_b"	LOC = P4 ;
+PIN "ramrd_b"	LOC = P4 ;
 PIN "clk"	LOC = P5 ; # GCK1
 PIN "ramdis"	LOC = P6 ; # GCK2
 PIN "dip[0]"	LOC = P7 ; # GCK3
@@ -36,3 +36,5 @@ PIN "rd_b_aux"	LOC = P44 ;
 
 
 NET adr15 FAST ;
+NET adr15_aux FAST ;
+NET rd_b FAST ;

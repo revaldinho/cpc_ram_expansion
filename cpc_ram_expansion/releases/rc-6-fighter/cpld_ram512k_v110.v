@@ -1,3 +1,5 @@
+
+
 /*
  * This code is part of the cpc_ram_expansion set of Amstrad CPC peripherals.
  * https://github.com/revaldinho/cpc_ram_expansion
@@ -100,7 +102,7 @@ module cpld_ram512k_v110(
   input        clk,
   input        m1_b,
   input [1:0]  dip,
-    
+  input        ramrd_b,   
   inout        ramdis,
   output       ramcs_b,
 `ifdef DISABLE_DIP23
@@ -212,8 +214,10 @@ module cpld_ram512k_v110(
         int_ramrd_r = 1'b1; // RAM read in 0x0000 - 0x3FFF only if LROM disabled
   end
    
-  assign ramwe_b = wr_b ;  
-  assign ramoe_b = (!int_ramrd_r) | rd_b ;  
+  // Remember that wr_b is overdrive for first high phase of clock for M4 compatibility so don't write ; 
+  assign ramwe_b = ! ( !wr_b & mwr_cyc_q & mwr_cyc_f_q );   
+  assign ramoe_b = (!int_ramrd_r) | rd_b ;
+//  assign ramoe_b = ramrd_b ;     
   
   /* Memory Data Access
    *          ____      ____      ____      ____      ____  
@@ -246,8 +250,8 @@ module cpld_ram512k_v110(
   // Overdrive A15 for writes only in shadow modes (full and partial) but for all access types otherwise
   // Need to compute whether A15 will need to be driven before the first rising edge of the MREQ cycle for the
   // gate array to act on it. Cant wait to sample mwr_cyc_q after it has been set initially.
- assign mwr_cyc_d = mreq_b_q & !mreq_b & rd_b;     
- assign adr15_overdrive_w = overdrive_mode & mode3_q & !adr15_q & adr14 & rfsh_b & ((shadow_mode) ? (mwr_cyc_q|mwr_cyc_d): !mreq_b) ;
+ assign mwr_cyc_d = !mreq_b & rd_b;        
+ assign adr15_overdrive_w = overdrive_mode & mode3_q & adr14 & ((shadow_mode) ? (mwr_cyc_q|mwr_cyc_d): !mreq_b) ;
 
 `ifdef USE_A15_AUX  
   assign { adr15, adr15_aux} = (adr15_overdrive_w  ) ? 2'b11 : 2'bzz; 
@@ -266,7 +270,7 @@ module cpld_ram512k_v110(
       mwr_cyc_q <= 1'b1;
     else if (mreq_b)
       mwr_cyc_q <= 1'b0;
-
+   
   always @ (negedge clk or negedge reset_b_w)
     if ( !reset_b_w ) 
       mwr_cyc_f_q <= 1'b0;      
@@ -293,7 +297,7 @@ module cpld_ram512k_v110(
     if ( !reset_b_w ) 
       adr15_q <= 1'b0;
     else
-      adr15_q <= (mreq_b_q) ? adr15 : adr15_q;
+      adr15_q <= (mreq_b) ? adr15 : adr15_q;      
    
 `ifndef DISABLE_DIP23          
   // Latch DIP switch settings on first stage of reset - need a CPC power down/up.
