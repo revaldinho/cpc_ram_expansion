@@ -1,0 +1,6 @@
+This directory contains old source code for archiving.
+
+- the orginal v1.00 (CPLD) board design
+- an alternative v2.10 version of the 74 series board
+- an experimental (ie unbuilt) version of the CPLD board using an XC9572XL CPLD
+
