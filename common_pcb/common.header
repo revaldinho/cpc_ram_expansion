@@ -23,7 +23,7 @@ USE triac ;
 USE diode ;
 USE switch-dil ;
 USE resistor-sil;
-USE Teensy35;
+#USE Teensy35;
 USE atmel;
 USE ref-packages;
 
