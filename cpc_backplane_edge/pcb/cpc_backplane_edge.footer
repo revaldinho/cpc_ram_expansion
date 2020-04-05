@@ -1,0 +1,74 @@
+# Maximum Eagle freeware board size is 4.0x3.2" (101x80mm)  but Seeed limit is 100x100
+
+# better to work in inches for 0.1 inch pad pitch
+Grid default;
+Set Wire_Bend 0;
+Layer Dimension;
+Wire 0  (0 0) (3.50 0) (3.50 0.275) (3.92 0.275) (3.92 2.825) (3.50 2.825) (3.50 3.2) (0 3.2) (0 0);
+Layer Top;
+
+# PCB-Pool/PCB-Train design rule is actually 0.006/0.006 for wires
+CLASS 0 signal 0.018 0.010 ;
+CLASS 1 supply 0.045 0.015 ;
+
+ROTATE =R180 PCONN;
+MOVE PCONN         (0.6 3.05) ;
+
+ROTATE =R90 CONN0 ;
+MOVE CONN0         (0.20 1.55) ;
+ROTATE =R270 CONN1 ;
+MOVE CONN1         (1.0 1.55) ;
+ROTATE =R270 CONN2 ;
+MOVE CONN2         (1.7 1.55) ;
+ROTATE =R270 CONN3 ;
+MOVE CONN3         (2.40 1.55) ;
+ROTATE =R270 CONN4 ;
+MOVE CONN4         (3.10 1.55) ;
+ROTATE =R0 CONN5 ;
+MOVE CONN5         (3.85 2.2 ) ;
+
+ROTATE =R0 L0 ;
+MOVE L0            (0.6 2.80);
+
+ROTATE =R90 CAP22UF_0 ;
+MOVE CAP22UF_0            (1.35 3.00);
+ROTATE =R90 CAP22UF_1 ;
+MOVE CAP22UF_1            (2.8 3.00);
+
+Layer tPlace ;
+CHANGE FONT PROPORTIONAL ; 
+CHANGE SIZE 0.06
+TEXT 'CPC Expansion Backplane Edge v1.00' R90 (0.5 0.9) ;
+CHANGE SIZE 0.04
+TEXT '(C) 2020 Revaldinho'  R90      (0.6 0.9) ;
+TEXT 'github.com/revaldinho/cpc_ram_expansion'  R90      (0.65 0.9) ;
+TEXT 'Pass-Through Edge Connector'  R90      (3.5 1.15) ;
+
+CHANGE FONT FIXED ; 
+
+TEXT 'GND +5V +5V' R0 (0.80 3.10)
+TEXT ' o   o   o'  R0 (0.80 3.05)
+wire (0.78 3.00)(0.78 3.15)(1.18 3.15)(1.18  3.03) (0.78  3.03)(0.78  3.00)(1.18  3.00) (1.18  3.03);
+
+## Autorouter
+AUTO load /tmp/autorouter_74.ctl;
+
+layer top;
+wire  0.05;
+wire  'VDD1' (1.40 2.95) ( 2.85 2.95) ;
+
+AUTO ;
+
+### Define power fills top and bottom over whole board area
+layer Top ; 
+
+Polygon VDD1 0.08 (0 0) (3.50 0) (3.50 0.30) (3.92 0.3) (3.92 2.80) (3.50 2.80) (3.50 3.2) (0 3.2) (0 0);
+
+layer Bottom ; 
+Polygon VSS 0.08 (0 0) (3.50 0) (3.50 0.30) (3.92 0.3) (3.92 2.80) (3.50 2.80) (3.50 3.2) (0 3.2) (0 0);
+
+Ratsnest ;  ## Calculate and display polygons
+
+
+Window Fit;
+

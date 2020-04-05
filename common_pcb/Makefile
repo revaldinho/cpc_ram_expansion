@@ -24,7 +24,6 @@ ARGS ?=
 	-l ${netlister_dir}/lib/74series_soic.lib \
 	-l ${netlister_dir}/lib/switches.lib \
 	-l ${netlister_dir}/lib/i2c.lib \
-	-l ${netlister_dir}/lib/teensy.lib \
 	-o $*.net \
 	-f net
 
@@ -42,7 +41,6 @@ ARGS ?=
 	-l ${netlister_dir}/lib/74series_soic.lib \
 	-l ${netlister_dir}/lib/switches.lib \
 	-l ${netlister_dir}/lib/i2c.lib \
-	-l ${netlister_dir}/lib/teensy.lib \
 	-o $*.scr \
 	-f scr \
 	-d ../../common_pcb/common.header \

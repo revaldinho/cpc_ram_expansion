@@ -1,0 +1,368 @@
+Netlist cpc_backplane_edge
+
+Exported from netlister $Revision$
+
+EAGLE
+
+Net                   Part                  Pad                 
+
+CLK                   CONN0                 1                   
+                      CONN1                 1                   
+                      CONN2                 1                   
+                      CONN3                 1                   
+                      CONN4                 1                   
+                      CONN5                 P50                 
+
+BUSRESET_B            CONN0                 11                  
+                      CONN1                 11                  
+                      CONN2                 11                  
+                      CONN3                 11                  
+                      CONN4                 11                  
+                      CONN5                 P40                 
+
+LPEN                  CONN0                 4                   
+                      CONN1                 4                   
+                      CONN2                 4                   
+                      CONN3                 4                   
+                      CONN4                 4                   
+                      CONN5                 P47                 
+
+A0                    CONN0                 33                  
+                      CONN1                 33                  
+                      CONN2                 33                  
+                      CONN3                 33                  
+                      CONN4                 33                  
+                      CONN5                 P18                 
+
+A1                    CONN0                 34                  
+                      CONN1                 34                  
+                      CONN2                 34                  
+                      CONN3                 34                  
+                      CONN4                 34                  
+                      CONN5                 P17                 
+
+A2                    CONN0                 35                  
+                      CONN1                 35                  
+                      CONN2                 35                  
+                      CONN3                 35                  
+                      CONN4                 35                  
+                      CONN5                 P16                 
+
+A3                    CONN0                 36                  
+                      CONN1                 36                  
+                      CONN2                 36                  
+                      CONN3                 36                  
+                      CONN4                 36                  
+                      CONN5                 P15                 
+
+A4                    CONN0                 37                  
+                      CONN1                 37                  
+                      CONN2                 37                  
+                      CONN3                 37                  
+                      CONN4                 37                  
+                      CONN5                 P14                 
+
+A5                    CONN0                 38                  
+                      CONN1                 38                  
+                      CONN2                 38                  
+                      CONN3                 38                  
+                      CONN4                 38                  
+                      CONN5                 P13                 
+
+RAMDIS                CONN0                 6                   
+                      CONN1                 6                   
+                      CONN2                 6                   
+                      CONN3                 6                   
+                      CONN4                 6                   
+                      CONN5                 P45                 
+
+A6                    CONN0                 39                  
+                      CONN1                 39                  
+                      CONN2                 39                  
+                      CONN3                 39                  
+                      CONN4                 39                  
+                      CONN5                 P12                 
+
+A7                    CONN0                 40                  
+                      CONN1                 40                  
+                      CONN2                 40                  
+                      CONN3                 40                  
+                      CONN4                 40                  
+                      CONN5                 P11                 
+
+A8                    CONN0                 41                  
+                      CONN1                 41                  
+                      CONN2                 41                  
+                      CONN3                 41                  
+                      CONN4                 41                  
+                      CONN5                 P10                 
+
+A9                    CONN0                 42                  
+                      CONN1                 42                  
+                      CONN2                 42                  
+                      CONN3                 42                  
+                      CONN4                 42                  
+                      CONN5                 P9                  
+
+RESET_B               CONN0                 10                  
+                      CONN1                 10                  
+                      CONN2                 10                  
+                      CONN3                 10                  
+                      CONN4                 10                  
+                      CONN5                 P41                 
+
+MREQ_B                CONN0                 23                  
+                      CONN1                 23                  
+                      CONN2                 23                  
+                      CONN3                 23                  
+                      CONN4                 23                  
+                      CONN5                 P28                 
+
+READY                 CONN0                 12                  
+                      CONN1                 12                  
+                      CONN2                 12                  
+                      CONN3                 12                  
+                      CONN4                 12                  
+                      CONN5                 P39                 
+
+A10                   CONN0                 43                  
+                      CONN1                 43                  
+                      CONN2                 43                  
+                      CONN3                 43                  
+                      CONN4                 43                  
+                      CONN5                 P8                  
+
+A11                   CONN0                 44                  
+                      CONN1                 44                  
+                      CONN2                 44                  
+                      CONN3                 44                  
+                      CONN4                 44                  
+                      CONN5                 P7                  
+
+A12                   CONN0                 45                  
+                      CONN1                 45                  
+                      CONN2                 45                  
+                      CONN3                 45                  
+                      CONN4                 45                  
+                      CONN5                 P6                  
+
+A13                   CONN0                 46                  
+                      CONN1                 46                  
+                      CONN2                 46                  
+                      CONN3                 46                  
+                      CONN4                 46                  
+                      CONN5                 P5                  
+
+A14                   CONN0                 47                  
+                      CONN1                 47                  
+                      CONN2                 47                  
+                      CONN3                 47                  
+                      CONN4                 47                  
+                      CONN5                 P4                  
+
+A15                   CONN0                 48                  
+                      CONN1                 48                  
+                      CONN2                 48                  
+                      CONN3                 48                  
+                      CONN4                 48                  
+                      CONN5                 P3                  
+
+Sound                 CONN0                 50                  
+                      CONN1                 50                  
+                      CONN2                 50                  
+                      CONN3                 50                  
+                      CONN4                 50                  
+                      CONN5                 P1                  
+
+VDD1                  L0                    2                   
+                      CAP22UF_0             +                   
+                      CAP22UF_1             +                   
+                      CONN1                 24                  
+                      CONN2                 24                  
+                      CONN3                 24                  
+                      CONN4                 24                  
+                      CONN5                 P27                 
+
+VSS                   PCONN                 3                   
+                      CAP22UF_0             -                   
+                      CAP22UF_1             -                   
+                      CONN0                 2                   
+                      CONN0                 49                  
+                      CONN1                 2                   
+                      CONN1                 49                  
+                      CONN2                 2                   
+                      CONN2                 49                  
+                      CONN3                 2                   
+                      CONN3                 49                  
+                      CONN4                 2                   
+                      CONN4                 49                  
+                      CONN5                 P2                  
+                      CONN5                 P49                 
+
+ROMEN_B               CONN0                 9                   
+                      CONN1                 9                   
+                      CONN2                 9                   
+                      CONN3                 9                   
+                      CONN4                 9                   
+                      CONN5                 P42                 
+
+BUSRQ_B               CONN0                 14                  
+                      CONN1                 14                  
+                      CONN2                 14                  
+                      CONN3                 14                  
+                      CONN4                 14                  
+                      CONN5                 P37                 
+
+NMI_B                 CONN0                 15                  
+                      CONN1                 15                  
+                      CONN2                 15                  
+                      CONN3                 15                  
+                      CONN4                 15                  
+                      CONN5                 P36                 
+
+IOREQ_B               CONN0                 20                  
+                      CONN1                 20                  
+                      CONN2                 20                  
+                      CONN3                 20                  
+                      CONN4                 20                  
+                      CONN5                 P31                 
+
+VDD_CPC               L0                    1                   
+                      CONN0                 24                  
+
+HALT_B                CONN0                 17                  
+                      CONN1                 17                  
+                      CONN2                 17                  
+                      CONN3                 17                  
+                      CONN4                 17                  
+                      CONN5                 P34                 
+
+RD_B                  CONN0                 19                  
+                      CONN1                 19                  
+                      CONN2                 19                  
+                      CONN3                 19                  
+                      CONN4                 19                  
+                      CONN5                 P32                 
+
+VDD_EXT               L0                    3                   
+                      PCONN                 2                   
+                      PCONN                 1                   
+
+ROMDIS                CONN0                 8                   
+                      CONN1                 8                   
+                      CONN2                 8                   
+                      CONN3                 8                   
+                      CONN4                 8                   
+                      CONN5                 P43                 
+
+BUSACK_B              CONN0                 13                  
+                      CONN1                 13                  
+                      CONN2                 13                  
+                      CONN3                 13                  
+                      CONN4                 13                  
+                      CONN5                 P38                 
+
+RFSH_B                CONN0                 21                  
+                      CONN1                 21                  
+                      CONN2                 21                  
+                      CONN3                 21                  
+                      CONN4                 21                  
+                      CONN5                 P30                 
+
+M1_B                  CONN0                 22                  
+                      CONN1                 22                  
+                      CONN2                 22                  
+                      CONN3                 22                  
+                      CONN4                 22                  
+                      CONN5                 P29                 
+
+D0                    CONN0                 25                  
+                      CONN1                 25                  
+                      CONN2                 25                  
+                      CONN3                 25                  
+                      CONN4                 25                  
+                      CONN5                 P26                 
+
+D1                    CONN0                 26                  
+                      CONN1                 26                  
+                      CONN2                 26                  
+                      CONN3                 26                  
+                      CONN4                 26                  
+                      CONN5                 P25                 
+
+D2                    CONN0                 27                  
+                      CONN1                 27                  
+                      CONN2                 27                  
+                      CONN3                 27                  
+                      CONN4                 27                  
+                      CONN5                 P24                 
+
+D3                    CONN0                 28                  
+                      CONN1                 28                  
+                      CONN2                 28                  
+                      CONN3                 28                  
+                      CONN4                 28                  
+                      CONN5                 P23                 
+
+D4                    CONN0                 29                  
+                      CONN1                 29                  
+                      CONN2                 29                  
+                      CONN3                 29                  
+                      CONN4                 29                  
+                      CONN5                 P22                 
+
+D5                    CONN0                 30                  
+                      CONN1                 30                  
+                      CONN2                 30                  
+                      CONN3                 30                  
+                      CONN4                 30                  
+                      CONN5                 P21                 
+
+D6                    CONN0                 31                  
+                      CONN1                 31                  
+                      CONN2                 31                  
+                      CONN3                 31                  
+                      CONN4                 31                  
+                      CONN5                 P20                 
+
+D7                    CONN0                 32                  
+                      CONN1                 32                  
+                      CONN2                 32                  
+                      CONN3                 32                  
+                      CONN4                 32                  
+                      CONN5                 P19                 
+
+EXP_B                 CONN0                 3                   
+                      CONN1                 3                   
+                      CONN2                 3                   
+                      CONN3                 3                   
+                      CONN4                 3                   
+                      CONN5                 P48                 
+
+WR_B                  CONN0                 18                  
+                      CONN1                 18                  
+                      CONN2                 18                  
+                      CONN3                 18                  
+                      CONN4                 18                  
+                      CONN5                 P33                 
+
+INT_B                 CONN0                 16                  
+                      CONN1                 16                  
+                      CONN2                 16                  
+                      CONN3                 16                  
+                      CONN4                 16                  
+                      CONN5                 P35                 
+
+RAMRD_B               CONN0                 7                   
+                      CONN1                 7                   
+                      CONN2                 7                   
+                      CONN3                 7                   
+                      CONN4                 7                   
+                      CONN5                 P44                 
+
+CURSOR                CONN0                 5                   
+                      CONN1                 5                   
+                      CONN2                 5                   
+                      CONN3                 5                   
+                      CONN4                 5                   
+                      CONN5                 P46                 

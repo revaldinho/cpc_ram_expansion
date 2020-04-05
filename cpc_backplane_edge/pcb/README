@@ -1,0 +1,19 @@
+#!/bin/tcsh -f
+
+# Need to have access to the Jython netlister program
+set netlister_dir = ~/Documents/nas/Development/git/netlister
+which netlister.py > /dev/null
+if ($status != 0) then
+   setenv CLASSPATH ${netlister_dir}/src:$CLASSPATH
+   setenv PATH      ${netlister_dir}/src:$PATH
+   rehash
+endif
+
+setenv TERM xterm
+
+cp ../../common_pcb/autorouter_74.ctl  /tmp/autorouter_74.ctl
+
+make cpc_backplane_edge.scr -f ../../common_pcb/Makefile
+make cpc_backplane_edge.net -f ../../common_pcb/Makefile
+
+
