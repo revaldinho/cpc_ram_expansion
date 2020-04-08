@@ -129,7 +129,7 @@ module cpld_ram512k_v110(
 
 `ifdef DISABLE_CARDSEL
   wire             cardsel_w = 1'b1;             
-`else:  
+`else  
   reg              cardsel_q;
   wire             cardsel_w = cardsel_q;  
 `endif  
