@@ -250,10 +250,10 @@ module cpld_ram1m(
          else if (ram1mb_mode)
            // 1MB mode uses given bank in upper (0x7FFF) or lower (0x7FFE) RAM, but if bank selected is lower 0b111
            // (which is used for shadow RAM) then must alias that to the next lower bank 0b110
-           if ( {!adr8,data[5:3]}==shadow_bank )
+           if ( {adr8,data[5:3]}==shadow_bank )
              ramblock_q <= {adr8,data[5:4], 1'b0, data[2:0]};
-             else
-               ramblock_q <= {adr8,data[5:0]};
+           else
+             ramblock_q <= {adr8,data[5:0]};
          else
            // 512KB mode selects always upper RAM (and doesn't clash with shadow bank)           
            ramblock_q <= {4'b1,data[5:0]};                   
