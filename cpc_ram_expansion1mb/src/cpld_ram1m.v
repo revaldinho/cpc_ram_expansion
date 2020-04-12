@@ -30,7 +30,7 @@
 `ifdef FIT_XC9536
   // Disable resynchronisation of reset
   `define DISABLE_RESET_RESYNC 1
-//  `define FULL_SHADOW_ONLY 1
+  //`define FULL_SHADOW_ONLY 1
 `endif
 
 
@@ -195,10 +195,10 @@ module cpld_ram1m(
   // Never, ever use internal RAM for reads in full shadow mode 
   assign ramdis = (cardsel_w & (full_shadow | !ramcs_b_r)) ? 1'b1 : 1'bz;  
   // Low RAM is enabled for all (base memory) shadow writes and when selected by 0x7FFE
-  assign ramcs0_b = !((!ramcs_b_r & !ramadrhi_r[5]) | full_shadow )|mreq_b|!rfsh_b|!cardsel_w ;
+  assign ramcs0_b = !((!ramcs_b_r & !ramadrhi_r[5]) | (full_shadow & !exp_ram_r)) |mreq_b|!rfsh_b|!cardsel_w ;
 `endif
   // High RAM is enabled only for expansion RAM accesses to 0x7FFF
-  assign ramcs1_b = !( !ramcs_b_r & ramadrhi_r[5] & exp_ram_r)|mreq_b|!rfsh_b|!cardsel_w ;  
+  assign ramcs1_b = !( !ramcs_b_r & ramadrhi_r[5] & exp_ram_r) |mreq_b|!rfsh_b|!cardsel_w ;  
   
   always @ (posedge clk)
     if ( mwr_cyc_d )
