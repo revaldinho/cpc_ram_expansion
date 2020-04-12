@@ -1,0 +1,108 @@
+# Maximum Eagle freeware board size is 4.0x3.2" (100x80mm) 
+DRC load /tmp/design_rules;
+
+# better to work in inches for 0.1 inch pad pitch
+Grid default;
+Set Wire_Bend 0;
+Layer Dimension;
+Wire 0  (0 0) (3.5 2.6) (0 0);
+Layer Top;
+
+# PCB-Pool/PCB-Train design rule is actually 0.006/0.006 for wires
+CLASS 0 signal 0.010 0.010 ;
+CLASS 1 supply 0.025 0.010 ;
+
+ROTATE =R90 CAP22UF ; 
+MOVE CAP22UF       (3.30 0.45) ;
+ROTATE =R180 CONN1 ;
+MOVE CONN1         (1.75 0.2) ;
+
+ROTATE =R0 DIPSW0 ;
+MOVE DIPSW0       (3.10 2.3) ;
+ROTATE =R180 sil0 ; 
+MOVE sil0         (3.15 2.05 ) ;
+
+ROTATE =R270 SRAM0 ;
+MOVE SRAM0          (0.6 1.55) ;
+ROTATE =R270 SRAM1 ;
+MOVE SRAM1          (1.5 1.55) ;
+ROTATE =R225 CPLD ;
+MOVE CPLD          (2.7 1.25);
+ROTATE =R0 CAP100N_1 ;
+MOVE CAP100N_1     (0.8 2.45) ;
+ROTATE =R0 CAP100N_2 ;
+MOVE CAP100N_2     (1.7  2.45)  ;
+ROTATE =R135 CAP100N_3 ;
+MOVE CAP100N_3     (3.00 1.70)  ; 
+ROTATE =R315 CAP100N_4 ;
+MOVE CAP100N_4     (2.3 0.9)  ; 
+MOVE JTAG          (2.30 2.4)  ;
+ROTATE =R0 JTAG ;
+
+Layer tPlace ;
+CHANGE FONT PROPORTIONAL ; 
+CHANGE SIZE 0.06
+TEXT 'CPC 1MByte RAM Expansion, v1.00' R90 (0.10 0.4) ;
+CHANGE SIZE 0.04
+TEXT '(C) 2018 Revaldinho, github.com/revaldinho/cpc_ram_expansion'  R90      (0.2 0.4) ;
+
+CHANGE FONT FIXED ; 
+CHANGE SIZE 0.03 ;
+CHANGE WIDTH 0.01 ;
+WIRE  (2.1 2.12) (2.1 2.24 ) (2.53 2.24 ) (2.53 2.12) ( 2.1 2.12 ) ;
+TEXT 'GND TDI TCK NC' R0 (2.13 2.20) ;
+TEXT 'GND TMS TDO 5V' R0 (2.13 2.15) ;
+
+# Preroute VDD and VSS rings and some spurs
+layer top;
+wire  0.04;
+wire  'VDD' (0.06 0.06) ( 3.44 0.06) (3.44 2.54) (0.06 2.54) (0.06 0.06);
+wire  'VDD' (2.375 0.835) (2.35 0.75) (3.44 0.75);
+wire  'VDD' (2.95 1.775) (3.44 1.775);
+wire  'VDD' (2.70 0.90) (2.70 0.75);
+wire  'VDD' (1.85 0.15) (1.85 0.06);
+wire  'VDD' (3.30 0.40) (3.44 0.4);
+wire  'VDD' (2.95 2.53) (2.95 2.45) (3.05 2.45)(3.15 2.45) (3.25 2.45) (3.44 2.45);
+wire  'VDD' (0.90 2.45) (0.90 2.53);
+wire  'VDD' (1.80 2.45) (1.80 2.53);
+
+
+wire  0.025;
+set wire_bend 1;
+wire  'VDD' (2.725 1.56) (2.925 1.76);
+set wire_bend 0;
+
+wire  0.08;
+wire  'VSS' (0.30 0.70) ( 2.05 0.70) ;
+
+layer bottom;
+wire  0.04;
+wire  'VSS' (0.06 0.06) ( 3.44 0.06) (3.44 2.54) (0.06 2.54) (0.06 0.06);
+wire  'VSS' (2.15 0.95) ( 2.15 2.54) ;
+wire  'VSS' (3.35 2.05) ( 3.44 2.05) ;
+wire  'VDD' (0.90 2.45) (0.90 2.3);
+wire  'VDD' (1.80 2.45) (1.80 2.33);
+wire  0.025;
+set wire_bend 1;
+wire  'VSS'  (2.25 0.95)(2.35 1.10);
+set wire_bend 0;
+
+
+# Autorouter
+# AUTO CLK VSS;   # Route clock and ground first
+AUTO load /tmp/autorouter.ctl;
+AUTO ;
+
+## Define power fills top and bottom over whole board area
+layer Top ; 
+polygon VSS 0.08 (0 0) (0 2.6) (3.50 2.6) (3.50 0) (0 0) ;
+
+layer Bottom ; 
+polygon VSS 0.08 (0 0) (0 2.6) (3.50 2.6) (3.50 0) (0 0) ;
+
+
+Ratsnest ;  ## Calculate and display polygons
+
+
+Window Fit;
+

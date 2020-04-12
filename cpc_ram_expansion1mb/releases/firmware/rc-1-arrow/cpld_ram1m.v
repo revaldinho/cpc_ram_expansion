@@ -27,10 +27,10 @@
 
 `define FIT_XC9536 1
 
-`define M4_COMPATIBILITY  1
 `ifdef FIT_XC9536
   // Disable resynchronisation of reset
   `define DISABLE_RESET_RESYNC 1
+  `define FULL_SHADOW_ONLY 1
 `endif
 
 
@@ -43,15 +43,10 @@ module cpld_ram1m(
   input        iorq_b,
   input        mreq_b,
   input        reset_b,
-`ifdef M4_COMPATIBILITY
   inout        wr_b,
-`else
-  input        wr_b,
-`endif
   inout        rd_b,
   input [7:0]  data,
   input        clk,
-  input        m1_b,
   input [3:0]  dip,
   input        ramrd_b,
   inout        ramdis,
@@ -72,7 +67,6 @@ module cpld_ram1m(
   reg              ramcs_b_r;
   reg              adr15_q;
   reg              exp_ram_r;
-  reg              mreq_b_q;
 `ifndef DISABLE_RESET_RESYNC 
   reg              reset_b_q;
   reg              reset1_b_q;
@@ -89,7 +83,8 @@ module cpld_ram1m(
   wire             overdrive_mode;
   wire             mwr_cyc_d;
   wire             adr15_overdrive_w;
-  wire             ram512kb_mode;
+  wire             ram64kb_mode;  
+  wire             ram1mb_mode;            
   wire             reset_b_w;
   wire             shadow_write;
   
@@ -98,20 +93,37 @@ module cpld_ram1m(
    * DIP Switch Settings
    * ===================
    * 
-   * DIP1         ON=Overdrive (464) mode     OFF=6128 mode
-   * DIP2         ON=Shadow mode              OFF=DK'Tronics mode  (with Overdrive only)
-   * DIP3         ON=1MB mode                 OFF=512K mode
-   * DIP4         ON=disable RAM              ON=ENABLE RAM
+   * NB DIPs are numbered 1-4 on the physical component and in the table  here, but 0..3 in Verilog
    * 
+   * ---------+----------------------------------------- 
+   * DIP1 DIP2|  Mode selection
+   * ---------+----------------------------------------- 
+   *  OFF  OFF|  6128 Mode
+   *  OFF   ON|  DK'Tronics Mode
+   *   ON  OFF|  Shadow mode
+   *   ON   ON|  Full shadow mode
+   * ---------+-----------------------------------------
+   * DIP3 DIP4|  RAM size selection
+   * ---------+-----------------------------------------
+   *  OFF OFF |  Card Disabled     
+   * ---------+-----------------------------------------
+   *  OFF  ON |  64K mode (Max 6128 compatibility)
+   *   ON OFF |  512K Mode
+   *   ON  ON |  1MB mode
+   * ---------+-----------------------------------------
    */
 
-  assign overdrive_mode= dip[0];
-  assign shadow_mode   = dip[1];
-  assign full_shadow   = 1'b0;     // not implemented initially
-
-  assign shadow_bank   = {3'b111};  // Shadow bank always high bank in 7FFE RAM (SRAM1)
-  assign ram512kb_mode = dip[2] ;
-  assign cardsel_w     = !dip[3];
+  assign overdrive_mode= dip[0] | dip[1];
+`ifdef FULL_SHADOW_ONLY
+  assign full_shadow   = dip[1] | dip[0];  
+`else  
+  assign full_shadow   = dip[1] & dip[0];
+`endif  
+  assign shadow_mode   = dip[1] | dip[0];
+  assign shadow_bank   = {3'b111};  // Shadow bank always high bank in 7FFE RAM (SRAM0)
+  assign ram64kb_mode  = !dip[2] & dip[3];
+  assign ram1mb_mode   = dip[2] & dip[3];  
+  assign cardsel_w     = dip[2] | dip[3];
   
   
   // Dont drive address outputs during reset due to overlay of DIP switches
@@ -161,30 +173,37 @@ module cpld_ram1m(
    * State    _IDLE____X___T1____X____T1___X___T2____X_END__
    */
 
-`ifdef M4_COMPATIBILITY
-  // overdrive wr_b for the first high phase of CLK of an expansion RAM write to fool the M4 card
+
+  // M4 Compatibility: overdrive wr_b for the first high phase of CLK 
+  // of an expansion RAM write to fool the M4 card
   assign wr_b = ( overdrive_mode & exp_ram_q & (mwr_cyc_q & !mwr_cyc_f_q)) ? 1'b0 : 1'bz;
-`endif
 
   assign rd_b = ( overdrive_mode & exp_ram_q & (mwr_cyc_q|mwr_cyc_f_q)) ? 1'b0 : 1'bz ;
 
-  // Overdrive A15 for writes only in shadow modes (full and partial) but for all access types otherwise
-  // Need to compute whether A15 will need to be driven before the first rising edge of the MREQ cycle for the
-  // gate array to act on it. Cant wait to sample mwr_cyc_q after it has been set initially.
+  // Overdrive A15 for writes only in shadow modes (full and partial) but for all 
+  // access types otherwise. Need to compute whether A15 will need to be driven 
+  // before the first rising edge of the MREQ cycle for the gate array to act on 
+  // it. Cant wait to sample mwr_cyc_q after it has been set initially.
   assign mwr_cyc_d = !mreq_b & rd_b;
-
   assign adr15_overdrive_w = overdrive_mode & mode3_q & adr14 & ((shadow_mode) ? (mwr_cyc_q|mwr_cyc_d): !mreq_b) ;
-
   assign { adr15, adr15_aux} = (adr15_overdrive_w  ) ? 2'b11 : 2'bzz;
-  // Never, ever use internal RAM for reads in full shadow mode 
-  assign ramdis = (full_shadow) ? 1'b1 :  (((!ramcs_b_r) & cardsel_w) ? 1'b1 : 1'bz);
-  assign shadow_write = shadow_mode & (!exp_ram_r & (mwr_cyc_d|mwr_cyc_q)); 
-  assign shadow_read  = shadow_mode & (!exp_ram_r & ( {adr15_q,adr14}==2'b01 ) & !(mwr_cyc_d|mwr_cyc_q));
+  assign shadow_write = shadow_mode & !exp_ram_r &  mwr_cyc_q; 
   
-  // Low RAM is enabled for all shadow writes, shadow reads and when selected by 0x7Fex
+`ifdef FULL_SHADOW_ONLY
+  // Never, ever use internal RAM for reads in full shadow mode 
+  assign ramdis = (shadow_mode & cardsel_w)? 1'b1 : 1'bz;
+  assign shadow_read  = shadow_mode & !exp_ram_r & !mwr_cyc_q;  // All non-exp RAM reads are serviced from Shadow RAM
+`else
+  // Never, ever use internal RAM for reads in full shadow mode 
+  assign ramdis = (cardsel_w & (full_shadow | !ramcs_b_r)) ? 1'b1 : 1'bz;  
+  assign shadow_read  = shadow_mode & !exp_ram_r & !mwr_cyc_q & (full_shadow|(mode3_q&{adr15_q,adr14}==2'b01));
+`endif
+
+  // Low RAM is enabled for all shadow writes, shadow reads and when selected by 0x7Fex  
   assign ramcs0_b = !( (!ramcs_b_r) & cardsel_w & (low_not_high_ram_q | (shadow_read|shadow_write))) | mreq_b | !rfsh_b ;
-  // High RAM is enabled for except for shadow reads when selected by 0x7FFx  
-  assign ramcs1_b = !( (!ramcs_b_r) & cardsel_w & !low_not_high_ram_q & !shadow_read) | mreq_b | !rfsh_b ;
+  // High RAM is enabled only for expansion RAM accesses
+  // assign ramcs1_b = !( (!ramcs_b_r) & cardsel_w & !low_not_high_ram_q & !shadow_read) | mreq_b | !rfsh_b ;
+  assign ramcs1_b = !( (!ramcs_b_r) & cardsel_w & !low_not_high_ram_q & exp_ram_r) | mreq_b | !rfsh_b ;  
   
   always @ (posedge clk)
     if ( mwr_cyc_d )
@@ -200,11 +219,9 @@ module cpld_ram1m(
 
   always @ (posedge clk or negedge reset_b_w)
      if ( !reset_b_w ) begin
-      mreq_b_q = 1'b1;
       exp_ram_q = 1'b0;
     end
     else begin
-      mreq_b_q = mreq_b;
       exp_ram_q = exp_ram_r;
     end
 
@@ -234,13 +251,15 @@ module cpld_ram1m(
     end
     else begin
        if ( ram_ctrl_select_w ) begin
-          if ( shadow_mode && (data[5:3]==shadow_bank) )
-            ramblock_q <= {data[5:4],1'b0, data[2:0]};
-          else
-            ramblock_q <= data[5:0] ;
-          // Use IO Port 7Fxx or 7Exx depending on ram512kb_mode
-          low_not_high_ram_q <= (ram512kb_mode)? 1'b0: !adr8;  // 7Exx goes to low RAM, 7Fxx everywhere else, disable low ram in 512KB mode
-          mode3_q <= (data[2:0] == 3'b011);
+         // In 64KB mode force all expansion accesses to bank 0 of upper RAM
+         // In shadow mode any accesses to the (always odd) shadow bank get aliassed to the even bank below
+         if ( shadow_mode && (data[5:3]==shadow_bank) )
+           ramblock_q <= {((ram64kb_mode)?2'b0:data[5:4]),1'b0, data[2:0]};
+         else
+           ramblock_q <= (ram64kb_mode)?3'b0:data[5:3];
+         // Use IO Port 7Fxx or 7Exx depending on ram1mb_mode
+         low_not_high_ram_q <= (ram1mb_mode)? !adr8: 1'b0;  // 7Exx goes to low RAM, 7Fxx everywhere else, disable low ram in 64K/512KB mode
+         mode3_q <= (data[2:0] == 3'b011);
        end
        else if ( rom_ctrl_select_w ) begin
           { urom_disable_q, lrom_disable_q } <= data[3:2];
