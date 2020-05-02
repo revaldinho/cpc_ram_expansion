@@ -1,4 +1,4 @@
-# CPC 512K RAM Expansion
+# CPC 512K and 1MByte RAM Expansions
 
 This contains three different RAM cards for the Amstrad CPC family of microcomputers.
 
