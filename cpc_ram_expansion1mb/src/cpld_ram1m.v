@@ -62,7 +62,7 @@ module cpld_ram1m(
   reg [6:0]        ramblock_q;
   reg [5:0]        ramadrhi_r;
   wire             cardsel_w;  
-  reg              mode3_q;
+  reg              mode3_overdrive_q;
   reg              mwr_cyc_q;
   reg              mwr_cyc_f_q;
   reg              ramcs_b_r;
@@ -144,8 +144,9 @@ module cpld_ram1m(
   end
 
   // Remember that wr_b is overdrive for first high phase of clock for M4 compatibility so don't write ;
-  assign ramwe_b = ! ( !wr_b & mwr_cyc_q & mwr_cyc_f_q );
-  assign ramoe_b = (!int_ramrd_r) | rd_b ;
+  // assign ramwe_b = ! ( !wr_b & mwr_cyc_q & mwr_cyc_f_q );
+  assign ramwe_b = ! ( !wr_b & mwr_cyc_f_q );  
+  assign ramoe_b = (!int_ramrd_r) | rd_b | !cardsel_w;
   
 //  assign ramoe_b = ramrd_b ;
 
@@ -176,31 +177,45 @@ module cpld_ram1m(
   // access types otherwise. Need to compute whether A15 will need to be driven 
   // before the first rising edge of the MREQ cycle for the gate array to act on 
   // it. Cant wait to sample mwr_cyc_q after it has been set initially.
-  assign mwr_cyc_d = !mreq_b & rd_b;
-  assign adr15_overdrive_w = overdrive_mode & mode3_q & adr14 & ((shadow_mode) ? (mwr_cyc_q|mwr_cyc_d): !mreq_b) ;
-  assign { adr15, adr15_aux} = (adr15_overdrive_w  ) ? 2'b11 : 2'bzz;
+  assign mwr_cyc_d = !mreq_b & rd_b & rfsh_b;
+  assign adr15_overdrive_w = mode3_overdrive_q & adr14 & !adr15_q & ((shadow_mode) ? (mwr_cyc_q|mwr_cyc_d): !mreq_b) ;
+  assign { adr15, adr15_aux} = (adr15_overdrive_w ) ? 2'b11 : 2'bzz;
   
   // Never, ever use internal RAM for reads in full shadow mode    
   assign ramdis = (cardsel_w & (full_shadow | !ramcs_b_r)) ? 1'b1 : 1'bz;
-  // Low RAM is enabled for all (base memory) shadow writes and when selected by 0x7FFE 
-  assign ramcs0_b =  (ramadrhi_r[5] & exp_ram_r) | mreq_b | !rfsh_b | (ramcs_b_r & !full_shadow) | !cardsel_w ;
-  // High RAM is enabled only for expansion RAM accesses to 0x7FFF
-  assign ramcs1_b = !(ramadrhi_r[5] & exp_ram_r) | mreq_b | !rfsh_b | ramcs_b_r | !cardsel_w ;
 
+  // Alternative
+  // - drive ramdis and romdis
+  // - always overdrive ADR15 in mode3 allowing gate array to  initiate ROM or RAM access
+  // - block both and generate a RAM access internally
+  // - full shadow mode not addressed here
+  //
+  // assign adr15_overdrive_w = mode3_overdrive_q & adr14 & !adr15_q & !mreq_b ;
+  // assign ramromdis = (cardsel_w & !ramcs_b_r & int_ramrd_r) ? 1'b1 : 1'bz;
+
+  // Low RAM is enabled for all (base memory) shadow writes and when selected by 0x7FFE
+  assign ramcs0_b =  (ramadrhi_r[5] & exp_ram_r) | !rfsh_b | (ramcs_b_r & !full_shadow) | mreq_b;
+  // High RAM is enabled only for expansion RAM accesses to 0x7FFF
+  assign ramcs1_b = !(ramadrhi_r[5] & exp_ram_r) | !rfsh_b | ramcs_b_r | mreq_b ;
+
+    
   always @ (posedge clk)
     if ( mwr_cyc_d )
       mwr_cyc_q <= 1'b1;
     else if (mreq_b)
       mwr_cyc_q <= 1'b0;
 
+  always @ (negedge mreq_b)
+    adr15_q <= adr15;
+  
   always @ (negedge clk or negedge reset_b_w)
     if ( !reset_b_w ) begin
       mwr_cyc_f_q <= 1'b0;
-      adr15_q <= 1'b0;
+//      adr15_q <= 1'b0;
     end      
     else begin
       mwr_cyc_f_q <= mwr_cyc_q;
-      adr15_q <= (mreq_b) ? adr15 : adr15_q;
+//      adr15_q <= (mreq_b) ? adr15 : adr15_q;
     end
       
   always @ (posedge clk or negedge reset_b_w)
@@ -224,7 +239,7 @@ module cpld_ram1m(
   always @ (negedge clk or negedge reset_b_w)
     if (!reset_b_w) begin
       ramblock_q <= 7'b0;
-      mode3_q <= 1'b0;
+      mode3_overdrive_q <= 1'b0;
       urom_disable_q <= 1'b0;
       lrom_disable_q <= 1'b0;
     end
@@ -243,7 +258,7 @@ module cpld_ram1m(
          else
            // 512KB mode selects always upper RAM (and doesn't clash with shadow bank)           
            ramblock_q <= {1'b1,data[5:0]};                   
-         mode3_q <= (data[2:0] == 3'b011);
+         mode3_overdrive_q <= overdrive_mode & (data[2:0] == 3'b011);
        end
        else if ( rom_ctrl_select_w ) begin
           { urom_disable_q, lrom_disable_q } <= data[3:2];

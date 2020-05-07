@@ -1,0 +1,29 @@
+
+RC-1-Arrow
+==========
+
+7th May 2020
+
+Changes in this release
+=======================
+
+First full release of firmware and 1MB RAM Card, with all modes implemented and tested on a CPC464 and CPC6128.
+
+
+Bugs and Known Issues
+=====================
+
+For CPC 6128 and Plus Machines
+------------------------------
+
+ - None
+
+For CPC 464/664
+---------------
+
+ - CP/M+ and Zaptball run only in DK'Tronics mode
+
+
+
+
+ 
