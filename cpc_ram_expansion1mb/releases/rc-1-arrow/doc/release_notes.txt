@@ -2,16 +2,21 @@
 RC-1-Arrow
 ==========
 
-7th May 2020
+8th May 2020
 
 Changes in this release
 =======================
 
 First full release of firmware and 1MB RAM Card, with all modes implemented and tested on a CPC464 and CPC6128.
 
-
 Bugs and Known Issues
 =====================
+
+XC9572 Version provides all features as described in the manual.
+
+XC9536 Version merges the two shadow modes into one due to space
+constraints in the CPLD. All shadow mode selections will select
+'full shadow' operation. 
 
 For CPC 6128 and Plus Machines
 ------------------------------
