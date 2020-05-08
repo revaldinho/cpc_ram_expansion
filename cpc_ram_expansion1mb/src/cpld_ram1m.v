@@ -30,6 +30,7 @@
 `ifdef FIT_XC9536
   // Disable resynchronisation of reset
   `define DISABLE_RESET_RESYNC 1
+  `define FULL_SHADOW_ONLY     1
 `endif
 
 
@@ -99,7 +100,7 @@ module cpld_ram1m(
    * ---------+----------------------------------------- 
    *  OFF  OFF|  6128 Mode
    *  OFF   ON|  DK'Tronics Mode
-   *   ON  OFF|  Shadow mode
+   *   ON  OFF|  Shadow mode  (Full shadow on XC9536/Partial Shadow on XC9572)
    *   ON   ON|  Full shadow mode if enabled/Shadow mode if not
    * ---------+-----------------------------------------
    * DIP3 DIP4|  RAM size selection
@@ -113,7 +114,11 @@ module cpld_ram1m(
    */
 
   assign overdrive_mode= dip[0] | dip[1];
+`ifdef FULL_SHADOW_ONLY
+  assign full_shadow   = dip[0];  
+`else  
   assign full_shadow   = dip[1] & dip[0];
+`endif  
   assign shadow_mode   = dip[0] ;
   assign ram64kb_mode  = !dip[2] & dip[3];
   assign ram1mb_mode   = dip[2] & dip[3];  
@@ -194,7 +199,11 @@ module cpld_ram1m(
   // assign ramromdis = (cardsel_w & !ramcs_b_r & int_ramrd_r) ? 1'b1 : 1'bz;
 
   // Low RAM is enabled for all (base memory) shadow writes and when selected by 0x7FFE
+`ifdef FULL_SHADOW_ONLY  
+  assign ramcs0_b =  !((!ramadrhi_r[5] & exp_ram_r) | (full_shadow & !exp_ram_r)) | mreq_b;
+`else
   assign ramcs0_b =  !((!ramadrhi_r[5] & exp_ram_r) | (full_shadow & !exp_ram_r) | (shadow_mode & !exp_ram_r & !ramcs_b_r)) | mreq_b;
+`endif  
   // High RAM is enabled only for expansion RAM accesses to 0x7FFF
   assign ramcs1_b = !(ramadrhi_r[5] & exp_ram_r) | mreq_b ;
 
