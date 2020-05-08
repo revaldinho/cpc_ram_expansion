@@ -61,7 +61,8 @@ module cpld_ram1m(
   
   reg [6:0]        ramblock_q;
   reg [5:0]        ramadrhi_r;
-  wire             cardsel_w;  
+  wire             cardsel_w;
+  wire             adr15_mx_w;             
   reg              mode3_overdrive_q;
   reg              mwr_cyc_q;
   reg              mwr_cyc_f_q;
@@ -130,26 +131,24 @@ module cpld_ram1m(
   assign reset_b_w = reset1_b_q & reset_b & reset_b_q;
 `endif
   
-  // NB mode 3 DK'T 0x4000 -> remapped to 0xC000, wil
-  // l overlap ROM - so check adr15 and overdrive state
+  // NB mode 3 DK'T 0x4000 -> remapped to 0xC000, so allow for this when
+  // creating our internal version of ramrd_r
   always @ ( * ) begin
     int_ramrd_r = 1'b0 ; 	 // default disable RAM accesses
-    if ( rfsh_b & !mreq_b )
-      if ( (adr15_q|adr15_overdrive_w) != adr14 )
-        int_ramrd_r = 1'b1; // RAM in range 0x4000 - 0xBFFF never overlapped by ROM
-      else if ( urom_disable_q & ( {(adr15_q|adr15_overdrive_w),adr14} == 2'b11 ))
+    if ( rfsh_b & !mreq_b & !rd_b)
+      if ( adr15_mx_w != adr14 )
+        int_ramrd_r = 1'b1; // RAM in range 0x4000 - 0xBFFF never overlapped by ROM 
+                            // and this is true even if we overdrive adr15.
+      else if ( urom_disable_q & ( {adr15_q,adr14} == 2'b11 ))
         int_ramrd_r = 1'b1; // RAM read in 0xC000 - 0xFFFF only if UROM disabled
-      else if ( lrom_disable_q & ( {(adr15_q|adr15_overdrive_w),adr14} == 2'b00 ))
+      else if ( lrom_disable_q & ( {adr15_q,adr14} == 2'b00 ))
         int_ramrd_r = 1'b1; // RAM read in 0x0000 - 0x3FFF only if LROM disabled
   end
 
   // Remember that wr_b is overdrive for first high phase of clock for M4 compatibility so don't write ;
-  // assign ramwe_b = ! ( !wr_b & mwr_cyc_q & mwr_cyc_f_q );
-  assign ramwe_b = ! ( !wr_b & mwr_cyc_f_q );  
-  assign ramoe_b = (!int_ramrd_r) | rd_b | !cardsel_w;
+  assign ramwe_b = ! ( !wr_b & mwr_cyc_q & mwr_cyc_f_q );
+  assign ramoe_b = !int_ramrd_r | !cardsel_w;
   
-//  assign ramoe_b = ramrd_b ;
-
   /* Memory Data Access
    *          ____      ____      ____      ____      ____
    * CLK     /    \____/    \____/    \____/    \____/    \_
@@ -178,8 +177,9 @@ module cpld_ram1m(
   // before the first rising edge of the MREQ cycle for the gate array to act on 
   // it. Cant wait to sample mwr_cyc_q after it has been set initially.
   assign mwr_cyc_d = !mreq_b & rd_b & rfsh_b;
-  assign adr15_overdrive_w = mode3_overdrive_q & adr14 & !adr15_q & ((shadow_mode) ? (mwr_cyc_q|mwr_cyc_d): !mreq_b) ;
-  assign { adr15, adr15_aux} = (adr15_overdrive_w ) ? 2'b11 : 2'bzz;
+  assign adr15_overdrive_w = mode3_overdrive_q & adr14 & !adr15_mx_w & ((shadow_mode) ? (mwr_cyc_q|mwr_cyc_d): !mreq_b) ;
+  assign { adr15, adr15_aux} = (adr15_overdrive_w ) ? 2'b11 : 2'bzz;  
+  assign adr15_mx_w = (mreq_b) ? adr15: adr15_q;
   
   // Never, ever use internal RAM for reads in full shadow mode    
   assign ramdis = (cardsel_w & (full_shadow | !ramcs_b_r)) ? 1'b1 : 1'bz;
@@ -194,11 +194,11 @@ module cpld_ram1m(
   // assign ramromdis = (cardsel_w & !ramcs_b_r & int_ramrd_r) ? 1'b1 : 1'bz;
 
   // Low RAM is enabled for all (base memory) shadow writes and when selected by 0x7FFE
-  assign ramcs0_b =  (ramadrhi_r[5] & exp_ram_r) | !rfsh_b | (ramcs_b_r & !full_shadow) | mreq_b;
+  assign ramcs0_b =  !((!ramadrhi_r[5] & exp_ram_r) | (full_shadow & !exp_ram_r) | (shadow_mode & !exp_ram_r & !ramcs_b_r)) | mreq_b;
   // High RAM is enabled only for expansion RAM accesses to 0x7FFF
-  assign ramcs1_b = !(ramadrhi_r[5] & exp_ram_r) | !rfsh_b | ramcs_b_r | mreq_b ;
+  assign ramcs1_b = !(ramadrhi_r[5] & exp_ram_r) | mreq_b ;
 
-    
+  
   always @ (posedge clk)
     if ( mwr_cyc_d )
       mwr_cyc_q <= 1'b1;
@@ -211,11 +211,9 @@ module cpld_ram1m(
   always @ (negedge clk or negedge reset_b_w)
     if ( !reset_b_w ) begin
       mwr_cyc_f_q <= 1'b0;
-//      adr15_q <= 1'b0;
     end      
     else begin
       mwr_cyc_f_q <= mwr_cyc_q;
-//      adr15_q <= (mreq_b) ? adr15 : adr15_q;
     end
       
   always @ (posedge clk or negedge reset_b_w)
@@ -264,7 +262,7 @@ module cpld_ram1m(
           { urom_disable_q, lrom_disable_q } <= data[3:2];
        end
     end
-
+  
   always @ ( * ) begin
     if ( shadow_mode )
       // FULL SHADOW MODE    - all CPU read accesses come from external memory (ramcs_b_r computed here is ignored)
@@ -273,7 +271,7 @@ module cpld_ram1m(
  	3'b000: {exp_ram_r, ramcs_b_r, ramadrhi_r} = { 1'b0, !mwr_cyc_q , shadow_bank, adr15,adr14 };
  	3'b001: {exp_ram_r, ramcs_b_r, ramadrhi_r} = ( {adr15,adr14}==2'b11 ) ? {2'b10, ramblock_q[6:3],2'b11} : { 1'b0, !mwr_cyc_q , shadow_bank, adr15,adr14 };
  	3'b010: {exp_ram_r, ramcs_b_r, ramadrhi_r} = { 2'b10, ramblock_q[5:3], adr15,adr14} ;
- 	3'b011: {exp_ram_r, ramcs_b_r, ramadrhi_r} = ( {adr15_q,adr14}==2'b11 ) ? {2'b10,ramblock_q[6:3],2'b11} : ({adr15_q,adr14}==2'b01) ? {2'b00,shadow_bank,2'b11} : { 1'b0, !mwr_cyc_q , shadow_bank, adr15,adr14 };
+ 	3'b011: {exp_ram_r, ramcs_b_r, ramadrhi_r} = ( {adr15_mx_w,adr14}==2'b11 ) ? {2'b10,ramblock_q[6:3],2'b11} : ({adr15_mx_w,adr14}==2'b01) ? {2'b00,shadow_bank,2'b11} : { 1'b0, !mwr_cyc_q , shadow_bank, adr15,adr14 };
  	3'b100: {exp_ram_r, ramcs_b_r, ramadrhi_r} = ( {adr15,adr14}==2'b01 ) ? {2'b10,ramblock_q[6:3],2'b00} : { 1'b0, !mwr_cyc_q , shadow_bank, adr15, adr14 };
  	3'b101: {exp_ram_r, ramcs_b_r, ramadrhi_r} = ( {adr15,adr14}==2'b01 ) ? {2'b10,ramblock_q[6:3],2'b01} : { 1'b0, !mwr_cyc_q , shadow_bank, adr15, adr14 };
  	3'b110: {exp_ram_r, ramcs_b_r, ramadrhi_r} = ( {adr15,adr14}==2'b01 ) ? {2'b10,ramblock_q[6:3],2'b10} : { 1'b0, !mwr_cyc_q , shadow_bank, adr15, adr14 };
@@ -285,7 +283,7 @@ module cpld_ram1m(
  	3'b000: {exp_ram_r, ramcs_b_r, ramadrhi_r} = { 2'b01, 6'bxxxxx };
  	3'b001: {exp_ram_r, ramcs_b_r, ramadrhi_r} = ( {adr15,adr14}==2'b11 ) ? {2'b10,ramblock_q[6:3],2'b11} : {2'b01, 6'bxxxxx};
  	3'b010: {exp_ram_r, ramcs_b_r, ramadrhi_r} = { 2'b10,ramblock_q[6:3],adr15,adr14} ;
- 	3'b011: {exp_ram_r, ramcs_b_r, ramadrhi_r} = ( {adr15_q,adr14}==2'b11 ) ? {2'b10,ramblock_q[6:3],2'b11} : {2'b01, 6'bxxxxx };
+ 	3'b011: {exp_ram_r, ramcs_b_r, ramadrhi_r} = ( {adr15_mx_w,adr14}==2'b11 ) ? {2'b10,ramblock_q[6:3],2'b11} : {2'b01, 6'bxxxxx };
  	3'b100: {exp_ram_r, ramcs_b_r, ramadrhi_r} = ( {adr15,adr14}==2'b01 ) ? {2'b10,ramblock_q[6:3],2'b00} : {2'b01, 6'bxxxxx };
  	3'b101: {exp_ram_r, ramcs_b_r, ramadrhi_r} = ( {adr15,adr14}==2'b01 ) ? {2'b10,ramblock_q[6:3],2'b01} : {2'b01, 6'bxxxxx };
  	3'b110: {exp_ram_r, ramcs_b_r, ramadrhi_r} = ( {adr15,adr14}==2'b01 ) ? {2'b10,ramblock_q[6:3],2'b10} : {2'b01, 6'bxxxxx };
