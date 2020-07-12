@@ -16,8 +16,8 @@ cp ../../common_pcb/autorouter.ctl /tmp
 cp design_rules.dru /tmp
 
 ## Revised CPLD based RAM board - 464 and 6128
-make cpc_ram1m.net -f ../../common_pcb/Makefile
-make cpc_ram1m.scr -f ../../common_pcb/Makefile
+make cpc_ram1m_plcc84.net -f ../../common_pcb/Makefile
+make cpc_ram1m_plcc84.scr -f ../../common_pcb/Makefile
 
 
 
