@@ -46,7 +46,7 @@ MOVE GPIO           (1.20 2.95) ;
 Layer tPlace ;
 CHANGE FONT PROPORTIONAL ;
 CHANGE SIZE 0.06
-TEXT 'CPC 1MByte RAM Expansion, v1.01' R90 (0.10 0.4) ;
+TEXT 'CPC 1MByte RAM Expansion/GPIO Board (PLCC84) v1.00' R90 (0.10 0.4) ;
 CHANGE SIZE 0.04
 TEXT '(C) 2020 Revaldinho, github.com/revaldinho/cpc_ram_expansion'  R90      (0.2 0.4) ;
 
