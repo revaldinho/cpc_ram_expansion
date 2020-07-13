@@ -1,8 +1,8 @@
 # Pin Assignments to match PCB netlist
-PIN "reset_b" LOC = P1 ;
-PIN "exp_b" LOC = P2 ;
-#PIN "" LOC = P3 ;
-#PIN "" LOC = P4 ;
+PIN "tp[2]" LOC = P1 ;
+PIN "tp[3]" LOC = P2 ;
+PIN "tp[0]" LOC = P3 ;
+PIN "tp[1]" LOC = P4 ;
 PIN "dip[0]" LOC = P5 ;
 PIN "dip[1]" LOC = P6 ;
 PIN "dip[2]" LOC = P7 ;
@@ -57,39 +57,39 @@ PIN "data[6]" LOC = P52 ;
 PIN "data[5]" LOC = P53 ;
 
 # Bottom
-PIN "data[4]" LOC = P54 ;
-PIN "data[3]" LOC = P55 ;
-PIN "data[2]" LOC = P56 ;
-PIN "data[1]" LOC = P57 ;
-PIN "data[0]" LOC = P58 ;
+PIN "adr15" LOC = P54 ;
+PIN "adr15_aux" LOC = P55 ;
+PIN "adr[14]" LOC = P56 ;
+PIN "data[4]" LOC = P57 ;
+PIN "data[3]" LOC = P58 ;
 #.tdo tdo ;
 #.gnd6 VSS ;
-PIN "adr15" LOC = P61 ;
-PIN "adr15_aux" LOC = P62 ;
-PIN "adr[14]" LOC = P63 ;
+PIN "data[2]" LOC = P61 ;
+PIN "data[1]" LOC = P62 ;
+PIN "data[0]" LOC = P63 ;
 #.vccio2 VDD ;
-PIN "m1_b" LOC = P65 ;
-PIN "rfsh_b" LOC = P66 ;
-PIN "iorq_b" LOC = P67 ;
-PIN "rd_b" LOC = P68 ;
-PIN "wr_b" LOC = P69 ;
-PIN "int_b" LOC = P70 ;
-PIN "nmi_b" LOC = P71 ;
-PIN "ready" LOC = P72 ;
+PIN "romen_b" LOC = P65 ;
+PIN "romdis" LOC = P66 ;
+PIN "ramrd_b" LOC = P67 ;
+PIN "ioreq_b" LOC = P68 ;
+PIN "rd_b" LOC = P69 ;
+PIN "wr_b" LOC = P70 ;
+PIN "int_b" LOC = P71 ;
+PIN "nmi_b" LOC = P72 ;
 #.vccint2 VDD ;
 PIN "busreset_b" LOC = P74 ; # GSR
 
 # RHS
-PIN "romen_b" LOC = P75 ;
-PIN "romdis" LOC = P76 ; # gts1
-PIN "ramrd_b" LOC = P76 ; # gts2
+PIN "busack_b" LOC = P75 ;
+PIN "busreq_b" LOC = P76 ; # gts1
+PIN "ready" LOC = P76 ; # gts2
 #.vccint3 VDD ;
-PIN "ramdis" LOC = P79 ;
-PIN "mreq_b" LOC = P80 ;
-PIN "busreq_b" LOC = P81 ;
-PIN "busack_b" LOC = P82 ;
-PIN "halt_b" LOC = P83 ;
-PIN "lpen" LOC = P84 ;
+PIN "reset_b" LOC = P79 ;
+PIN "ramdis" LOC = P80 ;
+PIN "mreq_b" LOC = P81 ;
+PIN "m1_b" LOC = P82 ;
+PIN "tp[4]" LOC = P83 ;
+PIN "rfsh_b" LOC = P84 ;
 
 NET adr15 FAST ;
 NET adr15_aux FAST ;

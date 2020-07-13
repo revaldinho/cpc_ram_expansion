@@ -57,7 +57,7 @@ module cpc_ram1m_plcc84 ();
   wire CLK;
   wire RAMCS0_B;
   wire RAMCS1_B;  
-
+  wire TP0,TP1,TP2,TP3,TP4;  
   wire HIADR4,HIADR3,HIADR2,HIADR1,HIADR0;
   wire RAMOE_B;
   wire RAMWE_B;
@@ -97,6 +97,16 @@ module cpc_ram1m_plcc84 ();
                       .p7(gpio5), .p8(gpio6),
                       .p9(gpio7), .p10(VDD),
                       );
+  
+  hdr1x06        TESTPT (
+                         .p1(TP0),
+                         .p2(TP1),
+                         .p3(TP2),
+                         .p4(TP3),
+                         .p5(TP4),
+                         .p6(VSS)
+                         );
+  
   
   // Amstrad CPC Edge Connector
   //
@@ -140,10 +150,10 @@ module cpc_ram1m_plcc84 ();
   xc95108_pc84  CPLD (
 
                       // RHS
-		      .p1(RESET_B),
-		      .p2(EXP_B),
-		      .p3(),
-		      .p4(),
+		      .p1(TP2),
+		      .p2(TP3),
+		      .p3(TP0),
+		      .p4(TP1),
 		      .p5(dip0),
 		      .p6(dip1),
 		      .p7(dip2),
@@ -199,39 +209,39 @@ module cpc_ram1m_plcc84 ();
 		      .p53(D5),
 
                       // Bottom
-		      .p54(D4),
-		      .p55(D3),
-		      .p56(D2),
-		      .p57(D1),
-		      .p58(D0),
+		      .p54(A15),
+		      .p55(A15),
+		      .p56(A14),
+		      .p57(D4),
+		      .p58(D3),
 		      .tdo(tdo),
 		      .gnd6(VSS),
-		      .p61(A15),
-		      .p62(A15),
-		      .p63(A14),
+		      .p61(D2),
+		      .p62(D1),
+		      .p63(D0),
 		      .vccio2(VDD),
-		      .p65(M1_B),
-		      .p66(RFSH_B),
-		      .p67(IOREQ_B),
-		      .p68(RD_B),
-		      .p69(WR_B),
-		      .p70(INT_B),
-		      .p71(NMI_B),
-		      .p72(READY),
+		      .p65(ROMEN_B),
+		      .p66(ROMDIS),
+		      .p67(RAMRD_B),
+		      .p68(IOREQ_B),
+		      .p69(RD_B),
+		      .p70(WR_B),
+		      .p71(INT_B),
+		      .p72(NMI_B),
 		      .vccint2(VDD),
 		      .gsr(BUSRESET_B),
 
                       // RHS
-		      .p75(ROMEN_B),
-		      .gts1(ROMDIS),
-		      .gts2(RAMRD_B),
+		      .p75(BUSACK_B),
+		      .gts1(BUSREQ_B),
+		      .gts2(READY),
 		      .vccint3(VDD),
-		      .p79(RAMDIS),
-		      .p80(MREQ_B),
-		      .p81(BUSREQ_B),
-		      .p82(BUSACK_B),
-		      .p83(HALT_B),
-		      .p84(LPEN)
+		      .p79(RESET_B),
+		      .p80(RAMDIS),
+		      .p81(MREQ_B),
+		      .p82(M1_B),
+		      .p83(TP4),
+		      .p84(RFSH_B)
                       );
 
 

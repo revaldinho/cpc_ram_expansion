@@ -84,11 +84,10 @@ module cpld_ram1m_plcc84(
                          inout        adr15_aux,
                          
                          input [14:0] adr,
-                         input        iorq_b,
+                         input        ioreq_b,
                          input        mreq_b,
                          input        reset_b,
                          input        busreset_b,
-                         input        exp_b,
                          input        busack_b, 
                          inout        wr_b,
                          inout        rd_b,
@@ -98,7 +97,6 @@ module cpld_ram1m_plcc84(
                          input [3:0]  dip,
                          input        ramrd_b,
                          input        romen_b,
-                         input        halt_b, 
                          
                          inout        ramdis,
                          inout        int_b,
@@ -107,8 +105,8 @@ module cpld_ram1m_plcc84(
                          inout [7:0]  gpio,
                          inout        romdis,
                          inout [4:0]  ramadrhi, // bits 4,3 also connected to DIP switches 2,1 resp and read on startup
-                         
-                         output       lpen,
+
+                         input [4:0]  tp,        
                          output       ramcs0_b,
                          output       ramcs1_b,
                          output       busreq_b,
@@ -196,8 +194,8 @@ module cpld_ram1m_plcc84(
 
   // Dont drive address outputs during reset due to overlay of DIP switches
   assign ramadrhi =  ( !reset_b_w ) ? 5'bzzzzz : ramadrhi_r[4:0];
-  assign ram_ctrl_select_w = (!iorq_b && !wr_b && !adr15 && data[6] && data[7] );
-  assign rom_ctrl_select_w = (!iorq_b && !wr_b && !adr15 && !data[6] && data[7] );
+  assign ram_ctrl_select_w = (!ioreq_b && !wr_b && !adr15 && data[6] && data[7] );
+  assign rom_ctrl_select_w = (!ioreq_b && !wr_b && !adr15 && !data[6] && data[7] );
 
 `ifdef DISABLE_RESET_RESYNC
   assign reset_b_w = busreset_b;
