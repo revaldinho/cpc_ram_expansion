@@ -116,10 +116,10 @@ module cpld_ram1m_plcc84(
 
   parameter   shadow_bank= 4'b0111;  // Shadow bank always high bank in 7FFE RAM (SRAM0)
 
-
+  reg              yarek_bank_sel_r;  
   reg [6:0]        ramblock_q;
   reg [5:0]        ramadrhi_r;
-  wire             cardsel_w;
+  reg              cardsel_q;
   wire             adr15_mx_w;
   reg              mode3_overdrive_q;
   reg              mwr_cyc_q;
@@ -190,13 +190,26 @@ module cpld_ram1m_plcc84(
 
   assign ram64kb_mode  = !dip[2] & dip[3];
   assign ram1mb_mode   = dip[2] & dip[3];
-  assign cardsel_w     = dip[2] | dip[3];
 
+  
   // Dont drive address outputs during reset due to overlay of DIP switches
   assign ramadrhi =  ( !reset_b_w ) ? 5'bzzzzz : ramadrhi_r[4:0];
   assign ram_ctrl_select_w = (!ioreq_b && !wr_b && !adr15 && data[6] && data[7] );
   assign rom_ctrl_select_w = (!ioreq_b && !wr_b && !adr15 && !data[6] && data[7] );
 
+
+always @ ( * ) begin
+  // 1 - chose with Adr[8] -> fail  (tried with inverted adr[8] - fail)
+  //yarek_bank_sel_r = !adr[8];
+  // 2 - chose with Adr[10] -> fail (tried with inverted adr[10] - fail)
+  //yarek_bank_sel_r = !adr[10];
+  // 3 - chose with Adr[9] -> fail
+  //yarek_bank_sel_r = adr[9];
+  // 4 - default to 0x7Fxx bank unless 0x78xx is chosen 
+  yarek_bank_sel_r = (adr[10:8]==3'b110)?1'b0: 1'b1;
+  end
+
+  
 `ifdef DISABLE_RESET_RESYNC
   assign reset_b_w = busreset_b;
 `else
@@ -254,7 +267,7 @@ module cpld_ram1m_plcc84(
   assign adr15_mx_w = (mreq_b) ? adr15: adr15_q;
 
   // Never, ever use internal RAM for reads in full shadow mode
-  assign ramdis = (cardsel_w & (full_shadow | !ramcs_b_r)) ? 1'b1 : 1'bz;
+  assign ramdis = (cardsel_q & (full_shadow | !ramcs_b_r)) ? 1'b1 : 1'bz;
 
   // Alternative
   // - drive ramdis and romdis
@@ -263,16 +276,16 @@ module cpld_ram1m_plcc84(
   // - full shadow mode not addressed here
   //
   // assign adr15_overdrive_w = mode3_overdrive_q & adr14 & !adr15_q & !mreq_b ;
-  // assign ramromdis = (cardsel_w & !ramcs_b_r & int_ramrd_r) ? 1'b1 : 1'bz;
+  // assign ramromdis = (cardsel_q & !ramcs_b_r & int_ramrd_r) ? 1'b1 : 1'bz;
 
   // Low RAM is enabled for all (base memory) shadow writes and when selected by 0x7Exx
 `ifdef FULL_SHADOW_ONLY
-  assign ramcs0_b =  !cardsel_w | !((!ramadrhi_r[5] & exp_ram_r) | (full_shadow & !exp_ram_r)) | mreq_b | !rfsh_b;
+  assign ramcs0_b =  !cardsel_q | !((!ramadrhi_r[5] & exp_ram_r) | (full_shadow & !exp_ram_r)) | mreq_b | !rfsh_b;
 `else
-  assign ramcs0_b =  !cardsel_w | !((!ramadrhi_r[5] & exp_ram_r) | (full_shadow & !exp_ram_r) | (shadow_mode & !exp_ram_r & !ramcs_b_r)) | mreq_b | !rfsh_b;
+  assign ramcs0_b =  !cardsel_q | !((!ramadrhi_r[5] & exp_ram_r) | (full_shadow & !exp_ram_r) | (shadow_mode & !exp_ram_r & !ramcs_b_r)) | mreq_b | !rfsh_b;
 `endif
   // High RAM is enabled only for expansion RAM accesses to 0x7Fxx
-  assign ramcs1_b = !cardsel_w | !(ramadrhi_r[5] & exp_ram_r) | mreq_b | !rfsh_b ;
+  assign ramcs1_b = (!cardsel_q) | !(ramadrhi_r[5] & exp_ram_r) | mreq_b | !rfsh_b ;
 
   always @ (posedge clk)
     if ( mwr_cyc_d )
@@ -315,19 +328,26 @@ module cpld_ram1m_plcc84(
       mode3_overdrive_q <= 1'b0;
       urom_disable_q <= 1'b0;
       lrom_disable_q <= 1'b0;
+      cardsel_q <= 1'b0;
     end
     else begin
        if ( ram_ctrl_select_w ) begin
+         // Trial run - disable card in 1MB mode if not accessed as 0x7E or 0x7F - ie other ranges unimplemented
+         // Adding this term makes the 6128 64K expansion appear in the address space to some test programs
+         cardsel_q <= (dip[2] | dip[3]) & (!ram1mb_mode | (adr[11:9]==3'b111));
+         // Lower nybble of upper address is used to select sets of 8 banks in extended scheme
+         // In 1MB mode make only 0xXF and 0xXE valid.
          if (ram64kb_mode)
            // 64KB mode, selects always bank 0 in upper RAM (and doesn't clash with shadow bank)
            ramblock_q <= {4'b1000, data[2:0]} ;
-         else if (ram1mb_mode)
+         else if (ram1mb_mode) begin
            // 1MB mode uses given bank in upper (0x7Fxx) or lower (0x7Exx) RAM, but if bank selected is lower 0b111
            // (which is used for shadow RAM) then must alias that to the next lower bank 0b110
-           if ( shadow_mode & {adr[8],data[5:3]}==shadow_bank )
-             ramblock_q <= {adr[8],data[5:4], 1'b0, data[2:0]};
+           if ( shadow_mode & {yarek_bank_sel_r,data[5:3]}==shadow_bank )
+             ramblock_q <= {yarek_bank_sel_r,data[5:4], 1'b0, data[2:0]};
            else
-             ramblock_q <= {adr[8],data[5:0]};
+             ramblock_q <= {yarek_bank_sel_r,data[5:0]};
+         end         
          else
            // 512KB mode selects always upper RAM (and doesn't clash with shadow bank)
            ramblock_q <= {1'b1,data[5:0]};

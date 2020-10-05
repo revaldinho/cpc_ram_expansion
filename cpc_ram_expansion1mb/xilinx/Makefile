@@ -1,6 +1,6 @@
-project_name ?= cpld_ram1m
+project_name ?= cpld_ram1m_plcc84
 #target ?= xc9572-10-PC44
-target ?= xc9536-10-PC44
+target ?= xc95108-10-PC84
 
 # Alternative target xc9536-10-PC44
 
