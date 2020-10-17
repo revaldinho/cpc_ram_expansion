@@ -65,18 +65,14 @@
 //`define DISABLE_RESET_RESYNC 1
 //`define FULL_SHADOW_ONLY     1
 
-`define FIT_XC9536 1
-
 `ifdef CPC6128_ONLY
   `define EXT_RAMRD 1
 `endif
 
- `ifdef FIT_XC9536
+`ifdef FIT_XC9536
   // Disable resynchronisation of reset
   `define DISABLE_RESET_RESYNC 1
-  `define FULL_SHADOW_ONLY     1
 `endif
-
 
 module cpld_ram1m(
   input        rfsh_b,
@@ -148,7 +144,7 @@ module cpld_ram1m(
    * ---------+-----------------------------------------
    *  OFF  OFF|  6128 Mode
    *  OFF   ON|  DK'Tronics Mode
-   *   ON  OFF|  Shadow mode  (Full shadow on XC9536/Partial Shadow on XC9572)
+   *   ON  OFF|  Shadow mode (NB XC9536 implements FULL SHADOW only)
    *   ON   ON|  Full shadow mode if enabled/Shadow mode if not
    * ---------+-----------------------------------------
    * DIP3 DIP4|  RAM size selection
@@ -179,6 +175,7 @@ module cpld_ram1m(
   assign ram1mb_mode   = dip[2] & dip[3];
   assign cardsel_w     = dip[2] | dip[3];
 
+  
   // Dont drive address outputs during reset due to overlay of DIP switches
   assign ramadrhi =  ( !reset_b_w ) ? 5'bzzzzz : ramadrhi_r[4:0];
   assign ram_ctrl_select_w = (!iorq_b && !wr_b && !adr15 && data[6] && data[7] );
@@ -190,24 +187,25 @@ module cpld_ram1m(
   assign reset_b_w = reset1_b_q & reset_b & reset_b_q;
 `endif
 
-`ifndef EXT_RAMRD
+`ifndef EXT_RAMRD  
   // NB mode 3 DK'T 0x4000 -> remapped to 0xC000, so allow for this when
-  // creating our internal version of ramrd_r
+  // creating our internal version of ramrd_b_r
   always @ ( * ) begin
     int_ramrd_b_r = 1'b1 ; 	 // default disable RAM accesses
     if ( rfsh_b & !mreq_b & !rd_b)
-      if ( urom_disable_q & ( {adr15_q,adr14} == 2'b11 ))
+      if ( adr15_mx_w != adr14 )
+        int_ramrd_b_r = 1'b0; // RAM in range 0x4000 - 0xBFFF never overlapped by ROM
+                            // and this is true even if we overdrive adr15.
+      else if ( urom_disable_q & ( {adr15_q,adr14} == 2'b11 ))
         int_ramrd_b_r = 1'b0; // RAM read in 0xC000 - 0xFFFF only if UROM disabled
       else if ( lrom_disable_q & ( {adr15_q,adr14} == 2'b00 ))
         int_ramrd_b_r = 1'b0; // RAM read in 0x0000 - 0x3FFF only if LROM disabled
-      else
-        int_ramrd_b_r = 1'b0;
-  end
+  end  
 `endif //  `ifndef EXT_RAMRD
 
   // Remember that wr_b is overdrive for first high phase of clock for M4 compatibility so don't write ;
-  assign ramwe_b = ! ( !wr_b & mwr_cyc_f_q );
-  assign ramoe_b = ramrd_b_w ;
+  assign ramwe_b = ! ( !wr_b & mwr_cyc_q & mwr_cyc_f_q );  
+  assign ramoe_b = int_ramrd_b_r ;
 
   /* Memory Data Access
    *          ____      ____      ____      ____      ____
@@ -226,6 +224,7 @@ module cpld_ram1m(
    * State    _IDLE____X___T1____X____T1___X___T2____X_END__
    */
 
+  
   // M4 Compatibility: overdrive wr_b for the first high phase of CLK
   // of an expansion RAM write to fool the M4 card
   assign wr_b = ( overdrive_mode & exp_ram_q & (mwr_cyc_q & !mwr_cyc_f_q)) ? 1'b0 : 1'bz;
@@ -260,7 +259,7 @@ module cpld_ram1m(
 `endif
   // High RAM is enabled only for expansion RAM accesses to 0x7Fxx
   assign ramcs1_b = !cardsel_w | !(ramadrhi_r[5] & exp_ram_r) | mreq_b | !rfsh_b ;
-
+  
   always @ (posedge clk)
     if ( mwr_cyc_d )
       mwr_cyc_q <= 1'b1;
