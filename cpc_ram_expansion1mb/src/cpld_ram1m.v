@@ -60,18 +60,17 @@
  *
  */
 
-//`define CPC6128_ONLY 1
-//`define EXT_RAMRD 1
-//`define DISABLE_RESET_RESYNC 1
-//`define FULL_SHADOW_ONLY     1
+//`define FIT_XC9536 1
 
 `ifdef CPC6128_ONLY
   `define EXT_RAMRD 1
 `endif
 
 `ifdef FIT_XC9536
-  // Disable resynchronisation of reset
+  // Barely fits in the CPLD without some features removed
+  `define EXT_RAMRD 1
   `define DISABLE_RESET_RESYNC 1
+  `define FULL_SHADOW_ONLY     1
 `endif
 
 module cpld_ram1m(
@@ -115,13 +114,13 @@ module cpld_ram1m(
   reg              reset1_b_q;
 `endif
   reg              exp_ram_q;
+`ifdef EXT_RAMRD
+  wire             ramrd_b_w = ramrd_b;
+`else
   reg 	           urom_disable_q;
   reg 	           lrom_disable_q;
-`ifndef EXT_RAMRD
   reg              int_ramrd_b_r ;    // compute local ramrd signal rather than wait on one from ULA
   wire             ramrd_b_w = int_ramrd_b_r;
-`else
-  wire             ramrd_b_w = ramrd_b;
 `endif
   wire             ram_ctrl_select_w;
   wire             rom_ctrl_select_w;
@@ -149,7 +148,7 @@ module cpld_ram1m(
    * ---------+-----------------------------------------
    * DIP3 DIP4|  RAM size selection
    * ---------+-----------------------------------------
-   *  OFF OFF |  Card Disabled
+   *  OFF OFF |  Card Disabled (not for XC9536)
    * ---------+-----------------------------------------
    *  OFF  ON |  64K mode (Max 6128 compatibility)
    *   ON OFF |  512K Mode
@@ -173,9 +172,11 @@ module cpld_ram1m(
 
   assign ram64kb_mode  = !dip[2] & dip[3];
   assign ram1mb_mode   = dip[2] & dip[3];
+`ifdef CARD_ALWAYS_ENABLED
+  assign cardsel_w     = 1'b1;
+`else  
   assign cardsel_w     = dip[2] | dip[3];
-
-  
+`endif
   // Dont drive address outputs during reset due to overlay of DIP switches
   assign ramadrhi =  ( !reset_b_w ) ? 5'bzzzzz : ramadrhi_r[4:0];
   assign ram_ctrl_select_w = (!iorq_b && !wr_b && !adr15 && data[6] && data[7] );
@@ -187,7 +188,7 @@ module cpld_ram1m(
   assign reset_b_w = reset1_b_q & reset_b & reset_b_q;
 `endif
 
-`ifndef EXT_RAMRD  
+`ifndef EXT_RAMRD
   // NB mode 3 DK'T 0x4000 -> remapped to 0xC000, so allow for this when
   // creating our internal version of ramrd_b_r
   always @ ( * ) begin
@@ -200,12 +201,12 @@ module cpld_ram1m(
         int_ramrd_b_r = 1'b0; // RAM read in 0xC000 - 0xFFFF only if UROM disabled
       else if ( lrom_disable_q & ( {adr15_q,adr14} == 2'b00 ))
         int_ramrd_b_r = 1'b0; // RAM read in 0x0000 - 0x3FFF only if LROM disabled
-  end  
+  end
 `endif //  `ifndef EXT_RAMRD
 
   // Remember that wr_b is overdrive for first high phase of clock for M4 compatibility so don't write ;
-  assign ramwe_b = ! ( !wr_b & mwr_cyc_q & mwr_cyc_f_q );  
-  assign ramoe_b = int_ramrd_b_r ;
+  assign ramwe_b = ! ( !wr_b & mwr_cyc_q & mwr_cyc_f_q );
+  assign ramoe_b = ramrd_b_w ;
 
   /* Memory Data Access
    *          ____      ____      ____      ____      ____
@@ -224,7 +225,7 @@ module cpld_ram1m(
    * State    _IDLE____X___T1____X____T1___X___T2____X_END__
    */
 
-  
+
   // M4 Compatibility: overdrive wr_b for the first high phase of CLK
   // of an expansion RAM write to fool the M4 card
   assign wr_b = ( overdrive_mode & exp_ram_q & (mwr_cyc_q & !mwr_cyc_f_q)) ? 1'b0 : 1'bz;
@@ -259,7 +260,7 @@ module cpld_ram1m(
 `endif
   // High RAM is enabled only for expansion RAM accesses to 0x7Fxx
   assign ramcs1_b = !cardsel_w | !(ramadrhi_r[5] & exp_ram_r) | mreq_b | !rfsh_b ;
-  
+
   always @ (posedge clk)
     if ( mwr_cyc_d )
       mwr_cyc_q <= 1'b1;
@@ -299,8 +300,6 @@ module cpld_ram1m(
     if (!reset_b_w) begin
       ramblock_q <= 7'b0;
       mode3_overdrive_q <= 1'b0;
-      urom_disable_q <= 1'b0;
-      lrom_disable_q <= 1'b0;
     end
     else begin
        if ( ram_ctrl_select_w ) begin
@@ -319,11 +318,16 @@ module cpld_ram1m(
            ramblock_q <= {1'b1,data[5:0]};
          mode3_overdrive_q <= overdrive_mode & (data[2:0] == 3'b011);
        end
-       else if ( rom_ctrl_select_w ) begin
-          { urom_disable_q, lrom_disable_q } <= data[3:2];
-       end
     end
-
+  
+`ifndef EXT_RAMRD  
+  always @ (negedge clk or negedge reset_b_w)
+    if (!reset_b_w)
+      { urom_disable_q, lrom_disable_q}  <= 2'b00;
+    else if ( rom_ctrl_select_w )
+      { urom_disable_q, lrom_disable_q } <= data[3:2];
+`endif
+  
   always @ ( * ) begin
     if ( shadow_mode )
       // FULL SHADOW MODE    - all CPU read accesses come from external memory (ramcs_b_r computed here is ignored)
