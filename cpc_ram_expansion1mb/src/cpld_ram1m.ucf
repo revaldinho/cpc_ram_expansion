@@ -37,3 +37,4 @@ PIN "iorq_b"	LOC = P44 ;
 NET adr15 FAST ;
 NET adr15_aux FAST ;
 NET rd_b FAST ;
+NET ramdis FAST ;
