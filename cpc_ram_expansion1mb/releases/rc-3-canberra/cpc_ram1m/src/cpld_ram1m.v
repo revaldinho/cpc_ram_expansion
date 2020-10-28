@@ -60,7 +60,7 @@
  *
  */
 
-`define FIT_XC9536 1
+//`define FIT_XC9536 1
 
 `ifdef CPC6128_ONLY
   `define EXT_RAMRD 1
@@ -68,10 +68,9 @@
 
 `ifdef FIT_XC9536
   // Barely fits in the CPLD without some features removed
-  //`define EXT_RAMRD 1
+  `define EXT_RAMRD 1
   `define DISABLE_RESET_RESYNC 1
   `define FULL_SHADOW_ONLY     1
-  `define CARD_ALWAYS_ENABLED  1
 `endif
 
 module cpld_ram1m(

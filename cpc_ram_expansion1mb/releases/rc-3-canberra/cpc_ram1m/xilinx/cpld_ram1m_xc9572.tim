@@ -1,0 +1,1741 @@
+                         Detailed Path Analysis Report
+                         -----------------------------
+
+Design:     cpld_ram1m
+Device:     XC9572-10-PC44
+Speed File: Version 3.0
+Program:    Timing Report Generator:  version P.20131013
+Date:       Sat Oct 17 16:32:10 2020
+
+Output will be sorted by decreasing path delays.
+Logical Path    Delay Type                              Delay        Cumulative
+------------    ----------                              -----        ----------
+                              ********************
+                              * Pad to Pad (tPD) *
+                              ********************
+From: adr14     -                                       :  0.0ns        (0.0ns)
+Thru: adr14_IBUF tIN                                    :  3.5ns        (3.5ns)
+Thru: $OpTx$INV$13__$INT.UIM tLOGI + tPTA + tPDI        :  4.5ns        (8.0ns)
+Thru: ramdis    tF + tPTTS                              : 16.0ns       (24.0ns)
+  To: ramdis    tEN                                     :  0.0ns       (24.0ns)
+
+From: adr15     -                                       :  0.0ns        (0.0ns)
+Thru: N38       tIN                                     :  3.5ns        (3.5ns)
+Thru: $OpTx$INV$13__$INT.UIM tLOGI + tPTA + tPDI        :  4.5ns        (8.0ns)
+Thru: ramdis    tF + tPTTS                              : 16.0ns       (24.0ns)
+  To: ramdis    tEN                                     :  0.0ns       (24.0ns)
+
+From: dip<0>    -                                       :  0.0ns        (0.0ns)
+Thru: dip_0_IBUF tIN                                    :  3.5ns        (3.5ns)
+Thru: $OpTx$INV$13__$INT.UIM tLOGI + tPTA + tPDI        :  4.5ns        (8.0ns)
+Thru: ramdis    tF + tPTTS                              : 16.0ns       (24.0ns)
+  To: ramdis    tEN                                     :  0.0ns       (24.0ns)
+
+From: dip<1>    -                                       :  0.0ns        (0.0ns)
+Thru: dip_1_IBUF tIN                                    :  3.5ns        (3.5ns)
+Thru: $OpTx$INV$13__$INT.UIM tLOGI + tPTA + tPDI        :  4.5ns        (8.0ns)
+Thru: ramdis    tF + tPTTS                              : 16.0ns       (24.0ns)
+  To: ramdis    tEN                                     :  0.0ns       (24.0ns)
+
+From: mreq_b    -                                       :  0.0ns        (0.0ns)
+Thru: mreq_b_IBUF tIN                                   :  3.5ns        (3.5ns)
+Thru: $OpTx$INV$13__$INT.UIM tLOGI + tPTA + tPDI        :  4.5ns        (8.0ns)
+Thru: ramdis    tF + tPTTS                              : 16.0ns       (24.0ns)
+  To: ramdis    tEN                                     :  0.0ns       (24.0ns)
+
+From: adr14     -                                       :  0.0ns        (0.0ns)
+Thru: adr14_IBUF tIN                                    :  3.5ns        (3.5ns)
+Thru: N1$BUF1/N1$BUF1_TRST.UIM tLOGI + tPDI             :  3.5ns        (7.0ns)
+Thru: adr15     tF + tPTTS                              : 16.0ns       (23.0ns)
+  To: adr15     tEN                                     :  0.0ns       (23.0ns)
+
+From: adr14     -                                       :  0.0ns        (0.0ns)
+Thru: adr14_IBUF tIN                                    :  3.5ns        (3.5ns)
+Thru: N1$BUF1/N1$BUF1_TRST.UIM tLOGI + tPDI             :  3.5ns        (7.0ns)
+Thru: adr15_aux tF + tPTTS                              : 16.0ns       (23.0ns)
+  To: adr15_aux tEN                                     :  0.0ns       (23.0ns)
+
+From: dip<0>    -                                       :  0.0ns        (0.0ns)
+Thru: dip_0_IBUF tIN                                    :  3.5ns        (3.5ns)
+Thru: N1$BUF1/N1$BUF1_TRST.UIM tLOGI + tPDI             :  3.5ns        (7.0ns)
+Thru: adr15     tF + tPTTS                              : 16.0ns       (23.0ns)
+  To: adr15     tEN                                     :  0.0ns       (23.0ns)
+
+From: dip<0>    -                                       :  0.0ns        (0.0ns)
+Thru: dip_0_IBUF tIN                                    :  3.5ns        (3.5ns)
+Thru: N1$BUF1/N1$BUF1_TRST.UIM tLOGI + tPDI             :  3.5ns        (7.0ns)
+Thru: adr15_aux tF + tPTTS                              : 16.0ns       (23.0ns)
+  To: adr15_aux tEN                                     :  0.0ns       (23.0ns)
+
+From: dip<0>    -                                       :  0.0ns        (0.0ns)
+Thru: dip_0_IBUF tIN                                    :  3.5ns        (3.5ns)
+Thru: $OpTx$$OpTx$FX_DC$16_INV$146.UIM tLOGI + tPDI     :  3.5ns        (7.0ns)
+Thru: wr_b      tF + tPTTS                              : 16.0ns       (23.0ns)
+  To: wr_b      tEN                                     :  0.0ns       (23.0ns)
+
+From: dip<1>    -                                       :  0.0ns        (0.0ns)
+Thru: dip_1_IBUF tIN                                    :  3.5ns        (3.5ns)
+Thru: $OpTx$$OpTx$FX_DC$16_INV$146.UIM tLOGI + tPDI     :  3.5ns        (7.0ns)
+Thru: wr_b      tF + tPTTS                              : 16.0ns       (23.0ns)
+  To: wr_b      tEN                                     :  0.0ns       (23.0ns)
+
+From: dip<2>    -                                       :  0.0ns        (0.0ns)
+Thru: dip_2_IBUF tIN                                    :  3.5ns        (3.5ns)
+Thru: $OpTx$INV$13__$INT.UIM tLOGI + tPDI               :  3.5ns        (7.0ns)
+Thru: ramdis    tF + tPTTS                              : 16.0ns       (23.0ns)
+  To: ramdis    tEN                                     :  0.0ns       (23.0ns)
+
+From: dip<3>    -                                       :  0.0ns        (0.0ns)
+Thru: dip_3_IBUF tIN                                    :  3.5ns        (3.5ns)
+Thru: $OpTx$INV$13__$INT.UIM tLOGI + tPDI               :  3.5ns        (7.0ns)
+Thru: ramdis    tF + tPTTS                              : 16.0ns       (23.0ns)
+  To: ramdis    tEN                                     :  0.0ns       (23.0ns)
+
+From: mreq_b    -                                       :  0.0ns        (0.0ns)
+Thru: mreq_b_IBUF tIN                                   :  3.5ns        (3.5ns)
+Thru: N1$BUF1/N1$BUF1_TRST.UIM tLOGI + tPDI             :  3.5ns        (7.0ns)
+Thru: adr15     tF + tPTTS                              : 16.0ns       (23.0ns)
+  To: adr15     tEN                                     :  0.0ns       (23.0ns)
+
+From: mreq_b    -                                       :  0.0ns        (0.0ns)
+Thru: mreq_b_IBUF tIN                                   :  3.5ns        (3.5ns)
+Thru: N1$BUF1/N1$BUF1_TRST.UIM tLOGI + tPDI             :  3.5ns        (7.0ns)
+Thru: adr15_aux tF + tPTTS                              : 16.0ns       (23.0ns)
+  To: adr15_aux tEN                                     :  0.0ns       (23.0ns)
+
+From: rd_b      -                                       :  0.0ns        (0.0ns)
+Thru: N39       tIN                                     :  3.5ns        (3.5ns)
+Thru: N1$BUF1/N1$BUF1_TRST.UIM tLOGI + tPDI             :  3.5ns        (7.0ns)
+Thru: adr15     tF + tPTTS                              : 16.0ns       (23.0ns)
+  To: adr15     tEN                                     :  0.0ns       (23.0ns)
+
+From: rd_b      -                                       :  0.0ns        (0.0ns)
+Thru: N39       tIN                                     :  3.5ns        (3.5ns)
+Thru: N1$BUF1/N1$BUF1_TRST.UIM tLOGI + tPDI             :  3.5ns        (7.0ns)
+Thru: adr15_aux tF + tPTTS                              : 16.0ns       (23.0ns)
+  To: adr15_aux tEN                                     :  0.0ns       (23.0ns)
+
+From: rfsh_b    -                                       :  0.0ns        (0.0ns)
+Thru: rfsh_b_IBUF tIN                                   :  3.5ns        (3.5ns)
+Thru: N1$BUF1/N1$BUF1_TRST.UIM tLOGI + tPDI             :  3.5ns        (7.0ns)
+Thru: adr15     tF + tPTTS                              : 16.0ns       (23.0ns)
+  To: adr15     tEN                                     :  0.0ns       (23.0ns)
+
+From: rfsh_b    -                                       :  0.0ns        (0.0ns)
+Thru: rfsh_b_IBUF tIN                                   :  3.5ns        (3.5ns)
+Thru: N1$BUF1/N1$BUF1_TRST.UIM tLOGI + tPDI             :  3.5ns        (7.0ns)
+Thru: adr15_aux tF + tPTTS                              : 16.0ns       (23.0ns)
+  To: adr15_aux tEN                                     :  0.0ns       (23.0ns)
+
+From: adr15     -                                       :  0.0ns        (0.0ns)
+Thru: N38       tIN                                     :  3.5ns        (3.5ns)
+Thru: N1$BUF1/N1$BUF1_TRST.UIM tLOGI + tPDI             :  3.5ns        (7.0ns)
+Thru: adr15_aux tF + tPTTS                              : 16.0ns       (23.0ns)
+  To: adr15_aux tEN                                     :  0.0ns       (23.0ns)
+
+From: adr14     -                                       :  0.0ns        (0.0ns)
+Thru: adr14_IBUF tIN                                    :  3.5ns        (3.5ns)
+Thru: ramadrhi<3> tLOGI + tPTA + 2tPTA2 + tPDI          :  6.5ns       (10.0ns)
+  To: ramadrhi<3> tOUT + tSLEW                          :  7.5ns       (17.5ns)
+
+From: adr15     -                                       :  0.0ns        (0.0ns)
+Thru: N38       tIN                                     :  3.5ns        (3.5ns)
+Thru: ramadrhi<3> tLOGI + tPTA + 2tPTA2 + tPDI          :  6.5ns       (10.0ns)
+  To: ramadrhi<3> tOUT + tSLEW                          :  7.5ns       (17.5ns)
+
+From: dip<0>    -                                       :  0.0ns        (0.0ns)
+Thru: dip_0_IBUF tIN                                    :  3.5ns        (3.5ns)
+Thru: N0$BUF0/N0$BUF0_TRST__$INT.FBK tLOGI + tPDI       :  3.5ns        (7.0ns)
+Thru: rd_b      tLF + tPTTS                             : 10.0ns       (17.0ns)
+  To: rd_b      tEN                                     :  0.0ns       (17.0ns)
+
+From: dip<1>    -                                       :  0.0ns        (0.0ns)
+Thru: dip_1_IBUF tIN                                    :  3.5ns        (3.5ns)
+Thru: N0$BUF0/N0$BUF0_TRST__$INT.FBK tLOGI + tPDI       :  3.5ns        (7.0ns)
+Thru: rd_b      tLF + tPTTS                             : 10.0ns       (17.0ns)
+  To: rd_b      tEN                                     :  0.0ns       (17.0ns)
+
+From: adr14     -                                       :  0.0ns        (0.0ns)
+Thru: adr14_IBUF tIN                                    :  3.5ns        (3.5ns)
+Thru: ramadrhi<2> tLOGI + tPTA + 1tPTA2 + tPDI          :  5.5ns        (9.0ns)
+  To: ramadrhi<2> tOUT + tSLEW                          :  7.5ns       (16.5ns)
+
+From: adr14     -                                       :  0.0ns        (0.0ns)
+Thru: adr14_IBUF tIN                                    :  3.5ns        (3.5ns)
+Thru: ramcs0_b  tLOGI + tPTA + 1tPTA2 + tPDI            :  5.5ns        (9.0ns)
+  To: ramcs0_b  tOUT + tSLEW                            :  7.5ns       (16.5ns)
+
+From: adr15     -                                       :  0.0ns        (0.0ns)
+Thru: N38       tIN                                     :  3.5ns        (3.5ns)
+Thru: ramadrhi<2> tLOGI + tPTA + 1tPTA2 + tPDI          :  5.5ns        (9.0ns)
+  To: ramadrhi<2> tOUT + tSLEW                          :  7.5ns       (16.5ns)
+
+From: adr15     -                                       :  0.0ns        (0.0ns)
+Thru: N38       tIN                                     :  3.5ns        (3.5ns)
+Thru: ramcs0_b  tLOGI + tPTA + 1tPTA2 + tPDI            :  5.5ns        (9.0ns)
+  To: ramcs0_b  tOUT + tSLEW                            :  7.5ns       (16.5ns)
+
+From: dip<0>    -                                       :  0.0ns        (0.0ns)
+Thru: dip_0_IBUF tIN                                    :  3.5ns        (3.5ns)
+Thru: ramadrhi<2> tLOGI + tPTA + 1tPTA2 + tPDI          :  5.5ns        (9.0ns)
+  To: ramadrhi<2> tOUT + tSLEW                          :  7.5ns       (16.5ns)
+
+From: dip<0>    -                                       :  0.0ns        (0.0ns)
+Thru: dip_0_IBUF tIN                                    :  3.5ns        (3.5ns)
+Thru: ramadrhi<3> tLOGI + tPTA + 1tPTA2 + tPDI          :  5.5ns        (9.0ns)
+  To: ramadrhi<3> tOUT + tSLEW                          :  7.5ns       (16.5ns)
+
+From: dip<0>    -                                       :  0.0ns        (0.0ns)
+Thru: dip_0_IBUF tIN                                    :  3.5ns        (3.5ns)
+Thru: ramcs0_b  tLOGI + tPTA + 1tPTA2 + tPDI            :  5.5ns        (9.0ns)
+  To: ramcs0_b  tOUT + tSLEW                            :  7.5ns       (16.5ns)
+
+From: dip<1>    -                                       :  0.0ns        (0.0ns)
+Thru: dip_1_IBUF tIN                                    :  3.5ns        (3.5ns)
+Thru: ramcs0_b  tLOGI + tPTA + 1tPTA2 + tPDI            :  5.5ns        (9.0ns)
+  To: ramcs0_b  tOUT + tSLEW                            :  7.5ns       (16.5ns)
+
+From: mreq_b    -                                       :  0.0ns        (0.0ns)
+Thru: mreq_b_IBUF tIN                                   :  3.5ns        (3.5ns)
+Thru: ramadrhi<2> tLOGI + tPTA + 1tPTA2 + tPDI          :  5.5ns        (9.0ns)
+  To: ramadrhi<2> tOUT + tSLEW                          :  7.5ns       (16.5ns)
+
+From: mreq_b    -                                       :  0.0ns        (0.0ns)
+Thru: mreq_b_IBUF tIN                                   :  3.5ns        (3.5ns)
+Thru: ramadrhi<3> tLOGI + tPTA + 1tPTA2 + tPDI          :  5.5ns        (9.0ns)
+  To: ramadrhi<3> tOUT + tSLEW                          :  7.5ns       (16.5ns)
+
+From: adr14     -                                       :  0.0ns        (0.0ns)
+Thru: adr14_IBUF tIN                                    :  3.5ns        (3.5ns)
+Thru: ramadrhi<0> tLOGI + tPTA + tPDI                   :  4.5ns        (8.0ns)
+  To: ramadrhi<0> tOUT + tSLEW                          :  7.5ns       (15.5ns)
+
+From: adr14     -                                       :  0.0ns        (0.0ns)
+Thru: adr14_IBUF tIN                                    :  3.5ns        (3.5ns)
+Thru: ramadrhi<1> tLOGI + tPTA + tPDI                   :  4.5ns        (8.0ns)
+  To: ramadrhi<1> tOUT + tSLEW                          :  7.5ns       (15.5ns)
+
+From: adr14     -                                       :  0.0ns        (0.0ns)
+Thru: adr14_IBUF tIN                                    :  3.5ns        (3.5ns)
+Thru: ramadrhi<4> tLOGI + tPTA + tPDI                   :  4.5ns        (8.0ns)
+  To: ramadrhi<4> tOUT + tSLEW                          :  7.5ns       (15.5ns)
+
+From: adr14     -                                       :  0.0ns        (0.0ns)
+Thru: adr14_IBUF tIN                                    :  3.5ns        (3.5ns)
+Thru: ramcs1_b  tLOGI + tPTA + tPDI                     :  4.5ns        (8.0ns)
+  To: ramcs1_b  tOUT + tSLEW                            :  7.5ns       (15.5ns)
+
+From: adr15     -                                       :  0.0ns        (0.0ns)
+Thru: N38       tIN                                     :  3.5ns        (3.5ns)
+Thru: ramadrhi<0> tLOGI + tPTA + tPDI                   :  4.5ns        (8.0ns)
+  To: ramadrhi<0> tOUT + tSLEW                          :  7.5ns       (15.5ns)
+
+From: adr15     -                                       :  0.0ns        (0.0ns)
+Thru: N38       tIN                                     :  3.5ns        (3.5ns)
+Thru: ramadrhi<1> tLOGI + tPTA + tPDI                   :  4.5ns        (8.0ns)
+  To: ramadrhi<1> tOUT + tSLEW                          :  7.5ns       (15.5ns)
+
+From: adr15     -                                       :  0.0ns        (0.0ns)
+Thru: N38       tIN                                     :  3.5ns        (3.5ns)
+Thru: ramadrhi<4> tLOGI + tPTA + tPDI                   :  4.5ns        (8.0ns)
+  To: ramadrhi<4> tOUT + tSLEW                          :  7.5ns       (15.5ns)
+
+From: adr15     -                                       :  0.0ns        (0.0ns)
+Thru: N38       tIN                                     :  3.5ns        (3.5ns)
+Thru: ramcs1_b  tLOGI + tPTA + tPDI                     :  4.5ns        (8.0ns)
+  To: ramcs1_b  tOUT + tSLEW                            :  7.5ns       (15.5ns)
+
+From: dip<0>    -                                       :  0.0ns        (0.0ns)
+Thru: dip_0_IBUF tIN                                    :  3.5ns        (3.5ns)
+Thru: ramadrhi<4> tLOGI + tPTA + tPDI                   :  4.5ns        (8.0ns)
+  To: ramadrhi<4> tOUT + tSLEW                          :  7.5ns       (15.5ns)
+
+From: dip<2>    -                                       :  0.0ns        (0.0ns)
+Thru: dip_2_IBUF tIN                                    :  3.5ns        (3.5ns)
+Thru: ramcs0_b  tLOGI + tPTA + tPDI                     :  4.5ns        (8.0ns)
+  To: ramcs0_b  tOUT + tSLEW                            :  7.5ns       (15.5ns)
+
+From: dip<2>    -                                       :  0.0ns        (0.0ns)
+Thru: dip_2_IBUF tIN                                    :  3.5ns        (3.5ns)
+Thru: ramcs1_b  tLOGI + tPTA + tPDI                     :  4.5ns        (8.0ns)
+  To: ramcs1_b  tOUT + tSLEW                            :  7.5ns       (15.5ns)
+
+From: dip<3>    -                                       :  0.0ns        (0.0ns)
+Thru: dip_3_IBUF tIN                                    :  3.5ns        (3.5ns)
+Thru: ramcs0_b  tLOGI + tPTA + tPDI                     :  4.5ns        (8.0ns)
+  To: ramcs0_b  tOUT + tSLEW                            :  7.5ns       (15.5ns)
+
+From: dip<3>    -                                       :  0.0ns        (0.0ns)
+Thru: dip_3_IBUF tIN                                    :  3.5ns        (3.5ns)
+Thru: ramcs1_b  tLOGI + tPTA + tPDI                     :  4.5ns        (8.0ns)
+  To: ramcs1_b  tOUT + tSLEW                            :  7.5ns       (15.5ns)
+
+From: mreq_b    -                                       :  0.0ns        (0.0ns)
+Thru: mreq_b_IBUF tIN                                   :  3.5ns        (3.5ns)
+Thru: ramadrhi<0> tLOGI + tPTA + tPDI                   :  4.5ns        (8.0ns)
+  To: ramadrhi<0> tOUT + tSLEW                          :  7.5ns       (15.5ns)
+
+From: mreq_b    -                                       :  0.0ns        (0.0ns)
+Thru: mreq_b_IBUF tIN                                   :  3.5ns        (3.5ns)
+Thru: ramadrhi<1> tLOGI + tPTA + tPDI                   :  4.5ns        (8.0ns)
+  To: ramadrhi<1> tOUT + tSLEW                          :  7.5ns       (15.5ns)
+
+From: mreq_b    -                                       :  0.0ns        (0.0ns)
+Thru: mreq_b_IBUF tIN                                   :  3.5ns        (3.5ns)
+Thru: ramadrhi<4> tLOGI + tPTA + tPDI                   :  4.5ns        (8.0ns)
+  To: ramadrhi<4> tOUT + tSLEW                          :  7.5ns       (15.5ns)
+
+From: mreq_b    -                                       :  0.0ns        (0.0ns)
+Thru: mreq_b_IBUF tIN                                   :  3.5ns        (3.5ns)
+Thru: ramcs0_b  tLOGI + tPTA + tPDI                     :  4.5ns        (8.0ns)
+  To: ramcs0_b  tOUT + tSLEW                            :  7.5ns       (15.5ns)
+
+From: mreq_b    -                                       :  0.0ns        (0.0ns)
+Thru: mreq_b_IBUF tIN                                   :  3.5ns        (3.5ns)
+Thru: ramcs1_b  tLOGI + tPTA + tPDI                     :  4.5ns        (8.0ns)
+  To: ramcs1_b  tOUT + tSLEW                            :  7.5ns       (15.5ns)
+
+From: rfsh_b    -                                       :  0.0ns        (0.0ns)
+Thru: rfsh_b_IBUF tIN                                   :  3.5ns        (3.5ns)
+Thru: ramcs0_b  tLOGI + tPTA + tPDI                     :  4.5ns        (8.0ns)
+  To: ramcs0_b  tOUT + tSLEW                            :  7.5ns       (15.5ns)
+
+From: rfsh_b    -                                       :  0.0ns        (0.0ns)
+Thru: rfsh_b_IBUF tIN                                   :  3.5ns        (3.5ns)
+Thru: ramcs1_b  tLOGI + tPTA + tPDI                     :  4.5ns        (8.0ns)
+  To: ramcs1_b  tOUT + tSLEW                            :  7.5ns       (15.5ns)
+
+From: adr14     -                                       :  0.0ns        (0.0ns)
+Thru: adr14_IBUF tIN                                    :  3.5ns        (3.5ns)
+Thru: ramoe_b   tLOGI + tPDI                            :  3.5ns        (7.0ns)
+  To: ramoe_b   tOUT + tSLEW                            :  7.5ns       (14.5ns)
+
+From: dip<0>    -                                       :  0.0ns        (0.0ns)
+Thru: dip_0_IBUF tIN                                    :  3.5ns        (3.5ns)
+Thru: ramadrhi<0> tLOGI + tPDI                          :  3.5ns        (7.0ns)
+  To: ramadrhi<0> tOUT + tSLEW                          :  7.5ns       (14.5ns)
+
+From: dip<0>    -                                       :  0.0ns        (0.0ns)
+Thru: dip_0_IBUF tIN                                    :  3.5ns        (3.5ns)
+Thru: ramadrhi<1> tLOGI + tPDI                          :  3.5ns        (7.0ns)
+  To: ramadrhi<1> tOUT + tSLEW                          :  7.5ns       (14.5ns)
+
+From: dip<0>    -                                       :  0.0ns        (0.0ns)
+Thru: dip_0_IBUF tIN                                    :  3.5ns        (3.5ns)
+Thru: ramcs1_b  tLOGI + tPDI                            :  3.5ns        (7.0ns)
+  To: ramcs1_b  tOUT + tSLEW                            :  7.5ns       (14.5ns)
+
+From: mreq_b    -                                       :  0.0ns        (0.0ns)
+Thru: mreq_b_IBUF tIN                                   :  3.5ns        (3.5ns)
+Thru: ramoe_b   tLOGI + tPDI                            :  3.5ns        (7.0ns)
+  To: ramoe_b   tOUT + tSLEW                            :  7.5ns       (14.5ns)
+
+From: rd_b      -                                       :  0.0ns        (0.0ns)
+Thru: N39       tIN                                     :  3.5ns        (3.5ns)
+Thru: ramoe_b   tLOGI + tPDI                            :  3.5ns        (7.0ns)
+  To: ramoe_b   tOUT + tSLEW                            :  7.5ns       (14.5ns)
+
+From: rfsh_b    -                                       :  0.0ns        (0.0ns)
+Thru: rfsh_b_IBUF tIN                                   :  3.5ns        (3.5ns)
+Thru: ramoe_b   tLOGI + tPDI                            :  3.5ns        (7.0ns)
+  To: ramoe_b   tOUT + tSLEW                            :  7.5ns       (14.5ns)
+
+From: wr_b      -                                       :  0.0ns        (0.0ns)
+Thru: N40       tIN                                     :  3.5ns        (3.5ns)
+Thru: ramwe_b   tLOGI + tPDI                            :  3.5ns        (7.0ns)
+  To: ramwe_b   tOUT + tSLEW                            :  7.5ns       (14.5ns)
+
+From: reset_b   -                                       :  0.0ns        (0.0ns)
+Thru: reset_b_IBUF tIN                                  :  3.5ns        (3.5ns)
+Thru: ramadrhi<0> tPTTS                                 :  6.5ns       (10.0ns)
+  To: ramadrhi<0> tEN                                   :  0.0ns       (10.0ns)
+
+From: reset_b   -                                       :  0.0ns        (0.0ns)
+Thru: reset_b_IBUF tIN                                  :  3.5ns        (3.5ns)
+Thru: ramadrhi<1> tPTTS                                 :  6.5ns       (10.0ns)
+  To: ramadrhi<1> tEN                                   :  0.0ns       (10.0ns)
+
+From: reset_b   -                                       :  0.0ns        (0.0ns)
+Thru: reset_b_IBUF tIN                                  :  3.5ns        (3.5ns)
+Thru: ramadrhi<2> tPTTS                                 :  6.5ns       (10.0ns)
+  To: ramadrhi<2> tEN                                   :  0.0ns       (10.0ns)
+
+From: reset_b   -                                       :  0.0ns        (0.0ns)
+Thru: reset_b_IBUF tIN                                  :  3.5ns        (3.5ns)
+Thru: ramadrhi<3> tPTTS                                 :  6.5ns       (10.0ns)
+  To: ramadrhi<3> tEN                                   :  0.0ns       (10.0ns)
+
+From: reset_b   -                                       :  0.0ns        (0.0ns)
+Thru: reset_b_IBUF tIN                                  :  3.5ns        (3.5ns)
+Thru: ramadrhi<4> tPTTS                                 :  6.5ns       (10.0ns)
+  To: ramadrhi<4> tEN                                   :  0.0ns       (10.0ns)
+
+                       *********************************
+                       * Clock Pad to Output Pad (tCO) *
+                       *********************************
+From: mreq_b    -                                       :  0.0ns        (0.0ns)
+Thru: mreq_b_IBUF tIN                                   :  3.5ns        (3.5ns)
+Thru: adr15_q   tPTCK + tCOI                            :  3.5ns        (7.0ns)
+Thru: $OpTx$INV$13__$INT.UIM tF + tLOGI + tPTA + tPDI   : 14.0ns       (21.0ns)
+Thru: ramdis    tF + tPTTS                              : 16.0ns       (37.0ns)
+  To: ramdis    tEN                                     :  0.0ns       (37.0ns)
+
+From: mreq_b    -                                       :  0.0ns        (0.0ns)
+Thru: mreq_b_IBUF tIN                                   :  3.5ns        (3.5ns)
+Thru: adr15_q   tPTCK + tCOI                            :  3.5ns        (7.0ns)
+Thru: N1$BUF1/N1$BUF1_TRST.UIM tF + tLOGI + tPDI        : 13.0ns       (20.0ns)
+Thru: adr15     tF + tPTTS                              : 16.0ns       (36.0ns)
+  To: adr15     tEN                                     :  0.0ns       (36.0ns)
+
+From: mreq_b    -                                       :  0.0ns        (0.0ns)
+Thru: mreq_b_IBUF tIN                                   :  3.5ns        (3.5ns)
+Thru: adr15_q   tPTCK + tCOI                            :  3.5ns        (7.0ns)
+Thru: N1$BUF1/N1$BUF1_TRST.UIM tF + tLOGI + tPDI        : 13.0ns       (20.0ns)
+Thru: adr15_aux tF + tPTTS                              : 16.0ns       (36.0ns)
+  To: adr15_aux tEN                                     :  0.0ns       (36.0ns)
+
+From: clk       -                                       :  0.0ns        (0.0ns)
+Thru: FCLK-IO_0 tGCK                                    :  2.5ns        (2.5ns)
+Thru: ramblock_q<2> tCOI                                :  0.5ns        (3.0ns)
+Thru: $OpTx$INV$13__$INT.UIM tF + tLOGI + tPTA + tPDI   : 14.0ns       (17.0ns)
+Thru: ramdis    tF + tPTTS                              : 16.0ns       (33.0ns)
+  To: ramdis    tEN                                     :  0.0ns       (33.0ns)
+
+From: clk       -                                       :  0.0ns        (0.0ns)
+Thru: FCLK-IO_0 tGCK                                    :  2.5ns        (2.5ns)
+Thru: mode3_overdrive_q tCOI                            :  0.5ns        (3.0ns)
+Thru: N1$BUF1/N1$BUF1_TRST.UIM tF + tLOGI + tPDI        : 13.0ns       (16.0ns)
+Thru: adr15     tF + tPTTS                              : 16.0ns       (32.0ns)
+  To: adr15     tEN                                     :  0.0ns       (32.0ns)
+
+From: clk       -                                       :  0.0ns        (0.0ns)
+Thru: FCLK-IO_0 tGCK                                    :  2.5ns        (2.5ns)
+Thru: mode3_overdrive_q tCOI                            :  0.5ns        (3.0ns)
+Thru: N1$BUF1/N1$BUF1_TRST.UIM tF + tLOGI + tPDI        : 13.0ns       (16.0ns)
+Thru: adr15_aux tF + tPTTS                              : 16.0ns       (32.0ns)
+  To: adr15_aux tEN                                     :  0.0ns       (32.0ns)
+
+From: mreq_b    -                                       :  0.0ns        (0.0ns)
+Thru: mreq_b_IBUF tIN                                   :  3.5ns        (3.5ns)
+Thru: adr15_q   tPTCK + tCOI                            :  3.5ns        (7.0ns)
+Thru: ramadrhi<1> tF + tLOGI + tPTA + tPDI              : 14.0ns       (21.0ns)
+  To: ramadrhi<1> tOUT + tSLEW                          :  7.5ns       (28.5ns)
+
+From: mreq_b    -                                       :  0.0ns        (0.0ns)
+Thru: mreq_b_IBUF tIN                                   :  3.5ns        (3.5ns)
+Thru: adr15_q   tPTCK + tCOI                            :  3.5ns        (7.0ns)
+Thru: ramadrhi<3> tF + tLOGI + tPTA + tPDI              : 14.0ns       (21.0ns)
+  To: ramadrhi<3> tOUT + tSLEW                          :  7.5ns       (28.5ns)
+
+From: mreq_b    -                                       :  0.0ns        (0.0ns)
+Thru: mreq_b_IBUF tIN                                   :  3.5ns        (3.5ns)
+Thru: adr15_q   tPTCK + tCOI                            :  3.5ns        (7.0ns)
+Thru: ramadrhi<2> tF + tLOGI + tPDI                     : 13.0ns       (20.0ns)
+  To: ramadrhi<2> tOUT + tSLEW                          :  7.5ns       (27.5ns)
+
+From: mreq_b    -                                       :  0.0ns        (0.0ns)
+Thru: mreq_b_IBUF tIN                                   :  3.5ns        (3.5ns)
+Thru: adr15_q   tPTCK + tCOI                            :  3.5ns        (7.0ns)
+Thru: ramadrhi<4> tF + tLOGI + tPDI                     : 13.0ns       (20.0ns)
+  To: ramadrhi<4> tOUT + tSLEW                          :  7.5ns       (27.5ns)
+
+From: mreq_b    -                                       :  0.0ns        (0.0ns)
+Thru: mreq_b_IBUF tIN                                   :  3.5ns        (3.5ns)
+Thru: adr15_q   tPTCK + tCOI                            :  3.5ns        (7.0ns)
+Thru: ramoe_b   tF + tLOGI + tPDI                       : 13.0ns       (20.0ns)
+  To: ramoe_b   tOUT + tSLEW                            :  7.5ns       (27.5ns)
+
+From: clk       -                                       :  0.0ns        (0.0ns)
+Thru: FCLK-IO_0 tGCK                                    :  2.5ns        (2.5ns)
+Thru: ramblock_q<2> tCOI                                :  0.5ns        (3.0ns)
+Thru: ramadrhi<3> tF + tLOGI + tPTA + 2tPTA2 + tPDI     : 16.0ns       (19.0ns)
+  To: ramadrhi<3> tOUT + tSLEW                          :  7.5ns       (26.5ns)
+
+From: clk       -                                       :  0.0ns        (0.0ns)
+Thru: FCLKIO_1  tGCK                                    :  2.5ns        (2.5ns)
+Thru: exp_ram_q tCOI                                    :  0.5ns        (3.0ns)
+Thru: N0$BUF0/N0$BUF0_TRST__$INT.FBK tF + tLOGI + tPDI  : 13.0ns       (16.0ns)
+Thru: rd_b      tLF + tPTTS                             : 10.0ns       (26.0ns)
+  To: rd_b      tEN                                     :  0.0ns       (26.0ns)
+
+From: clk       -                                       :  0.0ns        (0.0ns)
+Thru: FCLK-IO_0 tGCK                                    :  2.5ns        (2.5ns)
+Thru: ramblock_q<2> tCOI                                :  0.5ns        (3.0ns)
+Thru: ramadrhi<2> tF + tLOGI + tPTA + 1tPTA2 + tPDI     : 15.0ns       (18.0ns)
+  To: ramadrhi<2> tOUT + tSLEW                          :  7.5ns       (25.5ns)
+
+From: clk       -                                       :  0.0ns        (0.0ns)
+Thru: FCLKIO_1  tGCK                                    :  2.5ns        (2.5ns)
+Thru: mwr_cyc_q tCOI                                    :  0.5ns        (3.0ns)
+Thru: ramcs0_b  tF + tLOGI + tPTA + 1tPTA2 + tPDI       : 15.0ns       (18.0ns)
+  To: ramcs0_b  tOUT + tSLEW                            :  7.5ns       (25.5ns)
+
+From: clk       -                                       :  0.0ns        (0.0ns)
+Thru: FCLK-IO_0 tGCK                                    :  2.5ns        (2.5ns)
+Thru: ramblock_q<2> tCOI                                :  0.5ns        (3.0ns)
+Thru: ramadrhi<1> tF + tLOGI + tPTA + tPDI              : 14.0ns       (17.0ns)
+  To: ramadrhi<1> tOUT + tSLEW                          :  7.5ns       (24.5ns)
+
+From: clk       -                                       :  0.0ns        (0.0ns)
+Thru: FCLK-IO_0 tGCK                                    :  2.5ns        (2.5ns)
+Thru: ramblock_q<2> tCOI                                :  0.5ns        (3.0ns)
+Thru: ramadrhi<4> tF + tLOGI + tPTA + tPDI              : 14.0ns       (17.0ns)
+  To: ramadrhi<4> tOUT + tSLEW                          :  7.5ns       (24.5ns)
+
+From: clk       -                                       :  0.0ns        (0.0ns)
+Thru: FCLK-IO_0 tGCK                                    :  2.5ns        (2.5ns)
+Thru: urom_disable_q tCOI                               :  0.5ns        (3.0ns)
+Thru: ramoe_b   tF + tLOGI + tPDI                       : 13.0ns       (16.0ns)
+  To: ramoe_b   tOUT + tSLEW                            :  7.5ns       (23.5ns)
+
+From: clk       -                                       :  0.0ns        (0.0ns)
+Thru: FCLKIO_1  tGCK                                    :  2.5ns        (2.5ns)
+Thru: mwr_cyc_q tCOI                                    :  0.5ns        (3.0ns)
+Thru: ramwe_b   tF + tLOGI + tPDI                       : 13.0ns       (16.0ns)
+  To: ramwe_b   tOUT + tSLEW                            :  7.5ns       (23.5ns)
+
+From: mreq_b    -                                       :  0.0ns        (0.0ns)
+Thru: mreq_b_IBUF tIN                                   :  3.5ns        (3.5ns)
+Thru: adr15_q.FBK tPTCK + tCOI                          :  3.5ns        (7.0ns)
+Thru: ramadrhi<0> tLF + tLOGI + tPTA + tPDI             :  8.0ns       (15.0ns)
+  To: ramadrhi<0> tOUT + tSLEW                          :  7.5ns       (22.5ns)
+
+From: mreq_b    -                                       :  0.0ns        (0.0ns)
+Thru: mreq_b_IBUF tIN                                   :  3.5ns        (3.5ns)
+Thru: adr15_q.FBK tPTCK + tCOI                          :  3.5ns        (7.0ns)
+Thru: ramcs1_b  tLF + tLOGI + tPTA + tPDI               :  8.0ns       (15.0ns)
+  To: ramcs1_b  tOUT + tSLEW                            :  7.5ns       (22.5ns)
+
+From: mreq_b    -                                       :  0.0ns        (0.0ns)
+Thru: mreq_b_IBUF tIN                                   :  3.5ns        (3.5ns)
+Thru: adr15_q.FBK tPTCK + tCOI                          :  3.5ns        (7.0ns)
+Thru: ramcs0_b  tLF + tLOGI + tPDI                      :  7.0ns       (14.0ns)
+  To: ramcs0_b  tOUT + tSLEW                            :  7.5ns       (21.5ns)
+
+From: clk       -                                       :  0.0ns        (0.0ns)
+Thru: FCLK-IO_0 tGCK                                    :  2.5ns        (2.5ns)
+Thru: mwr_cyc_f_q tCOI                                  :  0.5ns        (3.0ns)
+Thru: wr_b      tF + tPTTS                              : 16.0ns       (19.0ns)
+  To: wr_b      tEN                                     :  0.0ns       (19.0ns)
+
+From: clk       -                                       :  0.0ns        (0.0ns)
+Thru: FCLK-IO_0 tGCK                                    :  2.5ns        (2.5ns)
+Thru: ramblock_q<1>.FBK tCOI                            :  0.5ns        (3.0ns)
+Thru: ramadrhi<0> tLF + tLOGI + tPTA + tPDI             :  8.0ns       (11.0ns)
+  To: ramadrhi<0> tOUT + tSLEW                          :  7.5ns       (18.5ns)
+
+From: clk       -                                       :  0.0ns        (0.0ns)
+Thru: FCLK-IO_0 tGCK                                    :  2.5ns        (2.5ns)
+Thru: ramblock_q<0>.FBK tCOI                            :  0.5ns        (3.0ns)
+Thru: ramcs1_b  tLF + tLOGI + tPTA + tPDI               :  8.0ns       (11.0ns)
+  To: ramcs1_b  tOUT + tSLEW                            :  7.5ns       (18.5ns)
+
+                           *************************
+                           * Clock to Setup (tCYC) *
+                           *************************
+Source clock net: adr15_q.CLKF
+Worst case clock delay from origin mreq_b is 6.5ns
+Destination clock net: FCLKIO_1
+Worst case clock delay from origin clk is 2.5ns
+C2S path from adr15_q.Q to exp_ram_q.D has multiple clock origins.
+From: adr15_q   tCOI                                    :  0.5ns        (0.5ns)
+  To: exp_ram_q.D tF + tLOGI + tPTA + tSUI              : 15.5ns       (16.0ns)
+
+Source clock net: FCLK-IO_0
+Worst case clock delay from origin clk is 2.5ns
+Destination clock net: FCLKIO_1
+Worst case clock delay from origin clk is 2.5ns
+Source and destination clock skew: 0.0ns
+From: ramblock_q<0> tCOI                                :  0.5ns        (0.5ns)
+  To: exp_ram_q.D tF + tLOGI + tPTA + tSUI              : 15.5ns       (16.0ns)
+
+Source clock net: FCLK-IO_0
+Worst case clock delay from origin clk is 2.5ns
+Destination clock net: FCLKIO_1
+Worst case clock delay from origin clk is 2.5ns
+Source and destination clock skew: 0.0ns
+From: ramblock_q<1> tCOI                                :  0.5ns        (0.5ns)
+  To: exp_ram_q.D tF + tLOGI + tPTA + tSUI              : 15.5ns       (16.0ns)
+
+Source clock net: FCLK-IO_0
+Worst case clock delay from origin clk is 2.5ns
+Destination clock net: FCLKIO_1
+Worst case clock delay from origin clk is 2.5ns
+Source and destination clock skew: 0.0ns
+From: ramblock_q<2> tCOI                                :  0.5ns        (0.5ns)
+  To: exp_ram_q.D tF + tLOGI + tPTA + tSUI              : 15.5ns       (16.0ns)
+
+Source clock net: FCLKIO_1
+Worst case clock delay from origin clk is 2.5ns
+Destination clock net: FCLK-IO_0
+Worst case clock delay from origin clk is 2.5ns
+Source and destination clock skew: 0.0ns
+From: mwr_cyc_q tCOI                                    :  0.5ns        (0.5ns)
+  To: mwr_cyc_f_q.D tF + tLOGI + tSUI                   : 14.5ns       (15.0ns)
+
+Source clock net: FCLK-IO_0
+Worst case clock delay from origin clk is 2.5ns
+Destination clock net: FCLK-IO_0
+Worst case clock delay from origin clk is 2.5ns
+Source and destination clock skew: 0.0ns
+From: mode3_overdrive_q.FBK tCOI                        :  0.5ns        (0.5ns)
+  To: mode3_overdrive_q.D tLF + tLOGI + tPTA + tSUI     :  9.5ns       (10.0ns)
+
+Source clock net: FCLK-IO_0
+Worst case clock delay from origin clk is 2.5ns
+Destination clock net: FCLK-IO_0
+Worst case clock delay from origin clk is 2.5ns
+Source and destination clock skew: 0.0ns
+From: ramblock_q<3>.FBK tCOI                            :  0.5ns        (0.5ns)
+  To: ramblock_q<3>.D tLF + tLOGI + tPTA + tSUI         :  9.5ns       (10.0ns)
+
+Source clock net: FCLK-IO_0
+Worst case clock delay from origin clk is 2.5ns
+Destination clock net: FCLK-IO_0
+Worst case clock delay from origin clk is 2.5ns
+Source and destination clock skew: 0.0ns
+From: ramblock_q<4>.FBK tCOI                            :  0.5ns        (0.5ns)
+  To: ramblock_q<4>.D tLF + tLOGI + tPTA + tSUI         :  9.5ns       (10.0ns)
+
+Source clock net: FCLKIO_1
+Worst case clock delay from origin clk is 2.5ns
+Destination clock net: FCLKIO_1
+Worst case clock delay from origin clk is 2.5ns
+Source and destination clock skew: 0.0ns
+From: reset_b_q.FBK tCOI                                :  0.5ns        (0.5ns)
+  To: reset1_b_q.D tLF + tLOGI + tPTA + tSUI            :  9.5ns       (10.0ns)
+
+Source clock net: FCLK-IO_0
+Worst case clock delay from origin clk is 2.5ns
+Destination clock net: FCLK-IO_0
+Worst case clock delay from origin clk is 2.5ns
+Source and destination clock skew: 0.0ns
+From: lrom_disable_q.FBK tCOI                           :  0.5ns        (0.5ns)
+  To: lrom_disable_q.D tLF + tLOGI + tSUI               :  8.5ns        (9.0ns)
+
+Source clock net: FCLKIO_1
+Worst case clock delay from origin clk is 2.5ns
+Destination clock net: FCLKIO_1
+Worst case clock delay from origin clk is 2.5ns
+Source and destination clock skew: 0.0ns
+From: mwr_cyc_q.FBK tCOI                                :  0.5ns        (0.5ns)
+  To: mwr_cyc_q.D tLF + tLOGI + tSUI                    :  8.5ns        (9.0ns)
+
+Source clock net: FCLK-IO_0
+Worst case clock delay from origin clk is 2.5ns
+Destination clock net: FCLK-IO_0
+Worst case clock delay from origin clk is 2.5ns
+Source and destination clock skew: 0.0ns
+From: ramblock_q<0>.FBK tCOI                            :  0.5ns        (0.5ns)
+  To: ramblock_q<0>.D tLF + tLOGI + tSUI                :  8.5ns        (9.0ns)
+
+Source clock net: FCLK-IO_0
+Worst case clock delay from origin clk is 2.5ns
+Destination clock net: FCLK-IO_0
+Worst case clock delay from origin clk is 2.5ns
+Source and destination clock skew: 0.0ns
+From: ramblock_q<1>.FBK tCOI                            :  0.5ns        (0.5ns)
+  To: ramblock_q<1>.D tLF + tLOGI + tSUI                :  8.5ns        (9.0ns)
+
+Source clock net: FCLK-IO_0
+Worst case clock delay from origin clk is 2.5ns
+Destination clock net: FCLK-IO_0
+Worst case clock delay from origin clk is 2.5ns
+Source and destination clock skew: 0.0ns
+From: ramblock_q<2>.FBK tCOI                            :  0.5ns        (0.5ns)
+  To: ramblock_q<2>.D tLF + tLOGI + tSUI                :  8.5ns        (9.0ns)
+
+Source clock net: FCLK-IO_0
+Worst case clock delay from origin clk is 2.5ns
+Destination clock net: FCLK-IO_0
+Worst case clock delay from origin clk is 2.5ns
+Source and destination clock skew: 0.0ns
+From: ramblock_q<5>.FBK tCOI                            :  0.5ns        (0.5ns)
+  To: ramblock_q<5>.D tLF + tLOGI + tSUI                :  8.5ns        (9.0ns)
+
+Source clock net: FCLK-IO_0
+Worst case clock delay from origin clk is 2.5ns
+Destination clock net: FCLK-IO_0
+Worst case clock delay from origin clk is 2.5ns
+Source and destination clock skew: 0.0ns
+From: ramblock_q<6>.FBK tCOI                            :  0.5ns        (0.5ns)
+  To: ramblock_q<6>.D tLF + tLOGI + tSUI                :  8.5ns        (9.0ns)
+
+Source clock net: FCLK-IO_0
+Worst case clock delay from origin clk is 2.5ns
+Destination clock net: FCLK-IO_0
+Worst case clock delay from origin clk is 2.5ns
+Source and destination clock skew: 0.0ns
+From: urom_disable_q.FBK tCOI                           :  0.5ns        (0.5ns)
+  To: urom_disable_q.D tLF + tLOGI + tSUI               :  8.5ns        (9.0ns)
+
+                                ****************
+                                * Pad to Setup *
+                                ****************
+Destination clock net: FCLKIO_1
+Worst case clock delay from origin clk is 2.5ns
+From: adr14     -                                       :  0.0ns        (0.0ns)
+Thru: adr14_IBUF tIN                                    :  3.5ns        (3.5ns)
+  To: exp_ram_q.D tLOGI + tPTA + tSUI                   :  6.0ns        (9.5ns)
+Subtracting clock delay from path delay yields setup requirement: 7.0ns
+
+Destination clock net: FCLKIO_1
+Worst case clock delay from origin clk is 2.5ns
+From: adr15     -                                       :  0.0ns        (0.0ns)
+Thru: N38       tIN                                     :  3.5ns        (3.5ns)
+  To: exp_ram_q.D tLOGI + tPTA + tSUI                   :  6.0ns        (9.5ns)
+Subtracting clock delay from path delay yields setup requirement: 7.0ns
+
+Destination clock net: FCLK-IO_0
+Worst case clock delay from origin clk is 2.5ns
+From: adr15     -                                       :  0.0ns        (0.0ns)
+Thru: N38       tIN                                     :  3.5ns        (3.5ns)
+  To: mode3_overdrive_q.D tLOGI + tPTA + tSUI           :  6.0ns        (9.5ns)
+Subtracting clock delay from path delay yields setup requirement: 7.0ns
+
+Destination clock net: FCLK-IO_0
+Worst case clock delay from origin clk is 2.5ns
+From: adr15     -                                       :  0.0ns        (0.0ns)
+Thru: N38       tIN                                     :  3.5ns        (3.5ns)
+  To: ramblock_q<3>.D tLOGI + tPTA + tSUI               :  6.0ns        (9.5ns)
+Subtracting clock delay from path delay yields setup requirement: 7.0ns
+
+Destination clock net: FCLK-IO_0
+Worst case clock delay from origin clk is 2.5ns
+From: adr15     -                                       :  0.0ns        (0.0ns)
+Thru: N38       tIN                                     :  3.5ns        (3.5ns)
+  To: ramblock_q<4>.D tLOGI + tPTA + tSUI               :  6.0ns        (9.5ns)
+Subtracting clock delay from path delay yields setup requirement: 7.0ns
+
+Destination clock net: FCLK-IO_0
+Worst case clock delay from origin clk is 2.5ns
+From: adr8      -                                       :  0.0ns        (0.0ns)
+Thru: adr8_IBUF tIN                                     :  3.5ns        (3.5ns)
+  To: ramblock_q<3>.D tLOGI + tPTA + tSUI               :  6.0ns        (9.5ns)
+Subtracting clock delay from path delay yields setup requirement: 7.0ns
+
+Destination clock net: FCLK-IO_0
+Worst case clock delay from origin clk is 2.5ns
+From: data<0>   -                                       :  0.0ns        (0.0ns)
+Thru: data_0_IBUF tIN                                   :  3.5ns        (3.5ns)
+  To: mode3_overdrive_q.D tLOGI + tPTA + tSUI           :  6.0ns        (9.5ns)
+Subtracting clock delay from path delay yields setup requirement: 7.0ns
+
+Destination clock net: FCLK-IO_0
+Worst case clock delay from origin clk is 2.5ns
+From: data<1>   -                                       :  0.0ns        (0.0ns)
+Thru: data_1_IBUF tIN                                   :  3.5ns        (3.5ns)
+  To: mode3_overdrive_q.D tLOGI + tPTA + tSUI           :  6.0ns        (9.5ns)
+Subtracting clock delay from path delay yields setup requirement: 7.0ns
+
+Destination clock net: FCLK-IO_0
+Worst case clock delay from origin clk is 2.5ns
+From: data<2>   -                                       :  0.0ns        (0.0ns)
+Thru: data_2_IBUF tIN                                   :  3.5ns        (3.5ns)
+  To: mode3_overdrive_q.D tLOGI + tPTA + tSUI           :  6.0ns        (9.5ns)
+Subtracting clock delay from path delay yields setup requirement: 7.0ns
+
+Destination clock net: FCLK-IO_0
+Worst case clock delay from origin clk is 2.5ns
+From: data<3>   -                                       :  0.0ns        (0.0ns)
+Thru: data_3_IBUF tIN                                   :  3.5ns        (3.5ns)
+  To: ramblock_q<3>.D tLOGI + tPTA + tSUI               :  6.0ns        (9.5ns)
+Subtracting clock delay from path delay yields setup requirement: 7.0ns
+
+Destination clock net: FCLK-IO_0
+Worst case clock delay from origin clk is 2.5ns
+From: data<4>   -                                       :  0.0ns        (0.0ns)
+Thru: data_4_IBUF tIN                                   :  3.5ns        (3.5ns)
+  To: ramblock_q<3>.D tLOGI + tPTA + tSUI               :  6.0ns        (9.5ns)
+Subtracting clock delay from path delay yields setup requirement: 7.0ns
+
+Destination clock net: FCLK-IO_0
+Worst case clock delay from origin clk is 2.5ns
+From: data<4>   -                                       :  0.0ns        (0.0ns)
+Thru: data_4_IBUF tIN                                   :  3.5ns        (3.5ns)
+  To: ramblock_q<4>.D tLOGI + tPTA + tSUI               :  6.0ns        (9.5ns)
+Subtracting clock delay from path delay yields setup requirement: 7.0ns
+
+Destination clock net: FCLK-IO_0
+Worst case clock delay from origin clk is 2.5ns
+From: data<5>   -                                       :  0.0ns        (0.0ns)
+Thru: data_5_IBUF tIN                                   :  3.5ns        (3.5ns)
+  To: ramblock_q<3>.D tLOGI + tPTA + tSUI               :  6.0ns        (9.5ns)
+Subtracting clock delay from path delay yields setup requirement: 7.0ns
+
+Destination clock net: FCLK-IO_0
+Worst case clock delay from origin clk is 2.5ns
+From: data<6>   -                                       :  0.0ns        (0.0ns)
+Thru: data_6_IBUF tIN                                   :  3.5ns        (3.5ns)
+  To: mode3_overdrive_q.D tLOGI + tPTA + tSUI           :  6.0ns        (9.5ns)
+Subtracting clock delay from path delay yields setup requirement: 7.0ns
+
+Destination clock net: FCLK-IO_0
+Worst case clock delay from origin clk is 2.5ns
+From: data<6>   -                                       :  0.0ns        (0.0ns)
+Thru: data_6_IBUF tIN                                   :  3.5ns        (3.5ns)
+  To: ramblock_q<3>.D tLOGI + tPTA + tSUI               :  6.0ns        (9.5ns)
+Subtracting clock delay from path delay yields setup requirement: 7.0ns
+
+Destination clock net: FCLK-IO_0
+Worst case clock delay from origin clk is 2.5ns
+From: data<6>   -                                       :  0.0ns        (0.0ns)
+Thru: data_6_IBUF tIN                                   :  3.5ns        (3.5ns)
+  To: ramblock_q<4>.D tLOGI + tPTA + tSUI               :  6.0ns        (9.5ns)
+Subtracting clock delay from path delay yields setup requirement: 7.0ns
+
+Destination clock net: FCLK-IO_0
+Worst case clock delay from origin clk is 2.5ns
+From: data<7>   -                                       :  0.0ns        (0.0ns)
+Thru: data_7_IBUF tIN                                   :  3.5ns        (3.5ns)
+  To: mode3_overdrive_q.D tLOGI + tPTA + tSUI           :  6.0ns        (9.5ns)
+Subtracting clock delay from path delay yields setup requirement: 7.0ns
+
+Destination clock net: FCLK-IO_0
+Worst case clock delay from origin clk is 2.5ns
+From: data<7>   -                                       :  0.0ns        (0.0ns)
+Thru: data_7_IBUF tIN                                   :  3.5ns        (3.5ns)
+  To: ramblock_q<3>.D tLOGI + tPTA + tSUI               :  6.0ns        (9.5ns)
+Subtracting clock delay from path delay yields setup requirement: 7.0ns
+
+Destination clock net: FCLK-IO_0
+Worst case clock delay from origin clk is 2.5ns
+From: data<7>   -                                       :  0.0ns        (0.0ns)
+Thru: data_7_IBUF tIN                                   :  3.5ns        (3.5ns)
+  To: ramblock_q<4>.D tLOGI + tPTA + tSUI               :  6.0ns        (9.5ns)
+Subtracting clock delay from path delay yields setup requirement: 7.0ns
+
+Destination clock net: FCLKIO_1
+Worst case clock delay from origin clk is 2.5ns
+From: dip<0>    -                                       :  0.0ns        (0.0ns)
+Thru: dip_0_IBUF tIN                                    :  3.5ns        (3.5ns)
+  To: exp_ram_q.D tLOGI + tPTA + tSUI                   :  6.0ns        (9.5ns)
+Subtracting clock delay from path delay yields setup requirement: 7.0ns
+
+Destination clock net: FCLK-IO_0
+Worst case clock delay from origin clk is 2.5ns
+From: dip<0>    -                                       :  0.0ns        (0.0ns)
+Thru: dip_0_IBUF tIN                                    :  3.5ns        (3.5ns)
+  To: mode3_overdrive_q.D tLOGI + tPTA + tSUI           :  6.0ns        (9.5ns)
+Subtracting clock delay from path delay yields setup requirement: 7.0ns
+
+Destination clock net: FCLK-IO_0
+Worst case clock delay from origin clk is 2.5ns
+From: dip<0>    -                                       :  0.0ns        (0.0ns)
+Thru: dip_0_IBUF tIN                                    :  3.5ns        (3.5ns)
+  To: ramblock_q<3>.D tLOGI + tPTA + tSUI               :  6.0ns        (9.5ns)
+Subtracting clock delay from path delay yields setup requirement: 7.0ns
+
+Destination clock net: FCLK-IO_0
+Worst case clock delay from origin clk is 2.5ns
+From: dip<1>    -                                       :  0.0ns        (0.0ns)
+Thru: dip_1_IBUF tIN                                    :  3.5ns        (3.5ns)
+  To: mode3_overdrive_q.D tLOGI + tPTA + tSUI           :  6.0ns        (9.5ns)
+Subtracting clock delay from path delay yields setup requirement: 7.0ns
+
+Destination clock net: FCLK-IO_0
+Worst case clock delay from origin clk is 2.5ns
+From: dip<2>    -                                       :  0.0ns        (0.0ns)
+Thru: dip_2_IBUF tIN                                    :  3.5ns        (3.5ns)
+  To: ramblock_q<3>.D tLOGI + tPTA + tSUI               :  6.0ns        (9.5ns)
+Subtracting clock delay from path delay yields setup requirement: 7.0ns
+
+Destination clock net: FCLK-IO_0
+Worst case clock delay from origin clk is 2.5ns
+From: dip<2>    -                                       :  0.0ns        (0.0ns)
+Thru: dip_2_IBUF tIN                                    :  3.5ns        (3.5ns)
+  To: ramblock_q<4>.D tLOGI + tPTA + tSUI               :  6.0ns        (9.5ns)
+Subtracting clock delay from path delay yields setup requirement: 7.0ns
+
+Destination clock net: FCLK-IO_0
+Worst case clock delay from origin clk is 2.5ns
+From: dip<3>    -                                       :  0.0ns        (0.0ns)
+Thru: dip_3_IBUF tIN                                    :  3.5ns        (3.5ns)
+  To: ramblock_q<3>.D tLOGI + tPTA + tSUI               :  6.0ns        (9.5ns)
+Subtracting clock delay from path delay yields setup requirement: 7.0ns
+
+Destination clock net: FCLK-IO_0
+Worst case clock delay from origin clk is 2.5ns
+From: dip<3>    -                                       :  0.0ns        (0.0ns)
+Thru: dip_3_IBUF tIN                                    :  3.5ns        (3.5ns)
+  To: ramblock_q<4>.D tLOGI + tPTA + tSUI               :  6.0ns        (9.5ns)
+Subtracting clock delay from path delay yields setup requirement: 7.0ns
+
+Destination clock net: FCLK-IO_0
+Worst case clock delay from origin clk is 2.5ns
+From: iorq_b    -                                       :  0.0ns        (0.0ns)
+Thru: iorq_b_IBUF tIN                                   :  3.5ns        (3.5ns)
+  To: mode3_overdrive_q.D tLOGI + tPTA + tSUI           :  6.0ns        (9.5ns)
+Subtracting clock delay from path delay yields setup requirement: 7.0ns
+
+Destination clock net: FCLK-IO_0
+Worst case clock delay from origin clk is 2.5ns
+From: iorq_b    -                                       :  0.0ns        (0.0ns)
+Thru: iorq_b_IBUF tIN                                   :  3.5ns        (3.5ns)
+  To: ramblock_q<3>.D tLOGI + tPTA + tSUI               :  6.0ns        (9.5ns)
+Subtracting clock delay from path delay yields setup requirement: 7.0ns
+
+Destination clock net: FCLK-IO_0
+Worst case clock delay from origin clk is 2.5ns
+From: iorq_b    -                                       :  0.0ns        (0.0ns)
+Thru: iorq_b_IBUF tIN                                   :  3.5ns        (3.5ns)
+  To: ramblock_q<4>.D tLOGI + tPTA + tSUI               :  6.0ns        (9.5ns)
+Subtracting clock delay from path delay yields setup requirement: 7.0ns
+
+Destination clock net: FCLKIO_1
+Worst case clock delay from origin clk is 2.5ns
+From: mreq_b    -                                       :  0.0ns        (0.0ns)
+Thru: mreq_b_IBUF tIN                                   :  3.5ns        (3.5ns)
+  To: exp_ram_q.D tLOGI + tPTA + tSUI                   :  6.0ns        (9.5ns)
+Subtracting clock delay from path delay yields setup requirement: 7.0ns
+
+Destination clock net: FCLK-IO_0
+Worst case clock delay from origin clk is 2.5ns
+From: wr_b      -                                       :  0.0ns        (0.0ns)
+Thru: N40       tIN                                     :  3.5ns        (3.5ns)
+  To: mode3_overdrive_q.D tLOGI + tPTA + tSUI           :  6.0ns        (9.5ns)
+Subtracting clock delay from path delay yields setup requirement: 7.0ns
+
+Destination clock net: FCLK-IO_0
+Worst case clock delay from origin clk is 2.5ns
+From: wr_b      -                                       :  0.0ns        (0.0ns)
+Thru: N40       tIN                                     :  3.5ns        (3.5ns)
+  To: ramblock_q<3>.D tLOGI + tPTA + tSUI               :  6.0ns        (9.5ns)
+Subtracting clock delay from path delay yields setup requirement: 7.0ns
+
+Destination clock net: FCLK-IO_0
+Worst case clock delay from origin clk is 2.5ns
+From: wr_b      -                                       :  0.0ns        (0.0ns)
+Thru: N40       tIN                                     :  3.5ns        (3.5ns)
+  To: ramblock_q<4>.D tLOGI + tPTA + tSUI               :  6.0ns        (9.5ns)
+Subtracting clock delay from path delay yields setup requirement: 7.0ns
+
+Destination clock net: adr15_q.CLKF
+Worst case clock delay from origin mreq_b is 6.5ns
+From: adr15     -                                       :  0.0ns        (0.0ns)
+Thru: N38       tIN                                     :  3.5ns        (3.5ns)
+  To: adr15_q.D tLOGI + tSUI                            :  5.0ns        (8.5ns)
+Subtracting clock delay from path delay yields setup requirement: 2.0ns
+
+Destination clock net: FCLK-IO_0
+Worst case clock delay from origin clk is 2.5ns
+From: adr15     -                                       :  0.0ns        (0.0ns)
+Thru: N38       tIN                                     :  3.5ns        (3.5ns)
+  To: lrom_disable_q.D tLOGI + tSUI                     :  5.0ns        (8.5ns)
+Subtracting clock delay from path delay yields setup requirement: 6.0ns
+
+Destination clock net: FCLK-IO_0
+Worst case clock delay from origin clk is 2.5ns
+From: adr15     -                                       :  0.0ns        (0.0ns)
+Thru: N38       tIN                                     :  3.5ns        (3.5ns)
+  To: ramblock_q<0>.D tLOGI + tSUI                      :  5.0ns        (8.5ns)
+Subtracting clock delay from path delay yields setup requirement: 6.0ns
+
+Destination clock net: FCLK-IO_0
+Worst case clock delay from origin clk is 2.5ns
+From: adr15     -                                       :  0.0ns        (0.0ns)
+Thru: N38       tIN                                     :  3.5ns        (3.5ns)
+  To: ramblock_q<1>.D tLOGI + tSUI                      :  5.0ns        (8.5ns)
+Subtracting clock delay from path delay yields setup requirement: 6.0ns
+
+Destination clock net: FCLK-IO_0
+Worst case clock delay from origin clk is 2.5ns
+From: adr15     -                                       :  0.0ns        (0.0ns)
+Thru: N38       tIN                                     :  3.5ns        (3.5ns)
+  To: ramblock_q<2>.D tLOGI + tSUI                      :  5.0ns        (8.5ns)
+Subtracting clock delay from path delay yields setup requirement: 6.0ns
+
+Destination clock net: FCLK-IO_0
+Worst case clock delay from origin clk is 2.5ns
+From: adr15     -                                       :  0.0ns        (0.0ns)
+Thru: N38       tIN                                     :  3.5ns        (3.5ns)
+  To: ramblock_q<5>.D tLOGI + tSUI                      :  5.0ns        (8.5ns)
+Subtracting clock delay from path delay yields setup requirement: 6.0ns
+
+Destination clock net: FCLK-IO_0
+Worst case clock delay from origin clk is 2.5ns
+From: adr15     -                                       :  0.0ns        (0.0ns)
+Thru: N38       tIN                                     :  3.5ns        (3.5ns)
+  To: ramblock_q<6>.D tLOGI + tSUI                      :  5.0ns        (8.5ns)
+Subtracting clock delay from path delay yields setup requirement: 6.0ns
+
+Destination clock net: FCLK-IO_0
+Worst case clock delay from origin clk is 2.5ns
+From: adr15     -                                       :  0.0ns        (0.0ns)
+Thru: N38       tIN                                     :  3.5ns        (3.5ns)
+  To: urom_disable_q.D tLOGI + tSUI                     :  5.0ns        (8.5ns)
+Subtracting clock delay from path delay yields setup requirement: 6.0ns
+
+Destination clock net: FCLK-IO_0
+Worst case clock delay from origin clk is 2.5ns
+From: adr8      -                                       :  0.0ns        (0.0ns)
+Thru: adr8_IBUF tIN                                     :  3.5ns        (3.5ns)
+  To: ramblock_q<6>.D tLOGI + tSUI                      :  5.0ns        (8.5ns)
+Subtracting clock delay from path delay yields setup requirement: 6.0ns
+
+Destination clock net: FCLK-IO_0
+Worst case clock delay from origin clk is 2.5ns
+From: data<0>   -                                       :  0.0ns        (0.0ns)
+Thru: data_0_IBUF tIN                                   :  3.5ns        (3.5ns)
+  To: ramblock_q<0>.D tLOGI + tSUI                      :  5.0ns        (8.5ns)
+Subtracting clock delay from path delay yields setup requirement: 6.0ns
+
+Destination clock net: FCLK-IO_0
+Worst case clock delay from origin clk is 2.5ns
+From: data<1>   -                                       :  0.0ns        (0.0ns)
+Thru: data_1_IBUF tIN                                   :  3.5ns        (3.5ns)
+  To: ramblock_q<1>.D tLOGI + tSUI                      :  5.0ns        (8.5ns)
+Subtracting clock delay from path delay yields setup requirement: 6.0ns
+
+Destination clock net: FCLK-IO_0
+Worst case clock delay from origin clk is 2.5ns
+From: data<2>   -                                       :  0.0ns        (0.0ns)
+Thru: data_2_IBUF tIN                                   :  3.5ns        (3.5ns)
+  To: lrom_disable_q.D tLOGI + tSUI                     :  5.0ns        (8.5ns)
+Subtracting clock delay from path delay yields setup requirement: 6.0ns
+
+Destination clock net: FCLK-IO_0
+Worst case clock delay from origin clk is 2.5ns
+From: data<2>   -                                       :  0.0ns        (0.0ns)
+Thru: data_2_IBUF tIN                                   :  3.5ns        (3.5ns)
+  To: ramblock_q<2>.D tLOGI + tSUI                      :  5.0ns        (8.5ns)
+Subtracting clock delay from path delay yields setup requirement: 6.0ns
+
+Destination clock net: FCLK-IO_0
+Worst case clock delay from origin clk is 2.5ns
+From: data<3>   -                                       :  0.0ns        (0.0ns)
+Thru: data_3_IBUF tIN                                   :  3.5ns        (3.5ns)
+  To: urom_disable_q.D tLOGI + tSUI                     :  5.0ns        (8.5ns)
+Subtracting clock delay from path delay yields setup requirement: 6.0ns
+
+Destination clock net: FCLK-IO_0
+Worst case clock delay from origin clk is 2.5ns
+From: data<5>   -                                       :  0.0ns        (0.0ns)
+Thru: data_5_IBUF tIN                                   :  3.5ns        (3.5ns)
+  To: ramblock_q<5>.D tLOGI + tSUI                      :  5.0ns        (8.5ns)
+Subtracting clock delay from path delay yields setup requirement: 6.0ns
+
+Destination clock net: FCLK-IO_0
+Worst case clock delay from origin clk is 2.5ns
+From: data<6>   -                                       :  0.0ns        (0.0ns)
+Thru: data_6_IBUF tIN                                   :  3.5ns        (3.5ns)
+  To: lrom_disable_q.D tLOGI + tSUI                     :  5.0ns        (8.5ns)
+Subtracting clock delay from path delay yields setup requirement: 6.0ns
+
+Destination clock net: FCLK-IO_0
+Worst case clock delay from origin clk is 2.5ns
+From: data<6>   -                                       :  0.0ns        (0.0ns)
+Thru: data_6_IBUF tIN                                   :  3.5ns        (3.5ns)
+  To: ramblock_q<0>.D tLOGI + tSUI                      :  5.0ns        (8.5ns)
+Subtracting clock delay from path delay yields setup requirement: 6.0ns
+
+Destination clock net: FCLK-IO_0
+Worst case clock delay from origin clk is 2.5ns
+From: data<6>   -                                       :  0.0ns        (0.0ns)
+Thru: data_6_IBUF tIN                                   :  3.5ns        (3.5ns)
+  To: ramblock_q<1>.D tLOGI + tSUI                      :  5.0ns        (8.5ns)
+Subtracting clock delay from path delay yields setup requirement: 6.0ns
+
+Destination clock net: FCLK-IO_0
+Worst case clock delay from origin clk is 2.5ns
+From: data<6>   -                                       :  0.0ns        (0.0ns)
+Thru: data_6_IBUF tIN                                   :  3.5ns        (3.5ns)
+  To: ramblock_q<2>.D tLOGI + tSUI                      :  5.0ns        (8.5ns)
+Subtracting clock delay from path delay yields setup requirement: 6.0ns
+
+Destination clock net: FCLK-IO_0
+Worst case clock delay from origin clk is 2.5ns
+From: data<6>   -                                       :  0.0ns        (0.0ns)
+Thru: data_6_IBUF tIN                                   :  3.5ns        (3.5ns)
+  To: ramblock_q<5>.D tLOGI + tSUI                      :  5.0ns        (8.5ns)
+Subtracting clock delay from path delay yields setup requirement: 6.0ns
+
+Destination clock net: FCLK-IO_0
+Worst case clock delay from origin clk is 2.5ns
+From: data<6>   -                                       :  0.0ns        (0.0ns)
+Thru: data_6_IBUF tIN                                   :  3.5ns        (3.5ns)
+  To: ramblock_q<6>.D tLOGI + tSUI                      :  5.0ns        (8.5ns)
+Subtracting clock delay from path delay yields setup requirement: 6.0ns
+
+Destination clock net: FCLK-IO_0
+Worst case clock delay from origin clk is 2.5ns
+From: data<6>   -                                       :  0.0ns        (0.0ns)
+Thru: data_6_IBUF tIN                                   :  3.5ns        (3.5ns)
+  To: urom_disable_q.D tLOGI + tSUI                     :  5.0ns        (8.5ns)
+Subtracting clock delay from path delay yields setup requirement: 6.0ns
+
+Destination clock net: FCLK-IO_0
+Worst case clock delay from origin clk is 2.5ns
+From: data<7>   -                                       :  0.0ns        (0.0ns)
+Thru: data_7_IBUF tIN                                   :  3.5ns        (3.5ns)
+  To: lrom_disable_q.D tLOGI + tSUI                     :  5.0ns        (8.5ns)
+Subtracting clock delay from path delay yields setup requirement: 6.0ns
+
+Destination clock net: FCLK-IO_0
+Worst case clock delay from origin clk is 2.5ns
+From: data<7>   -                                       :  0.0ns        (0.0ns)
+Thru: data_7_IBUF tIN                                   :  3.5ns        (3.5ns)
+  To: ramblock_q<0>.D tLOGI + tSUI                      :  5.0ns        (8.5ns)
+Subtracting clock delay from path delay yields setup requirement: 6.0ns
+
+Destination clock net: FCLK-IO_0
+Worst case clock delay from origin clk is 2.5ns
+From: data<7>   -                                       :  0.0ns        (0.0ns)
+Thru: data_7_IBUF tIN                                   :  3.5ns        (3.5ns)
+  To: ramblock_q<1>.D tLOGI + tSUI                      :  5.0ns        (8.5ns)
+Subtracting clock delay from path delay yields setup requirement: 6.0ns
+
+Destination clock net: FCLK-IO_0
+Worst case clock delay from origin clk is 2.5ns
+From: data<7>   -                                       :  0.0ns        (0.0ns)
+Thru: data_7_IBUF tIN                                   :  3.5ns        (3.5ns)
+  To: ramblock_q<2>.D tLOGI + tSUI                      :  5.0ns        (8.5ns)
+Subtracting clock delay from path delay yields setup requirement: 6.0ns
+
+Destination clock net: FCLK-IO_0
+Worst case clock delay from origin clk is 2.5ns
+From: data<7>   -                                       :  0.0ns        (0.0ns)
+Thru: data_7_IBUF tIN                                   :  3.5ns        (3.5ns)
+  To: ramblock_q<5>.D tLOGI + tSUI                      :  5.0ns        (8.5ns)
+Subtracting clock delay from path delay yields setup requirement: 6.0ns
+
+Destination clock net: FCLK-IO_0
+Worst case clock delay from origin clk is 2.5ns
+From: data<7>   -                                       :  0.0ns        (0.0ns)
+Thru: data_7_IBUF tIN                                   :  3.5ns        (3.5ns)
+  To: ramblock_q<6>.D tLOGI + tSUI                      :  5.0ns        (8.5ns)
+Subtracting clock delay from path delay yields setup requirement: 6.0ns
+
+Destination clock net: FCLK-IO_0
+Worst case clock delay from origin clk is 2.5ns
+From: data<7>   -                                       :  0.0ns        (0.0ns)
+Thru: data_7_IBUF tIN                                   :  3.5ns        (3.5ns)
+  To: urom_disable_q.D tLOGI + tSUI                     :  5.0ns        (8.5ns)
+Subtracting clock delay from path delay yields setup requirement: 6.0ns
+
+Destination clock net: FCLK-IO_0
+Worst case clock delay from origin clk is 2.5ns
+From: dip<2>    -                                       :  0.0ns        (0.0ns)
+Thru: dip_2_IBUF tIN                                    :  3.5ns        (3.5ns)
+  To: ramblock_q<5>.D tLOGI + tSUI                      :  5.0ns        (8.5ns)
+Subtracting clock delay from path delay yields setup requirement: 6.0ns
+
+Destination clock net: FCLK-IO_0
+Worst case clock delay from origin clk is 2.5ns
+From: dip<2>    -                                       :  0.0ns        (0.0ns)
+Thru: dip_2_IBUF tIN                                    :  3.5ns        (3.5ns)
+  To: ramblock_q<6>.D tLOGI + tSUI                      :  5.0ns        (8.5ns)
+Subtracting clock delay from path delay yields setup requirement: 6.0ns
+
+Destination clock net: FCLK-IO_0
+Worst case clock delay from origin clk is 2.5ns
+From: dip<3>    -                                       :  0.0ns        (0.0ns)
+Thru: dip_3_IBUF tIN                                    :  3.5ns        (3.5ns)
+  To: ramblock_q<5>.D tLOGI + tSUI                      :  5.0ns        (8.5ns)
+Subtracting clock delay from path delay yields setup requirement: 6.0ns
+
+Destination clock net: FCLK-IO_0
+Worst case clock delay from origin clk is 2.5ns
+From: dip<3>    -                                       :  0.0ns        (0.0ns)
+Thru: dip_3_IBUF tIN                                    :  3.5ns        (3.5ns)
+  To: ramblock_q<6>.D tLOGI + tSUI                      :  5.0ns        (8.5ns)
+Subtracting clock delay from path delay yields setup requirement: 6.0ns
+
+Destination clock net: FCLK-IO_0
+Worst case clock delay from origin clk is 2.5ns
+From: iorq_b    -                                       :  0.0ns        (0.0ns)
+Thru: iorq_b_IBUF tIN                                   :  3.5ns        (3.5ns)
+  To: lrom_disable_q.D tLOGI + tSUI                     :  5.0ns        (8.5ns)
+Subtracting clock delay from path delay yields setup requirement: 6.0ns
+
+Destination clock net: FCLK-IO_0
+Worst case clock delay from origin clk is 2.5ns
+From: iorq_b    -                                       :  0.0ns        (0.0ns)
+Thru: iorq_b_IBUF tIN                                   :  3.5ns        (3.5ns)
+  To: ramblock_q<0>.D tLOGI + tSUI                      :  5.0ns        (8.5ns)
+Subtracting clock delay from path delay yields setup requirement: 6.0ns
+
+Destination clock net: FCLK-IO_0
+Worst case clock delay from origin clk is 2.5ns
+From: iorq_b    -                                       :  0.0ns        (0.0ns)
+Thru: iorq_b_IBUF tIN                                   :  3.5ns        (3.5ns)
+  To: ramblock_q<1>.D tLOGI + tSUI                      :  5.0ns        (8.5ns)
+Subtracting clock delay from path delay yields setup requirement: 6.0ns
+
+Destination clock net: FCLK-IO_0
+Worst case clock delay from origin clk is 2.5ns
+From: iorq_b    -                                       :  0.0ns        (0.0ns)
+Thru: iorq_b_IBUF tIN                                   :  3.5ns        (3.5ns)
+  To: ramblock_q<2>.D tLOGI + tSUI                      :  5.0ns        (8.5ns)
+Subtracting clock delay from path delay yields setup requirement: 6.0ns
+
+Destination clock net: FCLK-IO_0
+Worst case clock delay from origin clk is 2.5ns
+From: iorq_b    -                                       :  0.0ns        (0.0ns)
+Thru: iorq_b_IBUF tIN                                   :  3.5ns        (3.5ns)
+  To: ramblock_q<5>.D tLOGI + tSUI                      :  5.0ns        (8.5ns)
+Subtracting clock delay from path delay yields setup requirement: 6.0ns
+
+Destination clock net: FCLK-IO_0
+Worst case clock delay from origin clk is 2.5ns
+From: iorq_b    -                                       :  0.0ns        (0.0ns)
+Thru: iorq_b_IBUF tIN                                   :  3.5ns        (3.5ns)
+  To: ramblock_q<6>.D tLOGI + tSUI                      :  5.0ns        (8.5ns)
+Subtracting clock delay from path delay yields setup requirement: 6.0ns
+
+Destination clock net: FCLK-IO_0
+Worst case clock delay from origin clk is 2.5ns
+From: iorq_b    -                                       :  0.0ns        (0.0ns)
+Thru: iorq_b_IBUF tIN                                   :  3.5ns        (3.5ns)
+  To: urom_disable_q.D tLOGI + tSUI                     :  5.0ns        (8.5ns)
+Subtracting clock delay from path delay yields setup requirement: 6.0ns
+
+Destination clock net: FCLKIO_1
+Worst case clock delay from origin clk is 2.5ns
+From: mreq_b    -                                       :  0.0ns        (0.0ns)
+Thru: mreq_b_IBUF tIN                                   :  3.5ns        (3.5ns)
+  To: mwr_cyc_q.D tLOGI + tSUI                          :  5.0ns        (8.5ns)
+Subtracting clock delay from path delay yields setup requirement: 6.0ns
+
+Destination clock net: FCLKIO_1
+Worst case clock delay from origin clk is 2.5ns
+From: rd_b      -                                       :  0.0ns        (0.0ns)
+Thru: N39       tIN                                     :  3.5ns        (3.5ns)
+  To: mwr_cyc_q.D tLOGI + tSUI                          :  5.0ns        (8.5ns)
+Subtracting clock delay from path delay yields setup requirement: 6.0ns
+
+Destination clock net: FCLKIO_1
+Worst case clock delay from origin clk is 2.5ns
+From: reset_b   -                                       :  0.0ns        (0.0ns)
+Thru: reset_b_IBUF tIN                                  :  3.5ns        (3.5ns)
+  To: reset_b_q.D tLOGI + tSUI                          :  5.0ns        (8.5ns)
+Subtracting clock delay from path delay yields setup requirement: 6.0ns
+
+Destination clock net: FCLKIO_1
+Worst case clock delay from origin clk is 2.5ns
+From: rfsh_b    -                                       :  0.0ns        (0.0ns)
+Thru: rfsh_b_IBUF tIN                                   :  3.5ns        (3.5ns)
+  To: mwr_cyc_q.D tLOGI + tSUI                          :  5.0ns        (8.5ns)
+Subtracting clock delay from path delay yields setup requirement: 6.0ns
+
+Destination clock net: FCLK-IO_0
+Worst case clock delay from origin clk is 2.5ns
+From: wr_b      -                                       :  0.0ns        (0.0ns)
+Thru: N40       tIN                                     :  3.5ns        (3.5ns)
+  To: lrom_disable_q.D tLOGI + tSUI                     :  5.0ns        (8.5ns)
+Subtracting clock delay from path delay yields setup requirement: 6.0ns
+
+Destination clock net: FCLK-IO_0
+Worst case clock delay from origin clk is 2.5ns
+From: wr_b      -                                       :  0.0ns        (0.0ns)
+Thru: N40       tIN                                     :  3.5ns        (3.5ns)
+  To: ramblock_q<0>.D tLOGI + tSUI                      :  5.0ns        (8.5ns)
+Subtracting clock delay from path delay yields setup requirement: 6.0ns
+
+Destination clock net: FCLK-IO_0
+Worst case clock delay from origin clk is 2.5ns
+From: wr_b      -                                       :  0.0ns        (0.0ns)
+Thru: N40       tIN                                     :  3.5ns        (3.5ns)
+  To: ramblock_q<1>.D tLOGI + tSUI                      :  5.0ns        (8.5ns)
+Subtracting clock delay from path delay yields setup requirement: 6.0ns
+
+Destination clock net: FCLK-IO_0
+Worst case clock delay from origin clk is 2.5ns
+From: wr_b      -                                       :  0.0ns        (0.0ns)
+Thru: N40       tIN                                     :  3.5ns        (3.5ns)
+  To: ramblock_q<2>.D tLOGI + tSUI                      :  5.0ns        (8.5ns)
+Subtracting clock delay from path delay yields setup requirement: 6.0ns
+
+Destination clock net: FCLK-IO_0
+Worst case clock delay from origin clk is 2.5ns
+From: wr_b      -                                       :  0.0ns        (0.0ns)
+Thru: N40       tIN                                     :  3.5ns        (3.5ns)
+  To: ramblock_q<5>.D tLOGI + tSUI                      :  5.0ns        (8.5ns)
+Subtracting clock delay from path delay yields setup requirement: 6.0ns
+
+Destination clock net: FCLK-IO_0
+Worst case clock delay from origin clk is 2.5ns
+From: wr_b      -                                       :  0.0ns        (0.0ns)
+Thru: N40       tIN                                     :  3.5ns        (3.5ns)
+  To: ramblock_q<6>.D tLOGI + tSUI                      :  5.0ns        (8.5ns)
+Subtracting clock delay from path delay yields setup requirement: 6.0ns
+
+Destination clock net: FCLK-IO_0
+Worst case clock delay from origin clk is 2.5ns
+From: wr_b      -                                       :  0.0ns        (0.0ns)
+Thru: N40       tIN                                     :  3.5ns        (3.5ns)
+  To: urom_disable_q.D tLOGI + tSUI                     :  5.0ns        (8.5ns)
+Subtracting clock delay from path delay yields setup requirement: 6.0ns
+
+                                ****************
+                                * Clock to Pad *
+                                ****************
+Source clock net: adr15_q.CLKF
+Worst case clock delay from origin mreq_b is 6.5ns
+From: adr15_q   tCOI                                    :  0.5ns        (0.5ns)
+Thru: $OpTx$INV$13__$INT.UIM tF + tLOGI + tPTA + tPDI   : 14.0ns       (14.5ns)
+Thru: ramdis    tF + tPTTS                              : 16.0ns       (30.5ns)
+  To: ramdis    tEN                                     :  0.0ns       (30.5ns)
+
+Source clock net: FCLKIO_1
+Worst case clock delay from origin clk is 2.5ns
+From: mwr_cyc_q tCOI                                    :  0.5ns        (0.5ns)
+Thru: $OpTx$INV$13__$INT.UIM tF + tLOGI + tPTA + tPDI   : 14.0ns       (14.5ns)
+Thru: ramdis    tF + tPTTS                              : 16.0ns       (30.5ns)
+  To: ramdis    tEN                                     :  0.0ns       (30.5ns)
+
+Source clock net: FCLK-IO_0
+Worst case clock delay from origin clk is 2.5ns
+From: ramblock_q<0> tCOI                                :  0.5ns        (0.5ns)
+Thru: $OpTx$INV$13__$INT.UIM tF + tLOGI + tPTA + tPDI   : 14.0ns       (14.5ns)
+Thru: ramdis    tF + tPTTS                              : 16.0ns       (30.5ns)
+  To: ramdis    tEN                                     :  0.0ns       (30.5ns)
+
+Source clock net: FCLK-IO_0
+Worst case clock delay from origin clk is 2.5ns
+From: ramblock_q<1> tCOI                                :  0.5ns        (0.5ns)
+Thru: $OpTx$INV$13__$INT.UIM tF + tLOGI + tPTA + tPDI   : 14.0ns       (14.5ns)
+Thru: ramdis    tF + tPTTS                              : 16.0ns       (30.5ns)
+  To: ramdis    tEN                                     :  0.0ns       (30.5ns)
+
+Source clock net: FCLK-IO_0
+Worst case clock delay from origin clk is 2.5ns
+From: ramblock_q<2> tCOI                                :  0.5ns        (0.5ns)
+Thru: $OpTx$INV$13__$INT.UIM tF + tLOGI + tPTA + tPDI   : 14.0ns       (14.5ns)
+Thru: ramdis    tF + tPTTS                              : 16.0ns       (30.5ns)
+  To: ramdis    tEN                                     :  0.0ns       (30.5ns)
+
+Source clock net: adr15_q.CLKF
+Worst case clock delay from origin mreq_b is 6.5ns
+From: adr15_q   tCOI                                    :  0.5ns        (0.5ns)
+Thru: N1$BUF1/N1$BUF1_TRST.UIM tF + tLOGI + tPDI        : 13.0ns       (13.5ns)
+Thru: adr15     tF + tPTTS                              : 16.0ns       (29.5ns)
+  To: adr15     tEN                                     :  0.0ns       (29.5ns)
+
+Source clock net: adr15_q.CLKF
+Worst case clock delay from origin mreq_b is 6.5ns
+From: adr15_q   tCOI                                    :  0.5ns        (0.5ns)
+Thru: N1$BUF1/N1$BUF1_TRST.UIM tF + tLOGI + tPDI        : 13.0ns       (13.5ns)
+Thru: adr15_aux tF + tPTTS                              : 16.0ns       (29.5ns)
+  To: adr15_aux tEN                                     :  0.0ns       (29.5ns)
+
+Source clock net: FCLK-IO_0
+Worst case clock delay from origin clk is 2.5ns
+From: mode3_overdrive_q tCOI                            :  0.5ns        (0.5ns)
+Thru: N1$BUF1/N1$BUF1_TRST.UIM tF + tLOGI + tPDI        : 13.0ns       (13.5ns)
+Thru: adr15     tF + tPTTS                              : 16.0ns       (29.5ns)
+  To: adr15     tEN                                     :  0.0ns       (29.5ns)
+
+Source clock net: FCLK-IO_0
+Worst case clock delay from origin clk is 2.5ns
+From: mode3_overdrive_q tCOI                            :  0.5ns        (0.5ns)
+Thru: N1$BUF1/N1$BUF1_TRST.UIM tF + tLOGI + tPDI        : 13.0ns       (13.5ns)
+Thru: adr15_aux tF + tPTTS                              : 16.0ns       (29.5ns)
+  To: adr15_aux tEN                                     :  0.0ns       (29.5ns)
+
+Source clock net: FCLKIO_1
+Worst case clock delay from origin clk is 2.5ns
+From: mwr_cyc_q tCOI                                    :  0.5ns        (0.5ns)
+Thru: N1$BUF1/N1$BUF1_TRST.UIM tF + tLOGI + tPDI        : 13.0ns       (13.5ns)
+Thru: adr15     tF + tPTTS                              : 16.0ns       (29.5ns)
+  To: adr15     tEN                                     :  0.0ns       (29.5ns)
+
+Source clock net: FCLKIO_1
+Worst case clock delay from origin clk is 2.5ns
+From: mwr_cyc_q tCOI                                    :  0.5ns        (0.5ns)
+Thru: N1$BUF1/N1$BUF1_TRST.UIM tF + tLOGI + tPDI        : 13.0ns       (13.5ns)
+Thru: adr15_aux tF + tPTTS                              : 16.0ns       (29.5ns)
+  To: adr15_aux tEN                                     :  0.0ns       (29.5ns)
+
+Source clock net: FCLK-IO_0
+Worst case clock delay from origin clk is 2.5ns
+From: ramblock_q<0> tCOI                                :  0.5ns        (0.5ns)
+Thru: ramadrhi<3> tF + tLOGI + tPTA + 2tPTA2 + tPDI     : 16.0ns       (16.5ns)
+  To: ramadrhi<3> tOUT + tSLEW                          :  7.5ns       (24.0ns)
+
+Source clock net: FCLK-IO_0
+Worst case clock delay from origin clk is 2.5ns
+From: ramblock_q<1> tCOI                                :  0.5ns        (0.5ns)
+Thru: ramadrhi<3> tF + tLOGI + tPTA + 2tPTA2 + tPDI     : 16.0ns       (16.5ns)
+  To: ramadrhi<3> tOUT + tSLEW                          :  7.5ns       (24.0ns)
+
+Source clock net: FCLK-IO_0
+Worst case clock delay from origin clk is 2.5ns
+From: ramblock_q<2> tCOI                                :  0.5ns        (0.5ns)
+Thru: ramadrhi<3> tF + tLOGI + tPTA + 2tPTA2 + tPDI     : 16.0ns       (16.5ns)
+  To: ramadrhi<3> tOUT + tSLEW                          :  7.5ns       (24.0ns)
+
+Source clock net: FCLKIO_1
+Worst case clock delay from origin clk is 2.5ns
+From: exp_ram_q tCOI                                    :  0.5ns        (0.5ns)
+Thru: N0$BUF0/N0$BUF0_TRST__$INT.FBK tF + tLOGI + tPDI  : 13.0ns       (13.5ns)
+Thru: rd_b      tLF + tPTTS                             : 10.0ns       (23.5ns)
+  To: rd_b      tEN                                     :  0.0ns       (23.5ns)
+
+Source clock net: FCLK-IO_0
+Worst case clock delay from origin clk is 2.5ns
+From: mwr_cyc_f_q tCOI                                  :  0.5ns        (0.5ns)
+Thru: N0$BUF0/N0$BUF0_TRST__$INT.FBK tF + tLOGI + tPDI  : 13.0ns       (13.5ns)
+Thru: rd_b      tLF + tPTTS                             : 10.0ns       (23.5ns)
+  To: rd_b      tEN                                     :  0.0ns       (23.5ns)
+
+Source clock net: FCLKIO_1
+Worst case clock delay from origin clk is 2.5ns
+From: mwr_cyc_q tCOI                                    :  0.5ns        (0.5ns)
+Thru: ramcs0_b  tF + tLOGI + tPTA + 1tPTA2 + tPDI       : 15.0ns       (15.5ns)
+  To: ramcs0_b  tOUT + tSLEW                            :  7.5ns       (23.0ns)
+
+Source clock net: FCLK-IO_0
+Worst case clock delay from origin clk is 2.5ns
+From: ramblock_q<0> tCOI                                :  0.5ns        (0.5ns)
+Thru: ramadrhi<2> tF + tLOGI + tPTA + 1tPTA2 + tPDI     : 15.0ns       (15.5ns)
+  To: ramadrhi<2> tOUT + tSLEW                          :  7.5ns       (23.0ns)
+
+Source clock net: FCLK-IO_0
+Worst case clock delay from origin clk is 2.5ns
+From: ramblock_q<1> tCOI                                :  0.5ns        (0.5ns)
+Thru: ramadrhi<2> tF + tLOGI + tPTA + 1tPTA2 + tPDI     : 15.0ns       (15.5ns)
+  To: ramadrhi<2> tOUT + tSLEW                          :  7.5ns       (23.0ns)
+
+Source clock net: FCLK-IO_0
+Worst case clock delay from origin clk is 2.5ns
+From: ramblock_q<2> tCOI                                :  0.5ns        (0.5ns)
+Thru: ramadrhi<2> tF + tLOGI + tPTA + 1tPTA2 + tPDI     : 15.0ns       (15.5ns)
+  To: ramadrhi<2> tOUT + tSLEW                          :  7.5ns       (23.0ns)
+
+Source clock net: FCLK-IO_0
+Worst case clock delay from origin clk is 2.5ns
+From: ramblock_q<3> tCOI                                :  0.5ns        (0.5ns)
+Thru: ramadrhi<2> tF + tLOGI + tPTA + 1tPTA2 + tPDI     : 15.0ns       (15.5ns)
+  To: ramadrhi<2> tOUT + tSLEW                          :  7.5ns       (23.0ns)
+
+Source clock net: adr15_q.CLKF
+Worst case clock delay from origin mreq_b is 6.5ns
+From: adr15_q   tCOI                                    :  0.5ns        (0.5ns)
+Thru: ramadrhi<1> tF + tLOGI + tPTA + tPDI              : 14.0ns       (14.5ns)
+  To: ramadrhi<1> tOUT + tSLEW                          :  7.5ns       (22.0ns)
+
+Source clock net: adr15_q.CLKF
+Worst case clock delay from origin mreq_b is 6.5ns
+From: adr15_q   tCOI                                    :  0.5ns        (0.5ns)
+Thru: ramadrhi<3> tF + tLOGI + tPTA + tPDI              : 14.0ns       (14.5ns)
+  To: ramadrhi<3> tOUT + tSLEW                          :  7.5ns       (22.0ns)
+
+Source clock net: FCLK-IO_0
+Worst case clock delay from origin clk is 2.5ns
+From: ramblock_q<0> tCOI                                :  0.5ns        (0.5ns)
+Thru: ramadrhi<1> tF + tLOGI + tPTA + tPDI              : 14.0ns       (14.5ns)
+  To: ramadrhi<1> tOUT + tSLEW                          :  7.5ns       (22.0ns)
+
+Source clock net: FCLK-IO_0
+Worst case clock delay from origin clk is 2.5ns
+From: ramblock_q<0> tCOI                                :  0.5ns        (0.5ns)
+Thru: ramadrhi<4> tF + tLOGI + tPTA + tPDI              : 14.0ns       (14.5ns)
+  To: ramadrhi<4> tOUT + tSLEW                          :  7.5ns       (22.0ns)
+
+Source clock net: FCLK-IO_0
+Worst case clock delay from origin clk is 2.5ns
+From: ramblock_q<1> tCOI                                :  0.5ns        (0.5ns)
+Thru: ramadrhi<1> tF + tLOGI + tPTA + tPDI              : 14.0ns       (14.5ns)
+  To: ramadrhi<1> tOUT + tSLEW                          :  7.5ns       (22.0ns)
+
+Source clock net: FCLK-IO_0
+Worst case clock delay from origin clk is 2.5ns
+From: ramblock_q<1> tCOI                                :  0.5ns        (0.5ns)
+Thru: ramadrhi<4> tF + tLOGI + tPTA + tPDI              : 14.0ns       (14.5ns)
+  To: ramadrhi<4> tOUT + tSLEW                          :  7.5ns       (22.0ns)
+
+Source clock net: FCLK-IO_0
+Worst case clock delay from origin clk is 2.5ns
+From: ramblock_q<2> tCOI                                :  0.5ns        (0.5ns)
+Thru: ramadrhi<1> tF + tLOGI + tPTA + tPDI              : 14.0ns       (14.5ns)
+  To: ramadrhi<1> tOUT + tSLEW                          :  7.5ns       (22.0ns)
+
+Source clock net: FCLK-IO_0
+Worst case clock delay from origin clk is 2.5ns
+From: ramblock_q<2> tCOI                                :  0.5ns        (0.5ns)
+Thru: ramadrhi<4> tF + tLOGI + tPTA + tPDI              : 14.0ns       (14.5ns)
+  To: ramadrhi<4> tOUT + tSLEW                          :  7.5ns       (22.0ns)
+
+Source clock net: FCLK-IO_0
+Worst case clock delay from origin clk is 2.5ns
+From: ramblock_q<5> tCOI                                :  0.5ns        (0.5ns)
+Thru: ramadrhi<4> tF + tLOGI + tPTA + tPDI              : 14.0ns       (14.5ns)
+  To: ramadrhi<4> tOUT + tSLEW                          :  7.5ns       (22.0ns)
+
+Source clock net: adr15_q.CLKF
+Worst case clock delay from origin mreq_b is 6.5ns
+From: adr15_q   tCOI                                    :  0.5ns        (0.5ns)
+Thru: ramadrhi<2> tF + tLOGI + tPDI                     : 13.0ns       (13.5ns)
+  To: ramadrhi<2> tOUT + tSLEW                          :  7.5ns       (21.0ns)
+
+Source clock net: adr15_q.CLKF
+Worst case clock delay from origin mreq_b is 6.5ns
+From: adr15_q   tCOI                                    :  0.5ns        (0.5ns)
+Thru: ramadrhi<4> tF + tLOGI + tPDI                     : 13.0ns       (13.5ns)
+  To: ramadrhi<4> tOUT + tSLEW                          :  7.5ns       (21.0ns)
+
+Source clock net: adr15_q.CLKF
+Worst case clock delay from origin mreq_b is 6.5ns
+From: adr15_q   tCOI                                    :  0.5ns        (0.5ns)
+Thru: ramoe_b   tF + tLOGI + tPDI                       : 13.0ns       (13.5ns)
+  To: ramoe_b   tOUT + tSLEW                            :  7.5ns       (21.0ns)
+
+Source clock net: FCLK-IO_0
+Worst case clock delay from origin clk is 2.5ns
+From: lrom_disable_q tCOI                               :  0.5ns        (0.5ns)
+Thru: ramoe_b   tF + tLOGI + tPDI                       : 13.0ns       (13.5ns)
+  To: ramoe_b   tOUT + tSLEW                            :  7.5ns       (21.0ns)
+
+Source clock net: FCLK-IO_0
+Worst case clock delay from origin clk is 2.5ns
+From: mwr_cyc_f_q tCOI                                  :  0.5ns        (0.5ns)
+Thru: ramwe_b   tF + tLOGI + tPDI                       : 13.0ns       (13.5ns)
+  To: ramwe_b   tOUT + tSLEW                            :  7.5ns       (21.0ns)
+
+Source clock net: FCLKIO_1
+Worst case clock delay from origin clk is 2.5ns
+From: mwr_cyc_q tCOI                                    :  0.5ns        (0.5ns)
+Thru: ramwe_b   tF + tLOGI + tPDI                       : 13.0ns       (13.5ns)
+  To: ramwe_b   tOUT + tSLEW                            :  7.5ns       (21.0ns)
+
+Source clock net: FCLK-IO_0
+Worst case clock delay from origin clk is 2.5ns
+From: urom_disable_q tCOI                               :  0.5ns        (0.5ns)
+Thru: ramoe_b   tF + tLOGI + tPDI                       : 13.0ns       (13.5ns)
+  To: ramoe_b   tOUT + tSLEW                            :  7.5ns       (21.0ns)
+
+Source clock net: FCLK-IO_0
+Worst case clock delay from origin clk is 2.5ns
+From: ramblock_q<4>.FBK tCOI                            :  0.5ns        (0.5ns)
+Thru: ramadrhi<3> tLF + tLOGI + tPTA + 2tPTA2 + tPDI    : 10.0ns       (10.5ns)
+  To: ramadrhi<3> tOUT + tSLEW                          :  7.5ns       (18.0ns)
+
+Source clock net: FCLKIO_1
+Worst case clock delay from origin clk is 2.5ns
+From: mwr_cyc_q.FBK tCOI                                :  0.5ns        (0.5ns)
+Thru: N0$BUF0/N0$BUF0_TRST__$INT.FBK tLF + tLOGI + tPDI :  7.0ns        (7.5ns)
+Thru: rd_b      tLF + tPTTS                             : 10.0ns       (17.5ns)
+  To: rd_b      tEN                                     :  0.0ns       (17.5ns)
+
+Source clock net: FCLK-IO_0
+Worst case clock delay from origin clk is 2.5ns
+From: ramblock_q<0>.FBK tCOI                            :  0.5ns        (0.5ns)
+Thru: ramcs0_b  tLF + tLOGI + tPTA + 1tPTA2 + tPDI      :  9.0ns        (9.5ns)
+  To: ramcs0_b  tOUT + tSLEW                            :  7.5ns       (17.0ns)
+
+Source clock net: FCLK-IO_0
+Worst case clock delay from origin clk is 2.5ns
+From: ramblock_q<1>.FBK tCOI                            :  0.5ns        (0.5ns)
+Thru: ramcs0_b  tLF + tLOGI + tPTA + 1tPTA2 + tPDI      :  9.0ns        (9.5ns)
+  To: ramcs0_b  tOUT + tSLEW                            :  7.5ns       (17.0ns)
+
+Source clock net: FCLK-IO_0
+Worst case clock delay from origin clk is 2.5ns
+From: ramblock_q<2>.FBK tCOI                            :  0.5ns        (0.5ns)
+Thru: ramcs0_b  tLF + tLOGI + tPTA + 1tPTA2 + tPDI      :  9.0ns        (9.5ns)
+  To: ramcs0_b  tOUT + tSLEW                            :  7.5ns       (17.0ns)
+
+Source clock net: FCLK-IO_0
+Worst case clock delay from origin clk is 2.5ns
+From: ramblock_q<6>.FBK tCOI                            :  0.5ns        (0.5ns)
+Thru: ramcs0_b  tLF + tLOGI + tPTA + 1tPTA2 + tPDI      :  9.0ns        (9.5ns)
+  To: ramcs0_b  tOUT + tSLEW                            :  7.5ns       (17.0ns)
+
+Source clock net: FCLKIO_1
+Worst case clock delay from origin clk is 2.5ns
+From: exp_ram_q tCOI                                    :  0.5ns        (0.5ns)
+Thru: wr_b      tF + tPTTS                              : 16.0ns       (16.5ns)
+  To: wr_b      tEN                                     :  0.0ns       (16.5ns)
+
+Source clock net: FCLK-IO_0
+Worst case clock delay from origin clk is 2.5ns
+From: mwr_cyc_f_q tCOI                                  :  0.5ns        (0.5ns)
+Thru: wr_b      tF + tPTTS                              : 16.0ns       (16.5ns)
+  To: wr_b      tEN                                     :  0.0ns       (16.5ns)
+
+Source clock net: FCLKIO_1
+Worst case clock delay from origin clk is 2.5ns
+From: reset1_b_q tCOI                                   :  0.5ns        (0.5ns)
+Thru: ramadrhi<1> tF + tPTTS                            : 16.0ns       (16.5ns)
+  To: ramadrhi<1> tEN                                   :  0.0ns       (16.5ns)
+
+Source clock net: FCLKIO_1
+Worst case clock delay from origin clk is 2.5ns
+From: reset1_b_q tCOI                                   :  0.5ns        (0.5ns)
+Thru: ramadrhi<2> tF + tPTTS                            : 16.0ns       (16.5ns)
+  To: ramadrhi<2> tEN                                   :  0.0ns       (16.5ns)
+
+Source clock net: FCLKIO_1
+Worst case clock delay from origin clk is 2.5ns
+From: reset1_b_q tCOI                                   :  0.5ns        (0.5ns)
+Thru: ramadrhi<3> tF + tPTTS                            : 16.0ns       (16.5ns)
+  To: ramadrhi<3> tEN                                   :  0.0ns       (16.5ns)
+
+Source clock net: FCLKIO_1
+Worst case clock delay from origin clk is 2.5ns
+From: reset1_b_q tCOI                                   :  0.5ns        (0.5ns)
+Thru: ramadrhi<4> tF + tPTTS                            : 16.0ns       (16.5ns)
+  To: ramadrhi<4> tEN                                   :  0.0ns       (16.5ns)
+
+Source clock net: FCLKIO_1
+Worst case clock delay from origin clk is 2.5ns
+From: reset_b_q tCOI                                    :  0.5ns        (0.5ns)
+Thru: ramadrhi<1> tF + tPTTS                            : 16.0ns       (16.5ns)
+  To: ramadrhi<1> tEN                                   :  0.0ns       (16.5ns)
+
+Source clock net: FCLKIO_1
+Worst case clock delay from origin clk is 2.5ns
+From: reset_b_q tCOI                                    :  0.5ns        (0.5ns)
+Thru: ramadrhi<2> tF + tPTTS                            : 16.0ns       (16.5ns)
+  To: ramadrhi<2> tEN                                   :  0.0ns       (16.5ns)
+
+Source clock net: FCLKIO_1
+Worst case clock delay from origin clk is 2.5ns
+From: reset_b_q tCOI                                    :  0.5ns        (0.5ns)
+Thru: ramadrhi<3> tF + tPTTS                            : 16.0ns       (16.5ns)
+  To: ramadrhi<3> tEN                                   :  0.0ns       (16.5ns)
+
+Source clock net: FCLKIO_1
+Worst case clock delay from origin clk is 2.5ns
+From: reset_b_q tCOI                                    :  0.5ns        (0.5ns)
+Thru: ramadrhi<4> tF + tPTTS                            : 16.0ns       (16.5ns)
+  To: ramadrhi<4> tEN                                   :  0.0ns       (16.5ns)
+
+Source clock net: adr15_q.CLKF
+Worst case clock delay from origin mreq_b is 6.5ns
+From: adr15_q.FBK tCOI                                  :  0.5ns        (0.5ns)
+Thru: ramadrhi<0> tLF + tLOGI + tPTA + tPDI             :  8.0ns        (8.5ns)
+  To: ramadrhi<0> tOUT + tSLEW                          :  7.5ns       (16.0ns)
+
+Source clock net: adr15_q.CLKF
+Worst case clock delay from origin mreq_b is 6.5ns
+From: adr15_q.FBK tCOI                                  :  0.5ns        (0.5ns)
+Thru: ramcs1_b  tLF + tLOGI + tPTA + tPDI               :  8.0ns        (8.5ns)
+  To: ramcs1_b  tOUT + tSLEW                            :  7.5ns       (16.0ns)
+
+Source clock net: FCLK-IO_0
+Worst case clock delay from origin clk is 2.5ns
+From: ramblock_q<0>.FBK tCOI                            :  0.5ns        (0.5ns)
+Thru: ramadrhi<0> tLF + tLOGI + tPTA + tPDI             :  8.0ns        (8.5ns)
+  To: ramadrhi<0> tOUT + tSLEW                          :  7.5ns       (16.0ns)
+
+Source clock net: FCLK-IO_0
+Worst case clock delay from origin clk is 2.5ns
+From: ramblock_q<0>.FBK tCOI                            :  0.5ns        (0.5ns)
+Thru: ramcs1_b  tLF + tLOGI + tPTA + tPDI               :  8.0ns        (8.5ns)
+  To: ramcs1_b  tOUT + tSLEW                            :  7.5ns       (16.0ns)
+
+Source clock net: FCLK-IO_0
+Worst case clock delay from origin clk is 2.5ns
+From: ramblock_q<1>.FBK tCOI                            :  0.5ns        (0.5ns)
+Thru: ramadrhi<0> tLF + tLOGI + tPTA + tPDI             :  8.0ns        (8.5ns)
+  To: ramadrhi<0> tOUT + tSLEW                          :  7.5ns       (16.0ns)
+
+Source clock net: FCLK-IO_0
+Worst case clock delay from origin clk is 2.5ns
+From: ramblock_q<1>.FBK tCOI                            :  0.5ns        (0.5ns)
+Thru: ramcs1_b  tLF + tLOGI + tPTA + tPDI               :  8.0ns        (8.5ns)
+  To: ramcs1_b  tOUT + tSLEW                            :  7.5ns       (16.0ns)
+
+Source clock net: FCLK-IO_0
+Worst case clock delay from origin clk is 2.5ns
+From: ramblock_q<2>.FBK tCOI                            :  0.5ns        (0.5ns)
+Thru: ramadrhi<0> tLF + tLOGI + tPTA + tPDI             :  8.0ns        (8.5ns)
+  To: ramadrhi<0> tOUT + tSLEW                          :  7.5ns       (16.0ns)
+
+Source clock net: FCLK-IO_0
+Worst case clock delay from origin clk is 2.5ns
+From: ramblock_q<2>.FBK tCOI                            :  0.5ns        (0.5ns)
+Thru: ramcs1_b  tLF + tLOGI + tPTA + tPDI               :  8.0ns        (8.5ns)
+  To: ramcs1_b  tOUT + tSLEW                            :  7.5ns       (16.0ns)
+
+Source clock net: FCLK-IO_0
+Worst case clock delay from origin clk is 2.5ns
+From: ramblock_q<6>.FBK tCOI                            :  0.5ns        (0.5ns)
+Thru: ramcs1_b  tLF + tLOGI + tPTA + tPDI               :  8.0ns        (8.5ns)
+  To: ramcs1_b  tOUT + tSLEW                            :  7.5ns       (16.0ns)
+
+Source clock net: adr15_q.CLKF
+Worst case clock delay from origin mreq_b is 6.5ns
+From: adr15_q.FBK tCOI                                  :  0.5ns        (0.5ns)
+Thru: ramcs0_b  tLF + tLOGI + tPDI                      :  7.0ns        (7.5ns)
+  To: ramcs0_b  tOUT + tSLEW                            :  7.5ns       (15.0ns)
+
+Source clock net: FCLKIO_1
+Worst case clock delay from origin clk is 2.5ns
+From: mwr_cyc_q.FBK tCOI                                :  0.5ns        (0.5ns)
+Thru: wr_b      tLF + tPTTS                             : 10.0ns       (10.5ns)
+  To: wr_b      tEN                                     :  0.0ns       (10.5ns)
+
+Source clock net: FCLKIO_1
+Worst case clock delay from origin clk is 2.5ns
+From: reset1_b_q.FBK tCOI                               :  0.5ns        (0.5ns)
+Thru: ramadrhi<0> tLF + tPTTS                           : 10.0ns       (10.5ns)
+  To: ramadrhi<0> tEN                                   :  0.0ns       (10.5ns)
+
+Source clock net: FCLKIO_1
+Worst case clock delay from origin clk is 2.5ns
+From: reset_b_q.FBK tCOI                                :  0.5ns        (0.5ns)
+Thru: ramadrhi<0> tLF + tPTTS                           : 10.0ns       (10.5ns)
+  To: ramadrhi<0> tEN                                   :  0.0ns       (10.5ns)
+
+                   *****************************************
+                   * Path Ending at Clock Pin of Flip-Flop *
+                   *****************************************
+From: mreq_b    -                                       :  0.0ns        (0.0ns)
+Thru: mreq_b_IBUF tIN                                   :  3.5ns        (3.5ns)
+  To: adr15_q.CLKF tPTCK                                :  3.0ns        (6.5ns)
+
+From: clk       -                                       :  0.0ns        (0.0ns)
+  To: FCLK-IO_0 tGCK                                    :  2.5ns        (2.5ns)
+
+From: clk       -                                       :  0.0ns        (0.0ns)
+  To: FCLKIO_1  tGCK                                    :  2.5ns        (2.5ns)
+
+Path Type Definition: 
+
+Pad to Pad (tPD) -                        Reports pad to pad paths that start 
+                                          at input pads and end at output pads. 
+                                          Paths are not traced through 
+                                          registers. 
+
+Clock Pad to Output Pad (tCO) -           Reports paths that start at input 
+                                          pads trace through clock inputs of 
+                                          registers and end at output pads. 
+                                          Paths are not traced through PRE/CLR 
+                                          inputs of registers. 
+
+Setup to Clock at Pad (tSU or tSUF) -     Reports external setup time of data 
+                                          to clock at pad. Data path starts at 
+                                          an input pad and ends at register 
+                                          (Fast Input Register for tSUF) D/T 
+                                          input. Clock path starts at input pad 
+                                          and ends at the register clock input. 
+                                          Paths are not traced through 
+                                          registers. Pin-to-pin setup 
+                                          requirement is not reported or 
+                                          guaranteed for product-term clocks 
+                                          derived from macrocell feedback 
+                                          signals. 
+
+Clock to Setup (tCYC) -                   Register to register cycle time. 
+                                          Include source register tCO and 
+                                          destination register tSU. Note that 
+                                          when the computed Maximum Clock Speed 
+                                          is limited by tCYC it is computed 
+                                          assuming that all registers are 
+                                          rising-edge sensitive. 
+
+Clock to Pad -                            Reports path starting at clock pin of 
+                                          register and ends at ouput pad. 
+
+Path Ending at Clock Pin of Flip-Flop -   Reports paths that start at input pad 
+                                          and end at clock input of flip-flop. 
+                                          Paths are not traced through 
+                                          registers. 
+
+Pad to Setup -                            Reports paths that start at pads and 
+                                          end at register D/T input. Paths are 
+                                          not traced through registers. 
+
