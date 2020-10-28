@@ -81,10 +81,10 @@ AUTO ;
 
 ## Define power fills top and bottom over whole board area
 layer Top ;
-polygon VDD 0.08 (0 0) (0 3.2) (3.9 3.2) (3.9 0) (0 0) ;
+polygon VDD 0.015 (0 0) (0 3.2) (3.9 3.2) (3.9 0) (0 0) ;
 
 layer Bottom ;
-polygon VSS 0.08 (0 0) (0 3.2) (3.9 3.2) (3.9 0) (0 0) ;
+polygon VSS 0.015 (0 0) (0 3.2) (3.9 3.2) (3.9 0) (0 0) ;
 
 
 Ratsnest ;  ## Calculate and display polygons
