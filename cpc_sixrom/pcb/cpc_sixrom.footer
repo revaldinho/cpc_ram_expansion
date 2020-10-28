@@ -48,7 +48,7 @@ MOVE JTAG          (2.20 2.80)  ;
 Layer tPlace ;
 CHANGE FONT PROPORTIONAL ; 
 CHANGE SIZE 0.06
-TEXT 'CPC Sixrom Card, v1.00' R90 (0.10 0.5) ;
+TEXT 'CPC Sixrom Card, v1.01' R90 (0.10 0.5) ;
 CHANGE SIZE 0.04
 TEXT '(C) 2018 Revaldinho'  R0      (0.3 0.55) ;
 TEXT 'github.com/revaldinho/cpc_ram_expansion'  R0      (0.3 0.5) ;
@@ -67,10 +67,10 @@ AUTO ;
 
 ## Define power fills top and bottom over whole board area
 layer Top ; 
-polygon VSS 0.08 (0 0) (0 3.1) (3.45 3.1) (3.45 0) (0 0) ;
+polygon VSS 0.015 (0 0) (0 3.1) (3.45 3.1) (3.45 0) (0 0) ;
 
 layer Bottom ; 
-polygon VSS 0.08 (0 0) (0 3.1) (3.45 3.1) (3.45 0) (0 0) ;
+polygon VSS 0.015 (0 0) (0 3.1) (3.45 3.1) (3.45 0) (0 0) ;
 
 
 Ratsnest ;  ## Calculate and display polygons
