@@ -67,7 +67,7 @@ MOVE CAP100N_7     (3.35 2.60)  ;
 Layer tPlace ;
 CHANGE FONT PROPORTIONAL ; 
 CHANGE SIZE 0.06
-TEXT 'CPC 512K RAM Expansion, v2.01'            R90 (0.1 0.5) ;
+TEXT 'CPC 512K RAM Expansion, v2.02'            R90 (0.1 0.5) ;
 CHANGE SIZE 0.04
 TEXT '(C) 2018 Revaldinho. https://github.com/revaldinho/cpc_ram_expansion'  R90 (0.2 0.5) ;
 
@@ -77,10 +77,10 @@ AUTO ;
  
 ## ## Define power fills top and bottom over whole board area
 layer Top ; 
-polygon VSS 0.08 (0 0) (0 3.2) (3.55 3.2) (3.55 0) (0 0) ;
+polygon VSS 0.015 (0 0) (0 3.2) (3.55 3.2) (3.55 0) (0 0) ;
  
 layer Bottom ; 
-polygon VSS 0.08 (0 0) (0 3.2) (3.55 3.2) (3.55 0) (0 0) ;
+polygon VSS 0.015 (0 0) (0 3.2) (3.55 3.2) (3.55 0) (0 0) ;
  
 Ratsnest ;  ## Calculate and display polygons
 
