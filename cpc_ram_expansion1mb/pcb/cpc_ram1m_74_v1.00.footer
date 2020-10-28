@@ -81,7 +81,7 @@ MOVE CAP100N_9     (3.6 1.4)  ;
 Layer tPlace ;
 CHANGE FONT PROPORTIONAL ;
 CHANGE SIZE 0.06
-TEXT 'CPC 1MB Old School RAM Expansion, v1.00'            R90 (0.1 0.5) ;
+TEXT 'CPC 1MB Old School RAM Expansion, v1.01'            R90 (0.1 0.5) ;
 CHANGE SIZE 0.04
 TEXT '(C) 2020 Revaldinho. https://github.com/revaldinho/cpc_ram_expansion'  R90 (0.17 0.5) ;
 
