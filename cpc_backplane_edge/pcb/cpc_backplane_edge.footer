@@ -38,7 +38,7 @@ MOVE CAP22UF_1            (2.8 3.00);
 Layer tPlace ;
 CHANGE FONT PROPORTIONAL ; 
 CHANGE SIZE 0.06
-TEXT 'CPC Expansion Backplane Edge v1.00' R90 (0.5 0.9) ;
+TEXT 'CPC Expansion Backplane Edge v1.01' R90 (0.5 0.9) ;
 CHANGE SIZE 0.04
 TEXT '(C) 2020 Revaldinho'  R90      (0.6 0.9) ;
 TEXT 'github.com/revaldinho/cpc_ram_expansion'  R90      (0.65 0.9) ;
@@ -62,10 +62,10 @@ AUTO ;
 ### Define power fills top and bottom over whole board area
 layer Top ; 
 
-Polygon VDD1 0.08 (0 0) (3.50 0) (3.50 0.30) (3.92 0.3) (3.92 2.80) (3.50 2.80) (3.50 3.2) (0 3.2) (0 0);
+Polygon VDD1 0.015 (0 0) (3.50 0) (3.50 0.30) (3.92 0.3) (3.92 2.80) (3.50 2.80) (3.50 3.2) (0 3.2) (0 0);
 
 layer Bottom ; 
-Polygon VSS 0.08 (0 0) (3.50 0) (3.50 0.30) (3.92 0.3) (3.92 2.80) (3.50 2.80) (3.50 3.2) (0 3.2) (0 0);
+Polygon VSS 0.015 (0 0) (3.50 0) (3.50 0.30) (3.92 0.3) (3.92 2.80) (3.50 2.80) (3.50 3.2) (0 3.2) (0 0);
 
 Ratsnest ;  ## Calculate and display polygons
 
