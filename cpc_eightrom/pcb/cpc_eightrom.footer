@@ -11,7 +11,7 @@ Layer Top;
 
 # PCB-Pool/PCB-Train design rule is actually 0.006/0.006 for wires
 CLASS 0 signal 0.010 0.010 ;
-CLASS 1 supply 0.020 0.010 ;
+CLASS 1 supply 0.020 0.012 ;
 
 ROTATE =R180 CAP22UF ; 
 MOVE CAP22UF       (0.4 0.25 ) ;
@@ -55,7 +55,7 @@ MOVE U3           ( 3.55 2.6);
 ROTATE =R270 U4 ;
 MOVE U4           ( 3.55 1.55);
 ROTATE =R270 U5 ;
-MOVE U5           ( 3.55 0.80);
+MOVE U5           ( 3.55 0.75);
 
 
 ROTATE =R0 CAP100N_1 ;
