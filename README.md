@@ -5,7 +5,9 @@ The main event in this GitHub project is a 1MByte RAM Expansion card for the Ams
 In fact there are several mini-projects in here and each has its own local README file:
 
   * [CPC RAM Expansion Cards](https://github.com/revaldinho/cpc_ram_expansion/blob/master/cpc_ram_expansion/README.md)
-    * A 512K Byte 74 Series based card for the 6128 and 6128 Plus
+    * Two cards specifically for the 6128 and 6128 Plus and created entirely with standard 74 series ICs
+      * 512KByte version
+      * 1MB Version
     * Two Universal RAM cards, compatible with all Amstrad CPC computers providing full 6128 compatibility on a 464
       * 512KByte version
       * 1MB Version
