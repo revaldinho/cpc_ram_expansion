@@ -42,7 +42,6 @@ module cpc_eightrom ();
   wire q1;
   wire q2;
   wire q3;
-  wire n0;
   wire n1 ;
   wire cs0_b;
   wire cs1_b;
@@ -65,8 +64,6 @@ module cpc_eightrom ();
   wire romcs23_b;
   wire romcs45_b;
   wire romcs67_b;
-  wire A13_B;
-  wire len_b;
   wire bank;
   wire eprom01_a14;
   wire eprom23_a14;
@@ -149,20 +146,17 @@ module cpc_eightrom ();
 
   // Quad XOR2 74HCT86
   SN7486 U4 (
-             // Wire first two gates as inverters
-             .i0_0(VDD), .i0_1(VDD), .o0(),
-             .i1_0(len_b), .i1_1(VDD), .o1(len),
-             //
-             .i2_0(bank), .i2_1(q3), .o2(n1),
-             .i3_0(VDD), .i3_1(VDD), .o3(),
+             .i0_0(VDD), .i0_1(VDD), .o0(),        // unused
+             .i1_0(VDD), .i1_1(VDD), .o1(),        // unused
+             .i2_0(bank), .i2_1(q3), .o2(n1),      // XOR
+             .i3_0(VDD), .i3_1(VDD), .o3(),        // unused
              .vdd(VDD), .vss(GND));
 
-  // Quad OR2 74HCT32
-  SN7432 U5 (
-             .i0_0(IOREQ_B), .i0_1(WR_B), .o0(n0),
-             .i1_0(A13), .i1_1(n0), .o1(len_b),
-             .i2_0(GND), .i2_1(GND), .o2(),
-             .i3_0(GND), .i3_1(GND), .o3(),
+  // Trip1e OR3 74HCT27
+  SN7427 U5 (
+             .i0_0(IOREQ_B), .i0_1(WR_B), .i0_2(A13), .o0(len),
+             .i1_0(GND), .i1_1(GND), .i1_2(GND), .o1(),       // unused
+             .i2_0(GND), .i2_1(GND), .i2_2(GND), .o2(),       // unused
              .vdd(VDD), .vss(GND));
 
 
