@@ -9,7 +9,7 @@
 module cpc_eightrom ();
 
   // wire declarations
-  supply0 VSS;
+  supply0 GND;
   supply1 VDD;
 
   wire Sound;
@@ -42,24 +42,24 @@ module cpc_eightrom ();
   wire q1;
   wire q2;
   wire q3;
-  wire s0_b;
-  wire s1_b;
   wire n0;
   wire n1 ;
-  wire s2_b;
-  wire s3_b;
-  wire s4_b;
-  wire s7_b;
-  wire s5_b;
-  wire s6_b;
   wire cs0_b;
   wire cs1_b;
   wire cs2_b;
-  wire cs6_b;
   wire cs3_b;
-  wire cs7_b;
   wire cs4_b;
   wire cs5_b;
+  wire cs6_b;
+  wire cs7_b;
+  wire s0_b;
+  wire s1_b;
+  wire s2_b;
+  wire s6_b;
+  wire s3_b;
+  wire s7_b;
+  wire s4_b;
+  wire s5_b;
   wire romdis_pre;
   wire romcs01_b;
   wire romcs23_b;
@@ -74,14 +74,14 @@ module cpc_eightrom ();
   wire eprom67_a14;
   wire roma14;
   // Radial electolytic, one per board on the main 5V supply
-  cap22uf         CAP22UF(.minus(VSS),.plus(VDD));
+  cap22uf         CAP22UF(.minus(GND),.plus(VDD));
 
   // Amstrad CPC Edge Connector
   //
   // V1.01 Corrected upper and lower rows
 
   idc_hdr_50w  CONN1 (
-                      .p50(Sound),   .p49(VSS),
+                      .p50(Sound),   .p49(GND),
                       .p48(A15),     .p47(A14),
                       .p46(A13),     .p45(A12),
                       .p44(A11),     .p43(A10),
@@ -105,7 +105,7 @@ module cpc_eightrom ();
                       .p8 (ROMDIS),  .p7 (RAMRD_B),
                       .p6 (RAMDIS),  .p5 (CURSOR),
                       .p4 (LPEN),    .p3 (EXP_B),
-                      .p2 (VSS),     .p1 (CLK),
+                      .p2 (GND),     .p1 (CLK),
                       ) ;
 
 
@@ -116,7 +116,7 @@ module cpc_eightrom ();
               .en23(len),
               .d2(D2), .q2(q2), .qb2(),
               .d3(D3), .q3(q3), .qb3(),
-              .vdd(VDD), .vss(VSS));
+              .vdd(VDD), .vss(GND));
 
   // 74137 3-to-8 line decoder/demultiplexer with address latch
   SN74138 U1 (
@@ -127,7 +127,7 @@ module cpc_eightrom ();
               .e2b(ROMEN_B),    .qb3(s3_b),
               .e3(A14),         .qb4(s4_b),
               .qb7(s7_b),       .qb5(s5_b),
-              .vss(VSS),        .qb6(s6_b) );
+              .vss(GND),        .qb6(s6_b) );
 
   // 7430 - 8 input NAND
   SN7430 U2 (
@@ -137,33 +137,33 @@ module cpc_eightrom ();
              .i3(cs3_b),      .i7(cs7_b),
              .i4(cs4_b),      .nc2(),
              .i5(cs5_b),      .nc3(),
-             .vss(VSS),       .o(romdis_pre));
+             .vss(GND),       .o(romdis_pre));
 
-  // Quad OR2 74HCT32
-  SN7432 U3 (
+  // Quad AND2 74HCT08
+  SN7408 U3 (
              .i0_0(cs0_b), .i0_1(cs1_b), .o0(romcs01_b),
              .i1_0(cs2_b), .i1_1(cs3_b), .o1(romcs23_b),
              .i2_0(cs4_b), .i2_1(cs5_b), .o2(romcs45_b),
              .i3_0(cs6_b), .i3_1(cs7_b), .o3(romcs67_b),
-             .vdd(VDD), .vss(VSS));
+             .vdd(VDD), .vss(GND));
 
   // Quad XOR2 74HCT86
   SN7486 U4 (
              // Wire first two gates as inverters
-             .i0_0(A13), .i0_1(VDD), .o0(A13_B),
+             .i0_0(VDD), .i0_1(VDD), .o0(),
              .i1_0(len_b), .i1_1(VDD), .o1(len),
              //
              .i2_0(bank), .i2_1(q3), .o2(n1),
              .i3_0(VDD), .i3_1(VDD), .o3(),
-             .vdd(VDD), .vss(VSS));
+             .vdd(VDD), .vss(GND));
 
   // Quad OR2 74HCT32
   SN7432 U5 (
              .i0_0(IOREQ_B), .i0_1(WR_B), .o0(n0),
-             .i1_0(A13_B), .i1_1(n0), .o1(len_b),
-             .i2_0(VSS), .i2_1(VSS), .o2(),
-             .i3_0(VSS), .i3_1(VSS), .o3(),
-             .vdd(VDD), .vss(VSS));
+             .i1_0(A13), .i1_1(n0), .o1(len_b),
+             .i2_0(GND), .i2_1(GND), .o2(),
+             .i3_0(GND), .i3_1(GND), .o3(),
+             .vdd(VDD), .vss(GND));
 
 
   // DIP switches for EEPROM/EPROM selection
@@ -177,7 +177,7 @@ module cpc_eightrom ();
                      );
 
   r10k        bank_pd ( .p0(bank),
-                        .p1(VSS)
+                        .p1(GND)
                        );
 
   r10k_sil5   sil1 (
@@ -227,7 +227,7 @@ module cpc_eightrom ();
                 .d0(D0),     .d6(D6),
                 .d1(D1),     .d5(D5),
                 .d2(D2),     .d4(D4),
-                .vss(VSS),   .d3(D3),
+                .vss(GND),   .d3(D3),
                 );
 
   xc28256 ROM23 (
@@ -244,7 +244,7 @@ module cpc_eightrom ();
                 .d0(D0),     .d6(D6),
                 .d1(D1),     .d5(D5),
                 .d2(D2),     .d4(D4),
-                .vss(VSS),   .d3(D3),
+                .vss(GND),   .d3(D3),
                 );
 
   xc28256 ROM45 (
@@ -261,7 +261,7 @@ module cpc_eightrom ();
                 .d0(D0),     .d6(D6),
                 .d1(D1),     .d5(D5),
                 .d2(D2),     .d4(D4),
-                .vss(VSS),   .d3(D3),
+                .vss(GND),   .d3(D3),
                 );
 
   xc28256 ROM67 (
@@ -278,7 +278,7 @@ module cpc_eightrom ();
                 .d0(D0),     .d6(D6),
                 .d1(D1),     .d5(D5),
                 .d2(D2),     .d4(D4),
-                .vss(VSS),   .d3(D3),
+                .vss(GND),   .d3(D3),
                 );
 
   DIODE_1N4148 D0 (
@@ -287,13 +287,13 @@ module cpc_eightrom ();
                 );
 
    // Decoupling caps for CPLD and one for SRAM
-   cap100nf CAP100N_1 (.p0( VSS ), .p1( VDD ));
-   cap100nf CAP100N_2 (.p0( VSS ), .p1( VDD ));
-   cap100nf CAP100N_3 (.p0( VSS ), .p1( VDD ));
-   cap100nf CAP100N_4 (.p0( VSS ), .p1( VDD ));
-   cap100nf CAP100N_5 (.p0( VSS ), .p1( VDD ));
-   cap100nf CAP100N_6 (.p0( VSS ), .p1( VDD ));
-   cap100nf CAP100N_7 (.p0( VSS ), .p1( VDD ));
-   cap100nf CAP100N_8 (.p0( VSS ), .p1( VDD ));
+   cap100nf CAP100N_1 (.p0( GND ), .p1( VDD ));
+   cap100nf CAP100N_2 (.p0( GND ), .p1( VDD ));
+   cap100nf CAP100N_3 (.p0( GND ), .p1( VDD ));
+   cap100nf CAP100N_4 (.p0( GND ), .p1( VDD ));
+   cap100nf CAP100N_5 (.p0( GND ), .p1( VDD ));
+   cap100nf CAP100N_6 (.p0( GND ), .p1( VDD ));
+   cap100nf CAP100N_7 (.p0( GND ), .p1( VDD ));
+   cap100nf CAP100N_8 (.p0( GND ), .p1( VDD ));
 
 endmodule
