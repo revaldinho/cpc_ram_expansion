@@ -69,7 +69,6 @@ module cpc_eightrom ();
   wire eprom23_a14;
   wire eprom45_a14;
   wire eprom67_a14;
-  wire roma14;
   // Radial electolytic, one per board on the main 5V supply
   cap22uf         CAP22UF(.minus(GND),.plus(VDD));
 
@@ -208,7 +207,7 @@ module cpc_eightrom ();
                     );
 
   xc28256 ROM01 (
-                .a14(roma14),  .vcc(VDD),
+                .a14(q0),  .vcc(VDD),
                 .a12(A12),  .web(eprom01_a14),
                 .a7(A7),    .a13(A13),
                 .a6(A6),     .a8(A8),
@@ -225,7 +224,7 @@ module cpc_eightrom ();
                 );
 
   xc28256 ROM23 (
-                .a14(roma14),  .vcc(VDD),
+                .a14(q0),  .vcc(VDD),
                 .a12(A12),  .web(eprom23_a14),
                 .a7(A7),    .a13(A13),
                 .a6(A6),     .a8(A8),
@@ -242,7 +241,7 @@ module cpc_eightrom ();
                 );
 
   xc28256 ROM45 (
-                .a14(roma14),  .vcc(VDD),
+                .a14(q0),  .vcc(VDD),
                 .a12(A12),  .web(eprom45_a14),
                 .a7(A7),    .a13(A13),
                 .a6(A6),     .a8(A8),
@@ -259,7 +258,7 @@ module cpc_eightrom ();
                 );
 
   xc28256 ROM67 (
-                .a14(roma14),  .vcc(VDD),
+                .a14(q0),  .vcc(VDD),
                 .a12(A12),  .web(eprom67_a14),
                 .a7(A7),    .a13(A13),
                 .a6(A6),     .a8(A8),
