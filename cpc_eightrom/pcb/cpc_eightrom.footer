@@ -11,7 +11,7 @@ Layer Top;
 
 # PCB-Pool/PCB-Train design rule is actually 0.006/0.006 for wires
 CLASS 0 signal 0.010 0.010 ;
-CLASS 1 supply 0.020 0.012 ;
+CLASS 1 supply 0.025 0.015 ;
 
 ROTATE =R180 CAP22UF ; 
 MOVE CAP22UF       (0.4 0.25 ) ;
@@ -49,9 +49,9 @@ MOVE DIPSW0       (2.10 2.6) ;
 ROTATE =R270 SIL0 ;
 MOVE SIL0         (2.35 2.65) ;
 ROTATE =R270 U2 ;
-MOVE U2           ( 2.85 2.6);
+MOVE U2           ( 2.85 2.65);
 ROTATE =R270 U3 ;
-MOVE U3           ( 3.55 2.6);
+MOVE U3           ( 3.55 2.65);
 ROTATE =R270 U4 ;
 MOVE U4           ( 3.55 1.55);
 ROTATE =R270 U5 ;
@@ -59,17 +59,17 @@ MOVE U5           ( 3.55 0.75);
 
 
 ROTATE =R0 CAP100N_1 ;
-MOVE CAP100N_1     (0.70 2.0) ;
+MOVE CAP100N_1     (0.70 1.95) ;
 ROTATE =R00 CAP100N_2 ;
-MOVE CAP100N_2     (1.50  2.0)  ;
+MOVE CAP100N_2     (1.50 1.95)  ;
 ROTATE =R0 CAP100N_3 ;
-MOVE CAP100N_3     (2.30 2.0)  ; 
+MOVE CAP100N_3     (2.30 1.95)  ; 
 ROTATE =R0 CAP100N_4 ;
-MOVE CAP100N_4     (3.10  2.0)  ; 
+MOVE CAP100N_4     (3.10 1.95)  ; 
 ROTATE =R0 CAP100N_5 ;
-MOVE CAP100N_5     (3.6  2.0)  ; 
+MOVE CAP100N_5     (3.6  1.95)  ; 
 ROTATE =R0 CAP100N_6 ;
-MOVE CAP100N_6     (1.55  3.10)  ; 
+MOVE CAP100N_6     (1.55  3.05)  ; 
 ROTATE =R0 CAP100N_7 ;
 MOVE CAP100N_7     (2.90  3.05)  ; 
 ROTATE =R0 CAP100N_8 ;
@@ -83,7 +83,7 @@ TEXT 'CPC EightROM Card, v1.00' R90 (0.10 0.5) ;
 CHANGE SIZE 0.04
 TEXT '(C) 2020 Revaldinho, https://github.com/revaldinho/cpc_ram_expansion' R0  (0.3 0.030) ;
 
-# Preroute VDD and VSS rings and some spurs
+# Preroute VDD and GND rings and some spurs
 layer top;
 wire  0.04;
 wire  'VDD' (0.04 0.04) ( 3.880 0.04) (3.880 3.16) (0.04 3.16) (0.04 0.04);
@@ -91,23 +91,26 @@ wire  'VDD' (2.05 0.20) (2.05 0.04);
 
 layer bottom;
 wire  0.04;
-wire  'VSS' (0.04 0.04) ( 3.880 0.04) (3.880 3.16) (0.04 3.16) (0.04 0.04);
+wire  'GND' (0.04 0.04) ( 3.880 0.04) (3.880 3.16) (0.04 3.16) (0.04 0.04);
 
 # Autorouter
-# AUTO VDD VDD_CPC VDD_EXT VDD3V3 CLK VSS;   # Route clock and supplies first
+# AUTO VDD VDD_CPC VDD_EXT VDD3V3 CLK GND;   # Route clock and supplies first
 AUTO load /tmp/autorouter_74.ctl;
 AUTO ;
 
 ## ## Define power fills top and bottom over whole board area
 layer Top ;
+
+change Isolate 0.02 ;
+change Orphans Off ;
+
 polygon VDD 0.02 (0 0) (0 3.2) (3.9 3.2) (3.9 0) (0 0) ;
 
 layer Bottom ;
-polygon VSS 0.02 (0 0) (0 3.2) (3.9 3.2) (3.9 0) (0 0) ;
+polygon GND 0.02 (0 0) (0 3.2) (3.9 3.2) (3.9 0) (0 0) ;
 
 
 Ratsnest ;  ## Calculate and display polygons
-
 
 Window Fit;
 

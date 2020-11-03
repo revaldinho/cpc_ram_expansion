@@ -38,11 +38,8 @@ module cpc_eightrom ();
   wire EXP_B;
   wire CLK;
   wire len;
-  wire q0;
-  wire q1;
-  wire q2;
-  wire q3;
-  wire n1 ;
+  wire q0,q1,q2,q3,q4,q5,q6,q7;
+  wire n1, n2, n3 ;
   wire cs0_b;
   wire cs1_b;
   wire cs2_b;
@@ -105,14 +102,17 @@ module cpc_eightrom ();
                       ) ;
 
 
-  // Quad latch 74HCT75
-  SN7475 U0 ( .en01(len),
-              .d0(D0), .q0(q0), .qb0(),
-              .d1(D1), .q1(q1), .qb1(),
-              .en23(len),
-              .d2(D2), .q2(q2), .qb2(),
-              .d3(D3), .q3(q3), .qb3(),
-              .vdd(VDD), .vss(GND));
+  // Octal latch 74HCT573
+  SN74573 U0 ( .oeb(GND),   .vdd(VDD),
+              .d0(D0),      .q0(q0),
+              .d1(D1),      .q1(q1),
+              .d2(D2),      .q2(q2),
+              .d3(D3),      .q3(q3),
+              .d4(D4),      .q4(q4),
+              .d5(D5),      .q5(q5),
+              .d6(D6),      .q6(q6),              
+              .d7(D7),      .q7(q7),
+              .vss(GND),    .le(len));
 
   // 74137 3-to-8 line decoder/demultiplexer with address latch
   SN74138 U1 (
@@ -120,7 +120,7 @@ module cpc_eightrom ();
               .a1(q1),          .qb0(s0_b),
               .a2(q2),          .qb1(s1_b),
               .e1b(n1),         .qb2(s2_b),
-              .e2b(ROMEN_B),    .qb3(s3_b),
+              .e2b(n3),         .qb3(s3_b),
               .e3(A14),         .qb4(s4_b),
               .qb7(s7_b),       .qb5(s5_b),
               .vss(GND),        .qb6(s6_b) );
@@ -154,8 +154,8 @@ module cpc_eightrom ();
   // Trip1e OR3 74HCT27
   SN7427 U5 (
              .i0_0(IOREQ_B), .i0_1(WR_B), .i0_2(A13), .o0(len),
-             .i1_0(GND), .i1_1(GND), .i1_2(GND), .o1(),       // unused
-             .i2_0(GND), .i2_1(GND), .i2_2(GND), .o2(),       // unused
+             .i1_0(q7), .i1_1(q6), .i1_2(q5), .o1(n2),
+             .i2_0(q4), .i2_1(ROMEN_B), .i2_2(n2), .o2(n3),
              .vdd(VDD), .vss(GND));
 
 
