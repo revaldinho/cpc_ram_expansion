@@ -37,7 +37,7 @@ module cpc_eightrom ();
   wire LPEN;
   wire EXP_B;
   wire CLK;
-  wire len;
+  wire lat_en, lat_en_b;
   wire q0,q1,q2,q3,q4,q5,q6,q7;
   wire n1, n2, n3 ;
   wire cs0_b;
@@ -110,9 +110,9 @@ module cpc_eightrom ();
               .d3(D3),      .q3(q3),
               .d4(D4),      .q4(q4),
               .d5(D5),      .q5(q5),
-              .d6(D6),      .q6(q6),              
+              .d6(D6),      .q6(q6),
               .d7(D7),      .q7(q7),
-              .vss(GND),    .le(len));
+              .vss(GND),    .le(lat_en));
 
   // 74137 3-to-8 line decoder/demultiplexer with address latch
   SN74138 U1 (
@@ -125,8 +125,17 @@ module cpc_eightrom ();
               .qb7(s7_b),       .qb5(s5_b),
               .vss(GND),        .qb6(s6_b) );
 
+  // Quad AND2 74HCT08
+  SN7408 U2 (
+             .i0_0(cs0_b), .i0_1(cs1_b), .o0(romcs01_b),
+             .i1_0(cs4_b), .i1_1(cs5_b), .o1(romcs45_b),
+             .i2_0(cs6_b), .i2_1(cs7_b), .o2(romcs67_b),
+             .i3_0(cs3_b), .i3_1(cs2_b), .o3(romcs23_b),
+
+             .vdd(VDD), .vss(GND));
+
   // 7430 - 8 input NAND
-  SN7430 U2 (
+  SN7430 U3 (
              .i0(cs0_b),      .vdd(VDD),
              .i1(cs1_b),      .nc1(),
              .i2(cs2_b),      .i6(cs6_b),
@@ -135,43 +144,37 @@ module cpc_eightrom ();
              .i5(cs5_b),      .nc3(),
              .vss(GND),       .o(romdis_pre));
 
-  // Quad AND2 74HCT08
-  SN7408 U3 (
-             .i0_0(cs0_b), .i0_1(cs1_b), .o0(romcs01_b),
-             .i1_0(cs2_b), .i1_1(cs3_b), .o1(romcs23_b),
-             .i2_0(cs4_b), .i2_1(cs5_b), .o2(romcs45_b),
-             .i3_0(cs6_b), .i3_1(cs7_b), .o3(romcs67_b),
+  // Trip1e OR3 74HCT27
+  SN7427 U4 (
+             .i0_0(q7), .i0_1(q6), .i0_2(q5), .o0(n2),
+             .i1_0(A13), .i1_1(WR_B), .i1_2(IOREQ_B), .o1(lat_en_b),
+             .i2_0(n2), .i2_1(q4), .i2_2(ROMEN_B), .o2(n3),
              .vdd(VDD), .vss(GND));
 
   // Quad XOR2 74HCT86
-  SN7486 U4 (
-             .i0_0(VDD), .i0_1(VDD), .o0(),        // unused
+  SN7486 U5 (
+             .i0_0(bank), .i0_1(q3), .o0(n1),      // XOR
              .i1_0(VDD), .i1_1(VDD), .o1(),        // unused
-             .i2_0(bank), .i2_1(q3), .o2(n1),      // XOR
-             .i3_0(VDD), .i3_1(VDD), .o3(),        // unused
+             .i2_0(VDD), .i2_1(VDD), .o2(),        // unused
+             .i3_0(lat_en_b), .i3_1(VDD), .o3(lat_en), // Inverter
              .vdd(VDD), .vss(GND));
 
-  // Trip1e OR3 74HCT27
-  SN7427 U5 (
-             .i0_0(IOREQ_B), .i0_1(WR_B), .i0_2(A13), .o0(len),
-             .i1_0(q7), .i1_1(q6), .i1_2(q5), .o1(n2),
-             .i2_0(q4), .i2_1(ROMEN_B), .i2_2(n2), .o2(n3),
-             .vdd(VDD), .vss(GND));
 
 
   // DIP switches for EEPROM/EPROM selection
-  DIP5        dipsw1(
+  DIP4        dipsw1(
                      // ROMA14 is Q0 bit from ROM selection - high for ODD ROMs
                      .sw0_a(q0), .sw0_b(eprom01_a14),
                      .sw1_a(q0), .sw1_b(eprom23_a14),
                      .sw2_a(q0), .sw2_b(eprom45_a14),
                      .sw3_a(q0), .sw3_b(eprom67_a14),
-                     .sw4_a(VDD), .sw4_b(bank),
                      );
 
-  r10k        bank_pd ( .p0(bank),
-                        .p1(GND)
-                       );
+
+  hdr1x03     bank_lnk ( .p1(GND),
+                         .p2(bank),
+                         .p3(VDD)
+                         );
 
   r10k_sil5   sil1 (
                     .common(VDD),
