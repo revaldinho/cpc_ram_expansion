@@ -42,6 +42,7 @@ ARGS ?=
 	-l ${netlister_dir}/lib/i2c.lib \
 	-o $*.scr \
 	-f scr \
+	-u \
 	-d ../../common_pcb/common.header \
 	-t $*.footer_cpp
 
