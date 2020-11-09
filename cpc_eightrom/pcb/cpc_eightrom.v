@@ -114,7 +114,7 @@ module cpc_eightrom ();
               .d7(D7),      .q7(q7),
               .vss(GND),    .le(lat_en));
 
-  // 74137 3-to-8 line decoder/demultiplexer with address latch
+  // 74138 3-to-8 line decoder/demultiplexer (no address latch)
   SN74138 U1 (
               .a0(q0),          .vdd(VDD),
               .a1(q1),          .qb0(s0_b),
@@ -282,7 +282,7 @@ module cpc_eightrom ();
                 .C(ROMDIS)
                 );
 
-   // Decoupling caps for CPLD and one for SRAM
+   // Decoupling caps
    cap100nf CAP100N_1 (.p0( GND ), .p1( VDD ));
    cap100nf CAP100N_2 (.p0( GND ), .p1( VDD ));
    cap100nf CAP100N_3 (.p0( GND ), .p1( VDD ));
