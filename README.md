@@ -13,7 +13,7 @@ In fact there are several mini-projects in here and each has its own local READM
       * 1MB Version
   * CPC ROM Cards
     * [CPC 4 ROM Expansion Card](https://github.com/revaldinho/cpc_ram_expansion/wiki/CPC-Fourrom-Card )
-    * [CPC 6 ROM Expansion Card](hhttps://github.com/revaldinho/cpc_ram_expansion/wiki/CPC-Sixrom-Card )
+    * [CPC 6 ROM Expansion Card](https://github.com/revaldinho/cpc_ram_expansion/wiki/CPC-Sixrom-Card )
     * [CPC 8 ROM Expansion Card](https://github.com/revaldinho/cpc_ram_expansion/wiki/CPC-Eightrom-Card )
   * [CPC Expansion backplanes](https://github.com/revaldinho/cpc_ram_expansion/wiki/CPC-Expansion-Backplane)
     * 3 slot basic backplane
