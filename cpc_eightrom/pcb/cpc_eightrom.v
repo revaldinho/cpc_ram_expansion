@@ -37,7 +37,7 @@ module cpc_eightrom ();
   wire LPEN;
   wire EXP_B;
   wire CLK;
-  wire lat_en, lat_en_b;
+  wire lat_en, lat_en_b, lat_clk;
   wire q0,q1,q2,q3,q4,q5,q6,q7;
   wire n1, n2, n3 ;
   wire cs0_b;
@@ -112,7 +112,7 @@ module cpc_eightrom ();
               .d5(D5),      .q5(q5),
               .d6(D6),      .q6(q6),
               .d7(D7),      .q7(q7),
-              .vss(GND),    .le(clk);
+              .vss(GND),    .le(lat_clk));
 
   // 74138 3-to-8 line decoder/demultiplexer (no address latch)
   SN74138 U1 (
@@ -145,9 +145,9 @@ module cpc_eightrom ();
 
   // Trip1e OR3 74HCT4075
   SN74HCT4075 U4 (
-                  .i0_0(q7), .i0_1(q6), .i0_2(q5), .o0(n2),
-                  .i1_0(A13), .i1_1(WR_B), .i1_2(IOREQ_B), .o1(lat_en_b),
-                  .i2_0(n2), .i2_1(q4), .i2_2(ROMEN_B), .o2(n3),
+                  .i0_0(A13), .i0_1(WR_B), .i0_2(IOREQ_B), .o0(lat_en_b),
+                  .i1_0(q7), .i1_1(q6), .i1_2(q5), .o1(n2),
+                  .i2_0(q4), .i2_1(n2), .i2_2(n2), .o2(n3),
                   .vdd(VDD), .vss(GND));
 
   // Quad XOR2 74HCT86
@@ -282,7 +282,7 @@ module cpc_eightrom ();
   // Jumper or link - conect p1-p2 if using 74HCT574, or p2-p3 if using 74HCT573
   hdr1x03   clklnk (
                     .p1(lat_en),
-                    .p2(clk),
+                    .p2(lat_clk),
                     .p3(lat_en_b)
                     );
   
