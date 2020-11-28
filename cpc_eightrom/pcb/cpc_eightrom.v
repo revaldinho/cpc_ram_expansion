@@ -102,7 +102,7 @@ module cpc_eightrom ();
                       ) ;
 
 
-  // Octal latch 74HCT573
+  // Octal latch 74HCT573 (or 74HCT574 - selected via clock link)
   SN74573 U0 ( .oeb(GND),   .vdd(VDD),
               .d0(D0),      .q0(q0),
               .d1(D1),      .q1(q1),
@@ -112,7 +112,7 @@ module cpc_eightrom ();
               .d5(D5),      .q5(q5),
               .d6(D6),      .q6(q6),
               .d7(D7),      .q7(q7),
-              .vss(GND),    .le(lat_en));
+              .vss(GND),    .le(clk);
 
   // 74138 3-to-8 line decoder/demultiplexer (no address latch)
   SN74138 U1 (
@@ -131,7 +131,6 @@ module cpc_eightrom ();
              .i1_0(cs4_b), .i1_1(cs5_b), .o1(romcs45_b),
              .i2_0(cs6_b), .i2_1(cs7_b), .o2(romcs67_b),
              .i3_0(cs3_b), .i3_1(cs2_b), .o3(romcs23_b),
-
              .vdd(VDD), .vss(GND));
 
   // 7430 - 8 input NAND
@@ -144,12 +143,12 @@ module cpc_eightrom ();
              .i5(cs5_b),      .nc3(),
              .vss(GND),       .o(romdis_pre));
 
-  // Trip1e OR3 74HCT27
-  SN7427 U4 (
-             .i0_0(q7), .i0_1(q6), .i0_2(q5), .o0(n2),
-             .i1_0(A13), .i1_1(WR_B), .i1_2(IOREQ_B), .o1(lat_en_b),
-             .i2_0(n2), .i2_1(q4), .i2_2(ROMEN_B), .o2(n3),
-             .vdd(VDD), .vss(GND));
+  // Trip1e OR3 74HCT4075
+  SN74HCT4075 U4 (
+                  .i0_0(q7), .i0_1(q6), .i0_2(q5), .o0(n2),
+                  .i1_0(A13), .i1_1(WR_B), .i1_2(IOREQ_B), .o1(lat_en_b),
+                  .i2_0(n2), .i2_1(q4), .i2_2(ROMEN_B), .o2(n3),
+                  .vdd(VDD), .vss(GND));
 
   // Quad XOR2 74HCT86
   SN7486 U5 (
@@ -158,8 +157,6 @@ module cpc_eightrom ();
              .i2_0(VDD), .i2_1(VDD), .o2(),        // unused
              .i3_0(lat_en_b), .i3_1(VDD), .o3(lat_en), // Inverter
              .vdd(VDD), .vss(GND));
-
-
 
   // DIP switches for EEPROM/EPROM selection
   DIP4        dip_b(
@@ -281,7 +278,14 @@ module cpc_eightrom ();
                 .A(romdis_pre),
                 .C(ROMDIS)
                 );
-
+               
+  // Jumper or link - conect p1-p2 if using 74HCT574, or p2-p3 if using 74HCT573
+  hdr1x03   clklnk (
+                    .p1(lat_en),
+                    .p2(clk),
+                    .p3(lat_en_b)
+                    );
+  
    // Decoupling caps
    cap100nf CAP100N_1 (.p0( GND ), .p1( VDD ));
    cap100nf CAP100N_2 (.p0( GND ), .p1( VDD ));
