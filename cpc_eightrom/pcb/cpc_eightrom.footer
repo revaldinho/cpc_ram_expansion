@@ -20,10 +20,7 @@ ROTATE =R180 CONN1 ;
 MOVE CONN1         (1.95 0.25) ;
 
 ROTATE =R0 D0 ;
-MOVE D0         (3.60 0.15) ;
-
-ROTATE =R0 clklnk ;
-MOVE clklnk     (3.60 0.30) ;
+MOVE D0         (3.60 0.25) ;
 
 ROTATE =R270 ROM01 ;
 MOVE ROM01          (0.5 1.20) ;
@@ -88,7 +85,7 @@ TEXT '(C) 2020 Revaldinho, https://github.com/revaldinho/cpc_ram_expansion' R0  
 
 TEXT 'ROM8-15' R0 (0.25 2.35);
 TEXT 'ROM0-7' R0 (0.25 2.15);
-TEXT 'EPROM     EEPROM' R0 (0.09 2.45);
+TEXT 'EEPROM    EPROM' R0 (0.09 2.45);
 TEXT 'DISABLE   ENABLE' R0 (2.00 2.10);
 
 # Preroute VDD and GND rings and some spurs

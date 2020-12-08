@@ -37,7 +37,7 @@ module cpc_eightrom ();
   wire LPEN;
   wire EXP_B;
   wire CLK;
-  wire lat_en, lat_en_b, lat_clk;
+  wire lat_en, lat_en_b;
   wire q0,q1,q2,q3,q4,q5,q6,q7;
   wire n1, n2, n3 ;
   wire cs0_b;
@@ -102,7 +102,7 @@ module cpc_eightrom ();
                       ) ;
 
 
-  // Octal latch 74HCT573 (or 74HCT574 - selected via clock link)
+  // Octal latch 74HCT573
   SN74573 U0 ( .oeb(GND),   .vdd(VDD),
               .d0(D0),      .q0(q0),
               .d1(D1),      .q1(q1),
@@ -112,7 +112,7 @@ module cpc_eightrom ();
               .d5(D5),      .q5(q5),
               .d6(D6),      .q6(q6),
               .d7(D7),      .q7(q7),
-              .vss(GND),    .le(lat_clk));
+              .vss(GND),    .le(lat_en));
 
   // 74138 3-to-8 line decoder/demultiplexer (no address latch)
   SN74138 U1 (
@@ -279,12 +279,6 @@ module cpc_eightrom ();
                 .C(ROMDIS)
                 );
                
-  // Jumper or link - conect p1-p2 if using 74HCT574, or p2-p3 if using 74HCT573
-  hdr1x03   clklnk (
-                    .p1(lat_en),
-                    .p2(lat_clk),
-                    .p3(lat_en_b)
-                    );
   
    // Decoupling caps
    cap100nf CAP100N_1 (.p0( GND ), .p1( VDD ));
