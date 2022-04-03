@@ -60,7 +60,7 @@
  */
 
 
-`define FIT_XC9536 1
+//`define FIT_XC9536 1
 `define M4_COMPATIBILITY  1
 // Enable this option to drive A15 with two pins
 `define USE_A15_AUX 1

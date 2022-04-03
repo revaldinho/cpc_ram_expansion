@@ -2,7 +2,7 @@ netlister_dir ?= ~/Documents/nas/Development/git/netlister
 
 ALLLIBS ?= $(shell ls -1 ${netlister_dir}/lib/*.lib)
 
-ARGS ?= 
+ARGS ?=
 
 %.v_cpp: %.v
 	grep -v '^# ' $*.v | cpp -E ${ARGS} | grep -v '^# ' > $*.v_cpp
@@ -10,7 +10,7 @@ ARGS ?=
 %.footer_cpp: %.footer
 	grep -v '^# ' $*.footer | cpp -E ${ARGS} | grep -v '^# ' > $*.footer_cpp
 
-%.net : %.v_cpp ${ALLLIBS} 
+%.net : %.v_cpp ${ALLLIBS}
 	netlister.py -i $*.v_cpp \
 	-l ${netlister_dir}/lib/memory.lib \
 	-l ${netlister_dir}/lib/idc_connectors.lib \

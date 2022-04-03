@@ -1,18 +1,18 @@
-// 
+//
 // cpc_ram512k_v110 netlist
-// 
+//
 // netlister.py format
-// 
+//
 // (c) Revaldinho, 2018
-// 
+//
 // V1.10 Pin out - CPLD pin out _not_ compatible with original given additional
 // signal connections + removal of RAMOE_B (direct connection of SRAM OE_B to
 // CPC RAMRD_B now)
-//   
+//
 //
 // This code is part of the cpc_ram_expansion set of Amstrad CPC peripherals.
 // https://github.com/revaldinho/cpc_ram_expansion
-// 
+//
 // Copyright (C) 2018 Revaldinho
 //
 // This program is free software: you can redistribute it and/or modify
@@ -35,10 +35,10 @@ module cpc_ram512k_v110 ();
   supply0 VSS;
   supply1 VDD;
 
-  wire Sound;  
+  wire Sound;
   wire A15,A14,A13,A12,A11,A10,A9,A8,A7,A6,A5,A4,A3,A2,A1,A0 ;
   wire D7,D6,D5,D4,D3,D2,D1,D0 ;
-  wire MREQ_B;  
+  wire MREQ_B;
   wire M1_B;
   wire RFSH_B;
   wire IOREQ_B;
@@ -47,7 +47,7 @@ module cpc_ram512k_v110 ();
   wire HALT_B;
   wire INT_B ;
   wire NMI_B ;
-  wire BUSRQ_B;  
+  wire BUSRQ_B;
   wire BUSACK_B;
   wire READY;
   wire BUSRESET_B;
@@ -72,8 +72,8 @@ module cpc_ram512k_v110 ();
   wire TCK;
 
   wire dip0, dip1;
-  wire dip0_pu, dip1_pu, dip2_pu, dip3_pu;  
-  
+  wire dip0_pu, dip1_pu, dip2_pu, dip3_pu;
+
 
   // Radial electolytic, one per board on the main 5V supply
   cap22uf         CAP22UF(.minus(VSS),.plus(VDD));
@@ -83,7 +83,7 @@ module cpc_ram512k_v110 ();
                      .sw0_a(dip0), .sw0_b(dip0_pu),
                      .sw1_a(dip1), .sw1_b(dip1_pu),
                      .sw2_a(HIADR3), .sw2_b(dip2_pu),
-                     .sw3_a(HIADR4), .sw3_b(dip3_pu),                     
+                     .sw3_a(HIADR4), .sw3_b(dip3_pu),
                      );
 
   // High value pull down to be overridden by pull up when switch closed
@@ -148,7 +148,7 @@ module cpc_ram512k_v110 ();
                 .p7(VDD),  .p8(),
                 );
 
-  // 9572 CPLD 
+  // 9572 CPLD
   xc9572pc44  CPLD (
                     .p1(MREQ_B),
 	            .p2(IOREQ_B),
