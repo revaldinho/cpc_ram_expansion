@@ -1,0 +1,231 @@
+Release 14.7 - xst P.20131013 (lin64)
+Copyright (c) 1995-2013 Xilinx, Inc.  All rights reserved.
+--> 
+Parameter TMPDIR set to tmp
+
+
+Total REAL time to Xst completion: 0.00 secs
+Total CPU time to Xst completion: 0.03 secs
+ 
+--> 
+Parameter xsthdpdir set to xst
+
+
+Total REAL time to Xst completion: 0.00 secs
+Total CPU time to Xst completion: 0.03 secs
+ 
+--> 
+Reading design: cpld_ram512k_v110.prj
+
+TABLE OF CONTENTS
+  1) Synthesis Options Summary
+  2) HDL Compilation
+  3) Design Hierarchy Analysis
+  4) HDL Analysis
+  5) HDL Synthesis
+     5.1) HDL Synthesis Report
+  6) Advanced HDL Synthesis
+     6.1) Advanced HDL Synthesis Report
+  7) Low Level Synthesis
+  8) Partition Report
+  9) Final Report
+
+=========================================================================
+*                      Synthesis Options Summary                        *
+=========================================================================
+---- Source Parameters
+Input File Name                    : "cpld_ram512k_v110.prj"
+Input Format                       : mixed
+Ignore Synthesis Constraint File   : NO
+
+---- Target Parameters
+Target Device                      : XC9500 CPLDs
+Output File Name                   : "cpld_ram512k_v110"
+Output Format                      : NGC
+
+---- Source Options
+Top Module Name                    : cpld_ram512k_v110
+Automatic FSM Extraction           : YES
+FSM Encoding Algorithm             : Auto
+Safe Implementation                : No
+Mux Extraction                     : YES
+Resource Sharing                   : YES
+
+---- Target Options
+Add IO Buffers                     : YES
+MACRO Preserve                     : YES
+XOR Preserve                       : YES
+Equivalent register Removal        : YES
+
+---- General Options
+Optimization Goal                  : Speed
+Optimization Effort                : 2
+Library Search Order               : cpld_ram512k_v110.lso
+Keep Hierarchy                     : No
+Netlist Hierarchy                  : as_optimized
+RTL Output                         : Yes
+Hierarchy Separator                : /
+Bus Delimiter                      : <>
+Case Specifier                     : maintain
+Verilog 2001                       : YES
+
+---- Other Options
+wysiwyg                            : NO
+
+=========================================================================
+
+
+=========================================================================
+*                          HDL Compilation                              *
+=========================================================================
+Compiling verilog file "../src/cpld_ram512k_v110.v" in library work
+Module <cpld_ram512k_v110> compiled
+No errors in compilation
+Analysis of file <"cpld_ram512k_v110.prj"> succeeded.
+ 
+
+=========================================================================
+*                     Design Hierarchy Analysis                         *
+=========================================================================
+Analyzing hierarchy for module <cpld_ram512k_v110> in library <work>.
+
+
+=========================================================================
+*                            HDL Analysis                               *
+=========================================================================
+Analyzing top module <cpld_ram512k_v110>.
+Module <cpld_ram512k_v110> is correct for synthesis.
+ 
+
+=========================================================================
+*                           HDL Synthesis                               *
+=========================================================================
+
+Performing bidirectional port resolution...
+
+Synthesizing Unit <cpld_ram512k_v110>.
+    Related source file is "../src/cpld_ram512k_v110.v".
+WARNING:Xst:647 - Input <m1_b> is never used. This port will be preserved and left unconnected if it belongs to a top-level block or it belongs to a sub-block and the hierarchy of this sub-block is preserved.
+WARNING:Xst:647 - Input <ramrd_b> is never used. This port will be preserved and left unconnected if it belongs to a top-level block or it belongs to a sub-block and the hierarchy of this sub-block is preserved.
+WARNING:Xst:647 - Input <adr8> is never used. This port will be preserved and left unconnected if it belongs to a top-level block or it belongs to a sub-block and the hierarchy of this sub-block is preserved.
+WARNING:Xst:647 - Input <rd_b_aux> is never used. This port will be preserved and left unconnected if it belongs to a top-level block or it belongs to a sub-block and the hierarchy of this sub-block is preserved.
+WARNING:Xst:647 - Input <ready> is never used. This port will be preserved and left unconnected if it belongs to a top-level block or it belongs to a sub-block and the hierarchy of this sub-block is preserved.
+WARNING:Xst:646 - Signal <mreq_b_q> is assigned but never used. This unconnected signal will be trimmed during the optimization process.
+WARNING:Xst:646 - Signal <low512kb_mode> is assigned but never used. This unconnected signal will be trimmed during the optimization process.
+    Found 1-bit tristate buffer for signal <ramdis>.
+    Found 1-bit tristate buffer for signal <rd_b>.
+    Found 1-bit tristate buffer for signal <wr_b>.
+    Found 1-bit register for signal <adr15_q>.
+    Found 1-bit register for signal <exp_ram_q>.
+    Found 1-bit xor2 for signal <int_ramrd_r$xor0000> created at line 229.
+    Found 1-bit register for signal <lrom_disable_q>.
+    Found 1-bit register for signal <mode3_q>.
+    Found 1-bit register for signal <mwr_cyc_f_q>.
+    Found 1-bit register for signal <mwr_cyc_q>.
+    Found 6-bit register for signal <ramblock_q>.
+    Found 1-bit register for signal <urom_disable_q>.
+    Summary:
+	inferred   6 D-type flip-flop(s).
+	inferred   1 Xor(s).
+	inferred   5 Tristate(s).
+Unit <cpld_ram512k_v110> synthesized.
+
+
+=========================================================================
+HDL Synthesis Report
+
+Macro Statistics
+# Registers                                            : 8
+ 1-bit register                                        : 7
+ 6-bit register                                        : 1
+# Tristates                                            : 4
+ 1-bit tristate buffer                                 : 3
+ 2-bit tristate buffer                                 : 1
+# Xors                                                 : 1
+ 1-bit xor2                                            : 1
+
+=========================================================================
+
+=========================================================================
+*                       Advanced HDL Synthesis                          *
+=========================================================================
+
+
+=========================================================================
+Advanced HDL Synthesis Report
+
+Macro Statistics
+# Registers                                            : 6
+ Flip-Flops                                            : 6
+
+=========================================================================
+
+=========================================================================
+*                         Low Level Synthesis                           *
+=========================================================================
+
+Optimizing unit <cpld_ram512k_v110> ...
+
+=========================================================================
+*                           Partition Report                            *
+=========================================================================
+
+Partition Implementation Status
+-------------------------------
+
+  No Partitions were found in this design.
+
+-------------------------------
+
+=========================================================================
+*                            Final Report                               *
+=========================================================================
+Final Results
+RTL Top Level Output File Name     : cpld_ram512k_v110.ngr
+Top Level Output File Name         : cpld_ram512k_v110
+Output Format                      : NGC
+Optimization Goal                  : Speed
+Keep Hierarchy                     : No
+Target Technology                  : XC9500 CPLDs
+Macro Preserve                     : YES
+XOR Preserve                       : YES
+wysiwyg                            : NO
+
+Design Statistics
+# IOs                              : 34
+
+Cell Usage :
+# BELS                             : 271
+#      AND2                        : 105
+#      AND3                        : 9
+#      AND4                        : 1
+#      AND5                        : 1
+#      GND                         : 1
+#      INV                         : 92
+#      OR2                         : 55
+#      OR3                         : 5
+#      VCC                         : 1
+#      XOR2                        : 1
+# FlipFlops/Latches                : 13
+#      FD                          : 1
+#      FDC                         : 12
+# IO Buffers                       : 29
+#      IBUF                        : 16
+#      IOBUFE                      : 3
+#      OBUF                        : 8
+#      OBUFE                       : 2
+=========================================================================
+
+
+Total REAL time to Xst completion: 3.00 secs
+Total CPU time to Xst completion: 2.26 secs
+ 
+--> 
+
+
+Total memory usage is 509528 kilobytes
+
+Number of errors   :    0 (   0 filtered)
+Number of warnings :    7 (   0 filtered)
+Number of infos    :    0 (   0 filtered)
+
