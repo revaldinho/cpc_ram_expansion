@@ -1,79 +1,109 @@
 # Maximum Eagle freeware board size is 4.0x3.2" (100x80mm) 
 
 # better to work in inches for 0.1 inch pad pitch
-Grid default;
+Grid inch;
 Set Wire_Bend 0;
 Layer Dimension;
-Wire 0  (0 0) (3.45 3.1) (0 0);
+Wire 0  (0 0) (3.92 3.2) (0 0);
 Layer Top;
 
 # PCB-Pool/PCB-Train design rule is actually 0.006/0.006 for wires
-CLASS 0 signal 0.018 0.010 ;
-CLASS 1 supply 0.028 0.010 ;
+CLASS 0 signal  0.010 0.010 ;
+CLASS 1 supply  0.020 0.010 ;
+CLASS 2 special 0.015 0.010 ;
 
 ROTATE =R180 CAP22UF ; 
-MOVE CAP22UF       (3.2 0.65 ) ;
+MOVE CAP22UF       (3.6 0.65 ) ;
 
 ROTATE =R180 CONN1 ;
-MOVE CONN1         (1.7 0.25) ;
+MOVE CONN1         (1.95 0.25) ;
 
 ROTATE =R270 DIPSW0 ;
-MOVE DIPSW0         (3.1 2.45) ;
+MOVE DIPSW0         (3.6 2.55) ;
 ROTATE =R270 SIL0 ;
-MOVE SIL0         (2.8 2.50) ;
+MOVE SIL0         (3.3  2.60) ;
 ROTATE =R0 D0 ;
 MOVE D0         (2.9 0.5) ;
 
 ROTATE =R0 ROM01 ;
 MOVE ROM01          (1.05 0.95) ;
 ROTATE =R0 ROM23 ;
-MOVE ROM23          (1.05 1.75) ;
+MOVE ROM23          (1.05 1.80) ;
 ROTATE =R0 ROM45 ;
-MOVE ROM45          (1.05 2.55) ;
+MOVE ROM45          (1.05 2.65) ;
 ROTATE =R270 CPLD ;
-MOVE CPLD          (2.45 1.45);
+MOVE CPLD          (2.65 1.45);
 ROTATE =R90 CAP100N_1 ;
 MOVE CAP100N_1     (0.25 1.15) ;
 ROTATE =R90 CAP100N_2 ;
-MOVE CAP100N_2     (0.25  1.95)  ;
+MOVE CAP100N_2     (0.25  2.00)  ;
 ROTATE =R90 CAP100N_3 ;
-MOVE CAP100N_3     (0.25 2.75)  ; 
+MOVE CAP100N_3     (0.25 2.85)  ; 
 ROTATE =R270 CAP100N_4 ;
-MOVE CAP100N_4     (3.0 1.25)  ; 
+MOVE CAP100N_4     (3.2 1.25)  ; 
 ROTATE =R0 CAP100N_5 ;
-MOVE CAP100N_5     (2.25 0.9)  ; 
+MOVE CAP100N_5     (2.45 0.9)  ; 
 
-MOVE JTAG          (2.20 2.80)  ;
+MOVE JTAG          (2.50 3.00)  ;
+
+
+ROTATE =R180 r10k_0 ;
+ROTATE =R180 r10k_1 ;
+ROTATE =R180 r10k_2 ;
+ROTATE =R180 l01;
+ROTATE =R180 l23;
+ROTATE =R180 l45;
+
+MOVE l01    ( 2.20 2.1);
+MOVE l23    ( 2.20 2.3);
+MOVE l45    ( 2.20 2.5);
+MOVE r10k_0 ( 2.00 2.1);
+MOVE r10k_1 ( 2.00 2.3);
+MOVE r10k_2 ( 2.00 2.5);
+
 
 Layer tPlace ;
 CHANGE FONT PROPORTIONAL ; 
 CHANGE SIZE 0.06
-TEXT 'CPC Sixrom Card, v1.01' R90 (0.10 0.5) ;
+TEXT 'CPC Sixrom Card, v1.10' R90 (0.10 0.5) ;
 CHANGE SIZE 0.04
-TEXT '(C) 2018 Revaldinho'  R0      (0.3 0.55) ;
-TEXT 'github.com/revaldinho/cpc_ram_expansion'  R0      (0.3 0.5) ;
+TEXT '(C) 2022 Revaldinho'  R0      (0.3 0.52) ;
+TEXT 'github.com/revaldinho/cpc_ram_expansion'  R0      (0.3 0.47) ;
 
 CHANGE FONT FIXED ; 
 CHANGE SIZE 0.03 ;
 CHANGE WIDTH 0.01 ;
-WIRE  (1.95 2.45) (1.95 2.6 ) (2.55 2.6 ) (2.55 2.45) ( 1.95 2.45 ) ;
-TEXT 'GND  TDI  TCK  NC' R0 (2.0 2.54) ;
-TEXT 'GND  TMS  TDO  5V' R0 (2.0 2.50) ;
+WIRE  (2.25 2.65) (2.25 2.8 ) (2.85 2.8 ) (2.85 2.65) ( 2.25 2.65 ) ;
+TEXT 'GND  TDI  TCK  NC' R0 (2.3 2.74) ;
+TEXT 'GND  TMS  TDO  5V' R0 (2.3 2.70) ;
 
+# Preroute VDD and GND rings and some spurs
+layer top;
+wire  0.030;
+wire  'VDD' (0.04 0.04) ( 3.880 0.04) (3.880 3.16) (0.04 3.16) (0.04 0.04);
+layer bottom;
+wire  0.030;
+wire  'GND' (0.04 0.04) ( 3.880 0.04) (3.880 3.16) (0.04 3.16) (0.04 0.04);
+wire  'GND' (1.8 3.16) (1.8 0.65) (1.7 0.65);
 # Autorouter
 # AUTO VDD VDD_CPC VDD_EXT VDD3V3 CLK VSS;   # Route clock and supplies first
+DRC load /tmp/design_rules.dru ;
 AUTO load /tmp/autorouter.ctl;
-AUTO ;
+## AUTO ;
 
-## Define power fills top and bottom over whole board area
-layer Top ; 
-polygon VSS 0.015 (0 0) (0 3.1) (3.45 3.1) (3.45 0) (0 0) ;
-
-layer Bottom ; 
-polygon VSS 0.015 (0 0) (0 3.1) (3.45 3.1) (3.45 0) (0 0) ;
-
-
-Ratsnest ;  ## Calculate and display polygons
+## ## Define power fills top and bottom over whole board area
+##  layer Top ;
+##  
+##  change Isolate 0.02 ;
+##  change Orphans Off ;
+##  
+##  polygon VDD 0.02 (0 0) (0 3.2) (3.9 3.2) (3.9 0) (0 0) ;
+##  
+##  layer Bottom ;
+##  polygon GND 0.02 (0 0) (0 3.2) (3.9 3.2) (3.9 0) (0 0) ;
+##  
+##  
+##  Ratsnest ;  ## Calculate and display polygons
 
 
 Window Fit;

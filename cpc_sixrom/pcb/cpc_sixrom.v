@@ -1,21 +1,22 @@
-// 
+//
 // cpc_sixrom netlist
-// 
+//
 // netlister.py format
-// 
+//
 // (c) Revaldinho, 2018
-// 
-//  
+//
+//
 module cpc_sixrom ();
 
   // wire declarations
   supply0 VSS;
   supply1 VDD;
+  special_wire CLK, RESET_B, BUSRESET_B;
 
-  wire Sound;  
+  wire Sound;
   wire A15,A14,A13,A12,A11,A10,A9,A8,A7,A6,A5,A4,A3,A2,A1,A0 ;
   wire D7,D6,D5,D4,D3,D2,D1,D0 ;
-  wire MREQ_B;  
+  wire MREQ_B;
   wire M1_B;
   wire RFSH_B;
   wire IOREQ_B;
@@ -24,11 +25,9 @@ module cpc_sixrom ();
   wire HALT_B;
   wire INT_B ;
   wire NMI_B ;
-  wire BUSRQ_B;  
+  wire BUSRQ_B;
   wire BUSACK_B;
   wire READY;
-  wire BUSRESET_B;
-  wire RESET_B;
   wire ROMEN_B;
   wire ROMDIS ;
   wire RAMRD_B;
@@ -36,19 +35,19 @@ module cpc_sixrom ();
   wire CURSOR;
   wire LPEN;
   wire EXP_B;
-  wire CLK;
 
   wire dip0,dip1,dip2,dip3,dip4,dip5,dip6,dip7;
   wire rom01cs_b, rom23cs_b, rom45cs_b;
+  wire a14_wrb_01, a14_wrb_23, a14_wrb_45;
   wire romoe_b;
   wire romdis_pre;
   wire roma14;
-  
+
   wire TMS;
   wire TDI;
   wire TDO;
   wire TCK;
-  
+
   // Radial electolytic, one per board on the main 5V supply
   cap22uf         CAP22UF(.minus(VSS),.plus(VDD));
 
@@ -102,7 +101,7 @@ module cpc_sixrom ();
                      .sw4_a(dip4), .sw4_b(VDD),
                      .sw5_a(dip5), .sw5_b(VDD),
                      .sw6_a(dip6), .sw6_b(VDD),
-                     .sw7_a(dip7), .sw7_b(VDD)                   
+                     .sw7_a(dip7), .sw7_b(VDD)
                      );
 
   r10k_sil9   sil0 (
@@ -116,7 +115,7 @@ module cpc_sixrom ();
                     .p6(dip6),
                     .p7(dip7)
                     );
-    
+
   // 9572XL CPLD - 3.3V core, 5V IO
   xc9572pc44  CPLD (
                     .p1(dip7),
@@ -129,7 +128,7 @@ module cpc_sixrom ();
 	            .p8(dip1),
 	            .p9(dip0),
 	            .gnd1(VSS),
-	            .p11(),
+	            .p11(BUSRQ_B),
 	            .p12(rom45cs_b),
 	            .p13(romoe_b),
 	            .p14(MREQ_B),
@@ -161,13 +160,13 @@ module cpc_sixrom ();
 	            .gts2(IOREQ_B),
 	            .vccint2(VDD),
 	            .gts1(WR_B),
-	            .p43(),            
+	            .p43(BUSACK_B),
 	            .p44(RD_B),
                     );
 
   xc28256 ROM01 (
-                .a14(roma14),  .vcc(VDD),  
-                .a12(A12),  .web(VDD), // Can only take 16K ROM or 32K EEPROM
+                .a14(roma14),  .vcc(VDD),
+                .a12(A12),  .web(a14_wrb_01),
                 .a7(A7),    .a13(A13),
                 .a6(A6),     .a8(A8),
                 .a5(A5),     .a9(A9),
@@ -183,8 +182,8 @@ module cpc_sixrom ();
                 );
 
   xc28256 ROM23 (
-                .a14(roma14),  .vcc(VDD),  
-                .a12(A12),  .web(VDD), // Can only take 16K ROM or 32K EEPROM
+                .a14(roma14),  .vcc(VDD),
+                .a12(A12),  .web(a14_wrb_23),
                 .a7(A7),    .a13(A13),
                 .a6(A6),     .a8(A8),
                 .a5(A5),     .a9(A9),
@@ -200,8 +199,8 @@ module cpc_sixrom ();
                 );
 
   xc28256 ROM45 (
-                .a14(roma14),  .vcc(VDD),  
-                .a12(A12),  .web(VDD), // Can only take 16K ROM or 32K EEPROM
+                .a14(roma14),  .vcc(VDD),
+                .a12(A12),  .web(a14_wrb_45),
                 .a7(A7),    .a13(A13),
                 .a6(A6),     .a8(A8),
                 .a5(A5),     .a9(A9),
@@ -215,7 +214,18 @@ module cpc_sixrom ();
                 .d2(D2),     .d4(D4),
                 .vss(VSS),   .d3(D3),
                 );
-  
+
+
+  hdr1x02  L01 ( .p1(roma14), .p2(a14_wrb_01));
+  hdr1x02  L23 ( .p1(roma14), .p2(a14_wrb_23));
+  hdr1x02  L45 ( .p1(roma14), .p2(a14_wrb_45));
+
+  vresistor r10k_0 (.p0(VDD), .p1(a14_wrb_01));
+  vresistor r10k_1 (.p0(VDD), .p1(a14_wrb_23));
+  vresistor r10k_2 (.p0(VDD), .p1(a14_wrb_45));
+
+
+
   DIODE_1N4148 D0 (
                 .A(romdis_pre),
                 .C(ROMDIS)
@@ -226,6 +236,6 @@ module cpc_sixrom ();
    cap100nf CAP100N_2 (.p0( VSS ), .p1( VDD ));
    cap100nf CAP100N_3 (.p0( VSS ), .p1( VDD ));
    cap100nf CAP100N_4 (.p0( VSS ), .p1( VDD ));
-   cap100nf CAP100N_5 (.p0( VSS ), .p1( VDD ));  
+   cap100nf CAP100N_5 (.p0( VSS ), .p1( VDD ));
 
 endmodule

@@ -1,4 +1,4 @@
-netlister_dir ?= ~/Documents/nas/Development/git/netlister
+netlister_dir ?= ../../../netlister
 
 ALLLIBS ?= $(shell ls -1 ${netlister_dir}/lib/*.lib)
 
