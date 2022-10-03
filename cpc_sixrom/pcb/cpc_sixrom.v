@@ -49,7 +49,7 @@ module cpc_sixrom ();
   wire TCK;
 
   // Radial electolytic, one per board on the main 5V supply
-  cap22uf         CAP22UF(.minus(VSS),.plus(VDD));
+  cap22uf         C22UF(.minus(VSS),.plus(VDD));
 
   // Amstrad CPC Edge Connector
   //
@@ -232,10 +232,11 @@ module cpc_sixrom ();
                 );
 
    // Decoupling caps for CPLD and one for SRAM
-   cap100nf CAP100N_1 (.p0( VSS ), .p1( VDD ));
-   cap100nf CAP100N_2 (.p0( VSS ), .p1( VDD ));
-   cap100nf CAP100N_3 (.p0( VSS ), .p1( VDD ));
-   cap100nf CAP100N_4 (.p0( VSS ), .p1( VDD ));
-   cap100nf CAP100N_5 (.p0( VSS ), .p1( VDD ));
+   cap100nf C100N_1 (.p0( VSS ), .p1( VDD ));
+   cap100nf C100N_2 (.p0( VSS ), .p1( VDD ));
+   cap100nf C100N_3 (.p0( VSS ), .p1( VDD ));
+   cap100nf C100N_4 (.p0( VSS ), .p1( VDD ));
+   cap100nf C100N_5 (.p0( VSS ), .p1( VDD ));
+   cap100nf C100N_6 (.p0( VSS ), .p1( VDD ));
 
 endmodule
