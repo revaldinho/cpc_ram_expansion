@@ -1,13 +1,13 @@
-// 
+//
 // cpc_ram1m netlist
-// 
+//
 // netlister.py format
-// 
+//
 // (c) Revaldinho, 2018
-// 
+//
 // This code is part of the cpc_ram_expansion set of Amstrad CPC peripherals.
 // https://github.com/revaldinho/cpc_ram_expansion
-// 
+//
 // Copyright (C) 2018 Revaldinho
 //
 // This program is free software: you can redistribute it and/or modify
@@ -30,10 +30,10 @@ module cpc_ram1m ();
   supply0 VSS;
   supply1 VDD;
 
-  wire Sound;  
+  wire Sound;
   wire A15,A14,A13,A12,A11,A10,A9,A8,A7,A6,A5,A4,A3,A2,A1,A0 ;
   wire D7,D6,D5,D4,D3,D2,D1,D0 ;
-  wire MREQ_B;  
+  wire MREQ_B;
   wire M1_B;
   wire RFSH_B;
   wire IOREQ_B;
@@ -42,7 +42,7 @@ module cpc_ram1m ();
   wire HALT_B;
   wire INT_B ;
   wire NMI_B ;
-  wire BUSRQ_B;  
+  wire BUSRQ_B;
   wire BUSACK_B;
   wire READY;
   wire BUSRESET_B;
@@ -56,7 +56,7 @@ module cpc_ram1m ();
   wire EXP_B;
   wire CLK;
   wire RAMCS0_B;
-  wire RAMCS1_B;  
+  wire RAMCS1_B;
 
   wire HIADR4,HIADR3,HIADR2,HIADR1,HIADR0;
   wire RAMOE_B;
@@ -68,7 +68,7 @@ module cpc_ram1m ();
   wire TCK;
 
   wire dip0, dip1, dip2, dip3;
-  
+
 
   // Radial electolytic, one per board on the main 5V supply
   cap22uf         CAP22UF(.minus(VSS),.plus(VDD));
@@ -78,7 +78,7 @@ module cpc_ram1m ();
                      .sw0_a(dip0), .sw0_b(VDD),
                      .sw1_a(dip1), .sw1_b(VDD),
                      .sw2_a(dip2), .sw2_b(VDD),
-                     .sw3_a(dip3), .sw3_b(VDD),                     
+                     .sw3_a(dip3), .sw3_b(VDD),
                      );
 
   // High value pull down (>2K) to be overridden by pull up when switch closed
@@ -129,7 +129,7 @@ module cpc_ram1m ();
                 .p7(VDD),  .p8(),
                 );
 
-  // 9572 CPLD 
+  // 9572 CPLD
   xc9572pc44  CPLD (
                     .p1(A14),
 	            .p2(MREQ_B),
@@ -220,6 +220,6 @@ module cpc_ram1m ();
    cap100nf CAP100N_1 (.p0( VSS ), .p1( VDD ));
    cap100nf CAP100N_2 (.p0( VSS ), .p1( VDD ));
    cap100nf CAP100N_3 (.p0( VSS ), .p1( VDD ));
-   cap100nf CAP100N_4 (.p0( VSS ), .p1( VDD ));  
+   cap100nf CAP100N_4 (.p0( VSS ), .p1( VDD ));
 
 endmodule
