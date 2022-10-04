@@ -1,0 +1,103 @@
+# Maximum Eagle freeware board size is 4.0x3.2"        (116x81mm) 
+# Maximum size for dirtypcb.com protopack is 3.9x3.9"  (100x100mm)
+
+# better to work in inches for 0.1 inch pad pitch
+Grid Inch;
+Set Wire_Bend 0;
+Layer Dimension;
+Wire 0  (0 0) (3.92 3.2) (0 0);
+Layer Top;
+
+# PCB-Pool/PCB-Train design rule is actually 0.006/0.006 for wires
+CLASS 0 signal  0.010 0.010 ;
+CLASS 1 supply  0.025 0.012 ;
+CLASS 2 special 0.015 0.012;
+
+ROTATE =R180 CONN1 ;
+MOVE CONN1         (1.95 0.25) ;
+
+ROTATE =R270 C22UF ; 
+MOVE C22UF       (0.2 0.25 ) ;
+
+ROTATE =R0 C1 ;
+MOVE C1           (0.85 2.9) ;
+ROTATE =R270 SRAM ;
+MOVE SRAM          (0.65 2.0) ;
+
+ROTATE =R90 C0 ;
+MOVE C0          (1.85 2.85)  ; 
+ROTATE =R0 U0 ;
+MOVE U0          (2.30 2.85) ;
+
+ROTATE =R0 C5 ;
+MOVE C5          (1.85 2.5)  ; 
+ROTATE =R270 U3 ;
+MOVE U3          (1.85 2.05) ;
+ROTATE =R0 C2 ;
+MOVE C2          (1.85  1.50)  ;
+ROTATE =R270 U6 ;
+MOVE U6          (1.85 1.0) ;
+
+ROTATE =R0 C6 ; 
+MOVE C6         (2.75 2.5)  ; 
+ROTATE =R270 U5 ;
+MOVE U5          (2.75 2.05) ;
+ROTATE =R0 C3 ;
+MOVE C3          (2.75 1.5)  ; 
+ROTATE =R270 U4 ;
+MOVE U4          (2.75 1.05) ;
+
+ROTATE =R0 C7 ; 
+MOVE C7         (3.5 2.5)  ; 
+ROTATE =R270 U2 ;
+MOVE U2          (3.5 2.05) ;
+ROTATE =R0 C4 ;
+MOVE C4          (3.5 1.5)  ; 
+ROTATE =R270 U1 ;
+MOVE U1          (3.5 1.05) ;
+
+
+
+
+Layer tPlace ;
+CHANGE FONT PROPORTIONAL ; 
+CHANGE SIZE 0.06
+TEXT 'CPC Old School 512K RAM Expansion, v3.00'            R90 (0.1 0.5) ;
+CHANGE SIZE 0.04
+TEXT '(C) 2018,2022 Revaldinho. https://github.com/revaldinho/cpc_ram_expansion'  R90 (0.2 0.5) ;
+
+# Preroute VDD and VSS rings and some spurs
+layer top;
+wire  0.030;
+wire  'VDD' (0.04 0.04) ( 3.880 0.04) (3.880 3.16) (0.04 3.16) (0.04 0.04);
+layer bottom;
+wire  0.030;
+wire  'VSS' (0.04 0.04) ( 3.880 0.04) (3.880 3.16) (0.04 3.16) (0.04 0.04);
+
+# Autorouter
+DRC load /tmp/design_rules.dru ;
+AUTO load /tmp/autorouter_74.ctl;
+
+AUTO ;
+
+## Define power fills top and bottom over whole board area
+layer Top ;
+
+change Isolate 0.02 ;
+change Orphans Off ;
+
+polygon VDD 0.02 (0 0) (0 3.2) (3.9 3.2) (3.9 0) (0 0) ;
+
+layer Bottom ;
+polygon VSS 0.02 (0 0) (0 3.2) (3.9 3.2) (3.9 0) (0 0) ;
+
+
+Ratsnest ;  # Calculate and display polygons
+
+Window Fit;
+
+
+# Setup some parameters for manual clean up
+grid 0.010 ;
+wire 0.03 ;
+via round ; 
