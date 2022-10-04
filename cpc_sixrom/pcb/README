@@ -14,7 +14,7 @@ setenv TERM xterm
 
 
 cp ../../common_pcb/autorouter.ctl /tmp
-cp design_rules.dru /tmp
+cp ../../common_pcb/design_rules.dru /tmp
 
 make cpc_sixrom.scr  -f ../../common_pcb/Makefile
 make cpc_sixrom.net -f ../../common_pcb/Makefile
