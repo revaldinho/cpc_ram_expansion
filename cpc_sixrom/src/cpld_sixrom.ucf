@@ -8,7 +8,7 @@ PIN "dip[3]"	LOC = P6 ; # GCK2
 PIN "dip[2]"	LOC = P7 ; # GCK3
 PIN "dip[1]"	LOC = P8 ;
 PIN "dip[0]"	        LOC = P9 ;
-#PIN ""	        LOC = P11 ;
+PIN "busrq_b"	        LOC = P11 ;
 PIN "rom45cs_b"	        LOC = P12 ;
 
 PIN "romoe_b"  LOC = P13 ;
@@ -32,5 +32,5 @@ PIN "romdis"	LOC = P38 ;
 PIN "reset_b"   LOC = P39 ; # GSR
 PIN "ioreq_b"   LOC = P40 ; # GTS2
 PIN "wr_b"    LOC = P42 ; # GTS1
-# PIN ""  LOC = P43 ;        
+PIN "busack_b"  LOC = P43 ;        
 PIN "rd_b"	LOC = P44 ;
