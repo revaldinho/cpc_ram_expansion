@@ -91,10 +91,10 @@ module cpc_ram_board ();
 
   // Dual NOR2 74HCT02
   SN7402 U1 (
-             .i0_0(VDD), .i0_1(VDD), .o0(),  // UNUSED
+             .i0_0(extram_b), .i0_1(extram_b), .o0(RAMDIS),
              .i1_0(ramblock_q0), .i1_1(ramblock_q0), .o1(n17),
              .i2_0(A15), .i2_1(A15), .o2(a15_b),
-             .i3_0(extram_b), .i3_1(extram_b), .o3(RAMDIS),
+             .i3_0(VDD), .i3_1(VDD), .o3(),  // UNUSED
              .vdd(VDD), .vss(VSS));
 
   // Triple NAND3 74HCT10
