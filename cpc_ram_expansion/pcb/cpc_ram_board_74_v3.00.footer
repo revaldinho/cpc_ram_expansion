@@ -10,8 +10,8 @@ Layer Top;
 
 # PCB-Pool/PCB-Train design rule is actually 0.006/0.006 for wires
 CLASS 0 signal  0.010 0.010 ;
-CLASS 1 supply  0.025 0.012 ;
-CLASS 2 special 0.015 0.012;
+CLASS 1 supply  0.025 0.010 ;
+CLASS 2 special 0.015 0.010;
 
 ROTATE =R180 CONN1 ;
 MOVE CONN1         (1.95 0.25) ;
@@ -60,7 +60,7 @@ MOVE U1          (3.5 1.05) ;
 Layer tPlace ;
 CHANGE FONT PROPORTIONAL ; 
 CHANGE SIZE 0.06
-TEXT 'CPC Old School 512K RAM Expansion, v3.00'            R90 (0.1 0.5) ;
+TEXT 'CPC6128 512K RAM Expansion, v3.00'            R90 (0.1 0.5) ;
 CHANGE SIZE 0.04
 TEXT '(C) 2018,2022 Revaldinho. https://github.com/revaldinho/cpc_ram_expansion'  R90 (0.2 0.5) ;
 
