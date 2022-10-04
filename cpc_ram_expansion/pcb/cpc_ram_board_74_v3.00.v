@@ -46,7 +46,7 @@ module cpc_ram_board ();
   wire    ramblock_q2,ramblock_q1,ramblock_q0;
   wire    ramcs_b, extram_b;
   wire    wclk_b, n14;
-  wire    n15, n16, n17, n18, n19, n20, a15_b, n22, n23, n24, n25, n26, n27, n28;
+  wire    n16, n17, n18, n19, n20, a15_b, n22, n23, n24, n25, n26, n27, n28;
   wire    n29, nn1;
 
   // Radial electolytic, one per board on the main 5V supply
