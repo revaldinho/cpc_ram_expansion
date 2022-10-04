@@ -20,39 +20,38 @@ ROTATE =R270 C22UF ;
 MOVE C22UF       (0.2 0.25 ) ;
 
 ROTATE =R0 C1 ;
-MOVE C1           (0.85 2.9) ;
+MOVE C1           (0.85 3.0) ;
 ROTATE =R270 SRAM ;
-MOVE SRAM          (0.65 2.0) ;
+MOVE SRAM          (0.65 2.05) ;
 
-ROTATE =R90 C0 ;
-MOVE C0          (1.85 2.85)  ; 
-ROTATE =R0 U0 ;
-MOVE U0          (2.30 2.85) ;
-
+ROTATE =R0 C0 ;
+MOVE C0          (1.8 3.0)  ; 
 ROTATE =R270 U3 ;
-MOVE U3          (1.85 2.05) ;
+MOVE U3          (1.8 2.55) ;
 ROTATE =R0 C2 ;
-MOVE C2          (1.85  1.50)  ;
+MOVE C2          (1.8  1.70)  ;
 ROTATE =R270 U6 ;
-MOVE U6          (1.85 1.0) ;
+MOVE U6          (1.8 1.2) ;
 
 ROTATE =R0 C5 ; 
-MOVE C5         (2.75 2.5)  ; 
+MOVE C5         (2.65 3.0)  ; 
 ROTATE =R270 U5 ;
-MOVE U5          (2.75 2.05) ;
+MOVE U5          (2.65 2.55) ;
 ROTATE =R0 C3 ;
-MOVE C3          (2.75 1.5)  ; 
+MOVE C3          (2.65 1.7)  ; 
 ROTATE =R270 U4 ;
-MOVE U4          (2.75 1.05) ;
+MOVE U4          (2.65 1.25) ;
 
+ROTATE =R270 U0 ;
+MOVE U0          (3.5 2.65) ;
 ROTATE =R0 C6 ; 
-MOVE C6         (3.5 2.5)  ; 
+MOVE C6         (3.5 2.2)  ; 
 ROTATE =R270 U2 ;
-MOVE U2          (3.5 2.05) ;
+MOVE U2          (3.5 1.75) ;
 ROTATE =R0 C4 ;
-MOVE C4          (3.5 1.5)  ; 
+MOVE C4          (3.5 1.25)  ; 
 ROTATE =R270 U1 ;
-MOVE U1          (3.5 1.05) ;
+MOVE U1          (3.5 0.8) ;
 
 
 

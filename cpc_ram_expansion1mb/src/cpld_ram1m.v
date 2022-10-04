@@ -176,7 +176,7 @@ module cpld_ram1m(
   assign ram1mb_mode   = dip[2] & dip[3];
 `ifdef CARD_ALWAYS_ENABLED
   assign cardsel_w     = 1'b1;
-`else  
+`else
   assign cardsel_w     = dip[2] | dip[3];
 `endif
   // Dont drive address outputs during reset due to overlay of DIP switches
@@ -321,15 +321,15 @@ module cpld_ram1m(
          mode3_overdrive_q <= overdrive_mode & (data[2:0] == 3'b011);
        end
     end
-  
-`ifndef EXT_RAMRD  
+
+`ifndef EXT_RAMRD
   always @ (negedge clk or negedge reset_b_w)
     if (!reset_b_w)
       { urom_disable_q, lrom_disable_q}  <= 2'b00;
     else if ( rom_ctrl_select_w )
       { urom_disable_q, lrom_disable_q } <= data[3:2];
 `endif
-  
+
   always @ ( * ) begin
     if ( shadow_mode )
       // FULL SHADOW MODE    - all CPU read accesses come from external memory (ramcs_b_r computed here is ignored)

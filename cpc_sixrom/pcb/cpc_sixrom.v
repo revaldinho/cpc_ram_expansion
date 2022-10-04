@@ -52,9 +52,6 @@ module cpc_sixrom ();
   cap22uf         C22UF(.minus(VSS),.plus(VDD));
 
   // Amstrad CPC Edge Connector
-  //
-  // V1.01 Corrected upper and lower rows
-
   idc_hdr_50w  CONN1 (
                       .p50(Sound),   .p49(VSS),
                       .p48(A15),     .p47(A14),

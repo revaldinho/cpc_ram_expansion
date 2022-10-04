@@ -1,9 +1,9 @@
-project_name ?= cpld_ram1m_plcc84
-#project_name ?= cpld_ram1m
-#target ?= xc9572-10-PC44
+#project_name ?= cpld_ram1m_plcc84
+project_name ?= cpld_ram1m
+target ?= xc9572-10-PC44
 #target ?= xc95108-10-PC84
 #target ?= xc9572-10-PC84
-target ?= xc95108-10-PC84
+#target ?= xc95108-10-PC84
 #target ?= xc9536-10-PC44
 
 # alternative speed, density
@@ -18,7 +18,7 @@ synthesis:  ${project_name}.xst ${project_name}.lso
 	xst -ifn ./${project_name}.xst -intstyle xflow -ofn ./${project_name}.syr
 
 
-ngdbuild: ../src/${project_name}.ucf ${project_name}.ngc 
+ngdbuild: ../src/${project_name}.ucf ${project_name}.ngc
 	ngdbuild -dd _ngo -p ${target} -uc ../src/${project_name}.ucf ${project_name}.ngc  ${project_name}.ngd
 
 
@@ -38,12 +38,12 @@ cpldfit:  ${project_name}.ngd
 	    -exhaust ${project_name}.ngd
 
 # Run the TA engine and generate reports
-tsim:   
+tsim:
 	tsim ${project_name} ${project_name}.nga
 	taengine -f ${project_name} -detail
 
 # Generate the JEDEC file for programming
-jedec: 
+jedec:
 	hprep6  -s IEEE1149 -n ${project_name} -i ${project_name}
 	mv ${project_name}.jed ${project_name}_${target}.jed
 # dump a verilog netlist
@@ -55,4 +55,3 @@ all: clean lso synthesis ngdbuild cpldfit tsim jedec netgen
 clean:
 	rm -rf *~ .#*
 	rm -rf  `ls -1 | egrep -v '(prj|\.xst|README|Makefile)'`
-
