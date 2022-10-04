@@ -1,7 +1,7 @@
 #!/bin/tcsh -f
 
 # Need to have access to the Jython netlister program
-set netlister_dir = ~/Documents/nas/Development/git/netlister
+set netlister_dir = ~/iCloudDrive/Development/git/netlister
 which netlister.py > /dev/null
 if ($status != 0) then
    setenv CLASSPATH ${netlister_dir}/src:$CLASSPATH
@@ -11,24 +11,23 @@ endif
 
 setenv TERM xterm
 
-
+cp ../../common_pcb/design_rules.dru /tmp
 cp ../../common_pcb/autorouter.ctl /tmp
 
-## Original CPLD based RAM board - 6128 only
-make cpc_ram_board.net -f ../../common_pcb/Makefile
-make cpc_ram_board.scr -f ../../common_pcb/Makefile
+## ## Original CPLD based RAM board - 6128 only
+## make cpc_ram_board.net -f ../../common_pcb/Makefile
+## make cpc_ram_board.scr -f ../../common_pcb/Makefile
 
 ## Revised CPLD based RAM board - 464 and 6128
 make cpc_ram512k_v110.net -f ../../common_pcb/Makefile
 make cpc_ram512k_v110.scr -f ../../common_pcb/Makefile
 
+cp ../../common_pcb/design_rules.dru /tmp
 cp ../../common_pcb/autorouter_74.ctl /tmp
+
 
 #make cpc_ram_board_74_v2.01.scr ARGS='"-D ALT_POWER=1"' -f ../../common_pcb/Makefile
 #make cpc_ram_board_74_v2.01.net ARGS='"-D ALT_POWER=1"' -f ../../common_pcb/Makefile
 
-make cpc_ram_board_74_v2.01.scr -f ../../common_pcb/Makefile
-make cpc_ram_board_74_v2.01.net -f ../../common_pcb/Makefile
-
-
-
+make cpc_ram_board_74_v3.00.scr -f ../../common_pcb/Makefile
+make cpc_ram_board_74_v3.00.net -f ../../common_pcb/Makefile
