@@ -29,8 +29,6 @@ MOVE C0          (1.85 2.85)  ;
 ROTATE =R0 U0 ;
 MOVE U0          (2.30 2.85) ;
 
-ROTATE =R0 C5 ;
-MOVE C5          (1.85 2.5)  ; 
 ROTATE =R270 U3 ;
 MOVE U3          (1.85 2.05) ;
 ROTATE =R0 C2 ;
@@ -38,8 +36,8 @@ MOVE C2          (1.85  1.50)  ;
 ROTATE =R270 U6 ;
 MOVE U6          (1.85 1.0) ;
 
-ROTATE =R0 C6 ; 
-MOVE C6         (2.75 2.5)  ; 
+ROTATE =R0 C5 ; 
+MOVE C5         (2.75 2.5)  ; 
 ROTATE =R270 U5 ;
 MOVE U5          (2.75 2.05) ;
 ROTATE =R0 C3 ;
@@ -47,8 +45,8 @@ MOVE C3          (2.75 1.5)  ;
 ROTATE =R270 U4 ;
 MOVE U4          (2.75 1.05) ;
 
-ROTATE =R0 C7 ; 
-MOVE C7         (3.5 2.5)  ; 
+ROTATE =R0 C6 ; 
+MOVE C6         (3.5 2.5)  ; 
 ROTATE =R270 U2 ;
 MOVE U2          (3.5 2.05) ;
 ROTATE =R0 C4 ;
