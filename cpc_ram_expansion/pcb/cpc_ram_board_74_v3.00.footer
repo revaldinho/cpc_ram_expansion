@@ -43,7 +43,7 @@ ROTATE =R270 U4 ;
 MOVE U4          (2.65 1.25) ;
 
 ROTATE =R270 U0 ;
-MOVE U0          (3.5 2.65) ;
+MOVE U0          (3.5 2.7) ;
 ROTATE =R0 C6 ; 
 MOVE C6         (3.5 2.2)  ; 
 ROTATE =R270 U2 ;
