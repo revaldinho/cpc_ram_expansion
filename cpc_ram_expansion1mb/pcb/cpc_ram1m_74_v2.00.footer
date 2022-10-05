@@ -14,8 +14,9 @@ Wire 0  (0 0) (3.92 3.2) (0 0);
 Layer Top;
 
 # PCB-Pool/PCB-Train design rule is actually 0.006/0.006 for wires
-CLASS 0 signal 0.010 0.010 ;
-CLASS 1 supply 0.025 0.015 ;
+CLASS 0 signal  0.010 0.010 ;
+CLASS 1 supply  0.020 0.015 ;
+CLASS 2 special 0.015 0.010 ;
 
 #ifdef ALT_POWER
 ROTATE =R0 CONN0 ;
@@ -28,7 +29,7 @@ ROTATE =R180 CONN1 ;
 MOVE CONN1         (1.95 0.25) ;
 
 ROTATE =R270 C22UF ;
-MOVE C22UF       (0.25 3.0 ) ;
+MOVE C22UF       (0.30 3.0 ) ;
 
 ROTATE =R270 SRAM0 ;
 MOVE SRAM0          (0.6 1.55) ;
@@ -36,10 +37,14 @@ MOVE SRAM0          (0.6 1.55) ;
 ROTATE =R270 SRAM1 ;
 MOVE SRAM1          (1.4 1.55) ;
 
+ROTATE =R90 C2 ;
+MOVE C2          (1.3 2.85) ;
 ROTATE =R0 U1 ;
-MOVE U1          (2.10 2.85) ;
+MOVE U1          (1.8 2.85) ;
+ROTATE =R90 C3 ;
+MOVE C3          (2.55 2.85) ;
 ROTATE =R0 U2 ;
-MOVE U2          (3.20 2.85) ;
+MOVE U2          (3.00 2.85) ;
 
 ROTATE =R270 U3 ;
 MOVE U3          (2.2 2.10) ;
@@ -53,14 +58,8 @@ MOVE U7          (2.2 1.0) ;
 ROTATE =R270 U4 ;
 MOVE U4          (2.9 0.95) ;
 ROTATE =R270 U6 ;
-MOVE U6          (3.6 0.9) ;
+MOVE U6          (3.6 0.95) ;
 
-ROTATE =R90 C1 ;
-MOVE C1     (0.55 2.85) ;
-ROTATE =R90 C2 ;
-MOVE C2     (1.6 2.85) ;
-ROTATE =R90 C3 ;
-MOVE C3     (2.75 2.85) ;
 
 ROTATE =R0 C4 ;
 MOVE C4     (0.80  2.45);
@@ -68,6 +67,8 @@ ROTATE =R0 C5 ;
 MOVE C5     (1.60 2.45);
 ROTATE =R0 C6 ;
 MOVE C6     (2.90 2.45);
+ROTATE =R0 C1 ;
+MOVE C1     (3.6 2.45) ;
 
 ROTATE =R0 C7 ;
 MOVE C7     (2.2 1.60)  ;
@@ -78,10 +79,10 @@ MOVE C9     (3.6 1.4)  ;
 
 Layer tPlace ;
 CHANGE FONT PROPORTIONAL ;
-CHANGE SIZE 0.06
-TEXT 'CPC6128 1MB Old School RAM Expansion, v2.00'            R90 (0.1 0.5) ;
+CHANGE SIZE 0.08
+TEXT 'CPC6128 1MB Old School RAM Expansion, v2.00'            R90 (0.12 0.5) ;
 CHANGE SIZE 0.04
-TEXT '(C) 2020,2022 Revaldinho. https://github.com/revaldinho/cpc_ram_expansion'  R90 (0.17 0.5) ;
+TEXT '(C) 2020,2022 Revaldinho. https://github.com/revaldinho/cpc_ram_expansion'  R90 (0.20 0.5) ;
 
 # Preroute VDD and VSS rings and some spurs
 layer top;

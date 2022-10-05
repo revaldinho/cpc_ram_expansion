@@ -16,7 +16,7 @@ CLASS 2 special 0.015 0.010;
 ROTATE =R180 CONN1 ;
 MOVE CONN1         (1.95 0.25) ;
 
-ROTATE =R270 C22UF ; 
+ROTATE =R90 C22UF ; 
 MOVE C22UF       (0.2 0.25 ) ;
 
 ROTATE =R0 C1 ;
@@ -58,10 +58,10 @@ MOVE U1          (3.5 0.8) ;
 
 Layer tPlace ;
 CHANGE FONT PROPORTIONAL ; 
-CHANGE SIZE 0.06
-TEXT 'CPC6128 512K RAM Expansion, v3.00'            R90 (0.1 0.5) ;
+CHANGE SIZE 0.08
+TEXT 'CPC6128 512K RAM Expansion, v3.00'            R90 (0.15 0.8) ;
 CHANGE SIZE 0.04
-TEXT '(C) 2018,2022 Revaldinho. https://github.com/revaldinho/cpc_ram_expansion'  R90 (0.2 0.5) ;
+TEXT '(C) 2018,2022 Revaldinho. https://github.com/revaldinho/cpc_ram_expansion'  R90 (0.22 0.8) ;
 
 # Preroute VDD and VSS rings and some spurs
 layer top;
