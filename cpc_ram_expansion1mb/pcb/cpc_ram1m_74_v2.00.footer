@@ -1,0 +1,119 @@
+#
+# Eagle Placement file for 1MB 74 Series RAM Board
+#
+
+# Maximum Eagle freeware board size is 4.0x3.2"        (116x81mm)
+# Maximum size for dirtypcb.com protopack is 3.9x3.9"  (100x100mm)
+DRC load /tmp/design_rules;
+
+# better to work in inches for 0.1 inch pad pitch
+Grid inch;
+Set Wire_Bend 0;
+Layer Dimension;
+Wire 0  (0 0) (3.92 3.2) (0 0);
+Layer Top;
+
+# PCB-Pool/PCB-Train design rule is actually 0.006/0.006 for wires
+CLASS 0 signal 0.010 0.010 ;
+CLASS 1 supply 0.025 0.015 ;
+
+#ifdef ALT_POWER
+ROTATE =R0 CONN0 ;
+MOVE CONN0         (0.25 3.00) ;
+ROTATE =R90 L1 ;
+MOVE L1            (0.0 2.75) ;
+#endif
+
+ROTATE =R180 CONN1 ;
+MOVE CONN1         (1.95 0.25) ;
+
+ROTATE =R270 C22UF ;
+MOVE C22UF       (0.25 3.0 ) ;
+
+ROTATE =R270 SRAM0 ;
+MOVE SRAM0          (0.6 1.55) ;
+
+ROTATE =R270 SRAM1 ;
+MOVE SRAM1          (1.4 1.55) ;
+
+ROTATE =R0 U1 ;
+MOVE U1          (2.10 2.85) ;
+ROTATE =R0 U2 ;
+MOVE U2          (3.20 2.85) ;
+
+ROTATE =R270 U3 ;
+MOVE U3          (2.2 2.10) ;
+ROTATE =R270 U5 ;
+MOVE U5          (2.9 2.0) ;
+ROTATE =R270 U0 ;
+MOVE U0          (3.6 2.0) ;
+
+ROTATE =R270 U7 ;
+MOVE U7          (2.2 1.0) ;
+ROTATE =R270 U4 ;
+MOVE U4          (2.9 0.95) ;
+ROTATE =R270 U6 ;
+MOVE U6          (3.6 0.9) ;
+
+ROTATE =R90 C1 ;
+MOVE C1     (0.55 2.85) ;
+ROTATE =R90 C2 ;
+MOVE C2     (1.6 2.85) ;
+ROTATE =R90 C3 ;
+MOVE C3     (2.75 2.85) ;
+
+ROTATE =R0 C4 ;
+MOVE C4     (0.80  2.45);
+ROTATE =R0 C5 ;
+MOVE C5     (1.60 2.45);
+ROTATE =R0 C6 ;
+MOVE C6     (2.90 2.45);
+
+ROTATE =R0 C7 ;
+MOVE C7     (2.2 1.60)  ;
+ROTATE =R0 C8 ;
+MOVE C8     (2.9 1.4)  ;
+ROTATE =R0 C9 ;
+MOVE C9     (3.6 1.4)  ;
+
+Layer tPlace ;
+CHANGE FONT PROPORTIONAL ;
+CHANGE SIZE 0.06
+TEXT 'CPC6128 1MB Old School RAM Expansion, v2.00'            R90 (0.1 0.5) ;
+CHANGE SIZE 0.04
+TEXT '(C) 2020,2022 Revaldinho. https://github.com/revaldinho/cpc_ram_expansion'  R90 (0.17 0.5) ;
+
+# Preroute VDD and VSS rings and some spurs
+layer top;
+wire  0.030;
+wire  'VDD' (0.04 0.04) ( 3.880 0.04) (3.880 3.16) (0.04 3.16) (0.04 0.04);
+layer bottom;
+wire  0.030;
+wire  'VSS' (0.04 0.04) ( 3.880 0.04) (3.880 3.16) (0.04 3.16) (0.04 0.04);
+
+# Autorouter
+DRC load /tmp/design_rules.dru ;
+AUTO load /tmp/autorouter_74.ctl;
+AUTO ;
+
+## ## Define power fills top and bottom over whole board area
+layer Top ;
+
+change Isolate 0.02 ;
+change Orphans Off ;
+
+polygon VDD 0.02 (0 0) (0 3.2) (3.9 3.2) (3.9 0) (0 0) ;
+
+layer Bottom ;
+polygon VSS 0.02 (0 0) (0 3.2) (3.9 3.2) (3.9 0) (0 0) ;
+
+
+Ratsnest ;  ## Calculate and display polygons
+
+Window Fit;
+DRC;
+
+# Setup some parameters for manual clean up
+grid 0.010 ;
+wire 0.03 ;
+via round ;

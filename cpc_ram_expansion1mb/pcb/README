@@ -1,6 +1,6 @@
 #!/bin/tcsh -f
 # Need to have access to the Jython netlister program
-set netlister_dir = ~/Documents/nas/Development/git/netlister
+set netlister_dir = ../../../netlister
 which netlister.py > /dev/null
 if ($status != 0) then
    setenv CLASSPATH ${netlister_dir}/src:$CLASSPATH
@@ -12,13 +12,10 @@ setenv TERM xterm
 
 cp ../../common_pcb/autorouter.ctl /tmp
 cp ../../common_pcb/autorouter_74.ctl /tmp
-cp design_rules.dru /tmp
+cp ../../common_pcb/design_rules.dru /tmp
 
 ## Revised CPLD based RAM board - 464 and 6128
 make cpc_ram1m_plcc84.net -f ../../common_pcb/Makefile
 make cpc_ram1m_plcc84.scr -f ../../common_pcb/Makefile
-make cpc_ram1m_74_v1.00.net -f ../../common_pcb/Makefile
-make cpc_ram1m_74_v1.00.scr -f ../../common_pcb/Makefile
-
-
-
+make cpc_ram1m_74_v2.00.net -f ../../common_pcb/Makefile
+make cpc_ram1m_74_v2.00.scr -f ../../common_pcb/Makefile
