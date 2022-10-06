@@ -46,7 +46,7 @@ module cpc_ram_board ();
   wire    ramblock_q2,ramblock_q1,ramblock_q0;
   wire    ramcs_b, extram_b;
   wire    wclk_b, n14;
-  wire    n16, n17, n18, n19, n20, a15_b, n22, n23, n24, n25, n26, n27, n28;
+  wire    n16, ramblock_q0_b, n18, n19, n20, a15_b, n22, n23, n24, n25, n26, ramblock_q2_b, n28;
   wire    n29, nn1;
 
   // Radial electolytic, one per board on the main 5V supply
@@ -89,24 +89,24 @@ module cpc_ram_board ();
              .i3_0(nn1), .i3_1(n14), .o3(wclk_b),
              .vdd(VDD), .vss(VSS));
 
-  // Dual NOR2 74HCT02
-  SN7402 U1 (
+  // Quad NAND2 74HCT00
+  SN7400 U1(
              .i0_0(extram_b), .i0_1(extram_b), .o0(RAMDIS),
-             .i1_0(ramblock_q0), .i1_1(ramblock_q0), .o1(n17),
-             .i2_0(A15), .i2_1(A15), .o2(a15_b),
-             .i3_0(VDD), .i3_1(VDD), .o3(),  // UNUSED
+             .i1_0(ramblock_q2_b), .i1_1(n26), .o1(n28),
+             .i2_0(n29), .i2_1(n28), .o2(extram_b),
+             .i3_0(ramblock_q2_b), .i3_1(a15_b), .o3(n18),
              .vdd(VDD), .vss(VSS));
 
   // Triple NAND3 74HCT10
   SN7410 U2 (
              .i0_0(D6), .i0_1(D7), .i0_2(a15_b), .o0(n14),
-             .i1_0(A14), .i1_1(ramblock_q1), .i1_2(n27), .o1(n16),
-             .i2_0(ramblock_q2), .i2_1(ramblock_q2), .i2_2(ramblock_q2), .o2(n27),
+             .i1_0(A14), .i1_1(ramblock_q1), .i1_2(ramblock_q2_b), .o1(n16),
+             .i2_0(VDD), .i2_1(VDD), .i2_2(VDD), .o2(), // Unused
              .vdd(VDD), .vss(VSS));
 
-  // Quad NAND2 74HCT00
+  // Dual NAND2 74HCT00 (only used as inverter)
   SN7400 U3 (
-             .i0_0(n17), .i0_1(n16), .o0(ramadrhi0),
+             .i0_0(ramblock_q0_b), .i0_1(n16), .o0(ramadrhi0),
              .i1_0(n20), .i1_1(n19), .o1(ramadrhi1),
              .i2_0(A14), .i2_1(a15_b), .o2(n22),
              .i3_0(A14), .i3_1(A15), .o3(n23),
@@ -114,19 +114,20 @@ module cpc_ram_board ();
 
   // Quad NAND2 74HCT00
   SN7400 U4 (
-             .i0_0(n27), .i0_1(ramblock_q0), .o0(n20),
+             .i0_0(A15), .i0_1(A15), .o0(a15_b),
+             .i1_0(ramblock_q0), .i1_1(ramblock_q0), .o1(ramblock_q0_b),
+             .i2_0(n25), .i2_1(n24), .o2(n26),
+             .i3_0(ramblock_q2), .i3_1(ramblock_q2), .o3(ramblock_q2_b),
+             .vdd(VDD), .vss(VSS));
+
+  // Quad NAND2 74HCT00
+  SN7400 U5 (
+             .i0_0(ramblock_q2_b), .i0_1(ramblock_q0), .o0(n20),
              .i1_0(ramblock_q0), .i1_1(n23), .o1(n25),
              .i2_0(ramblock_q2), .i2_1(n22), .o2(n29),
              .i3_0(ramblock_q1), .i3_1(n18), .o3(n19),
              .vdd(VDD), .vss(VSS));
 
-  // Quad NAND2 74HCT00
-  SN7400 U5 (
-             .i0_0(n25), .i0_1(n24), .o0(n26),
-             .i1_0(n27), .i1_1(n26), .o1(n28),
-             .i2_0(n29), .i2_1(n28), .o2(extram_b),
-             .i3_0(n27), .i3_1(a15_b), .o3(n18),
-             .vdd(VDD), .vss(VSS));
 
   // Hex posedge triggered D-FF with clear*
   SN74174 U6 (
