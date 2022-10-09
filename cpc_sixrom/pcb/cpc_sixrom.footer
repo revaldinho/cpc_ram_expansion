@@ -4,7 +4,7 @@
 Grid inch;
 Set Wire_Bend 0;
 Layer Dimension;
-Wire 0  (0 0) (3.92 3.2) (0 0);
+Wire 0  (0 0) (3.9 0) (3.9 3.2) (0 3.2) (0 0);
 Layer Top;
 
 # PCB-Pool/PCB-Train design rule is actually 0.006/0.006 for wires
@@ -84,13 +84,13 @@ TEXT 'GND  TMS  TDO  5V' R0 (2.6 2.70) ;
 # Preroute VDD and VSS rings and some spurs
 layer top;
 wire  0.030;
-wire  'VDD' (0.04 0.04) ( 3.880 0.04) (3.880 3.16) (0.04 3.16) (0.04 0.04);
+wire  'VDD' (0.04 0.04) ( 3.870 0.04) (3.870 3.16) (0.04 3.16) (0.04 0.04);
 layer bottom;
 wire  0.030;
-wire  'VSS' (0.04 0.04) ( 3.880 0.04) (3.880 3.16) (0.04 3.16) (0.04 0.04);
-wire  'VSS' (1.8 3.16) (1.8 0.65) (1.7 0.65);
-wire  'VSS' (1.8 1.50) (1.7 1.50);
-wire  'VSS' (1.8 2.35) (1.7 2.35);
+wire  'VSS' (0.04 0.04) ( 3.870 0.04) (3.870 3.16) (0.04 3.16) (0.04 0.04);
+wire  'VSS' (1.85 3.16) (1.85 0.65) (1.75 0.65);
+wire  'VSS' (1.85 1.50) (1.75 1.50);
+wire  'VSS' (1.85 2.35) (1.75 2.35);
 # Autorouter
 # AUTO VDD VDD_CPC VDD_EXT VDD3V3 CLK VSS;   # Route clock and supplies first
 DRC load /tmp/design_rules.dru ;
