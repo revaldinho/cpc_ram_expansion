@@ -28,6 +28,7 @@
  *    when using additional ASIC features
  *  - full CPC PLUS functionality is not yet tested and released
  *
+ *
  * CPC6128_ONLY = default OFF
  *
  *  - removes all shadow and overdrive logic
@@ -65,6 +66,10 @@
  * - selects combination of the above to fit the design in a Xilinx XC9536 CPLD
  *
  */
+
+
+//`define PLUS 1
+//`define REDUCED_COMPARE 1
 
 // //`define CPC6128_ONLY 1
 // //`define EXT_RAMRD 1
@@ -219,12 +224,12 @@ module cpld_ram1m_plcc84(
   assign ramadrhi =  ( !reset_b_w ) ? 5'bzzzzz : ramadrhi_r[4:0];
 
 `ifdef PLUS
-  assign ram_ctrl_select_w = (!ioreq_b && !wr_b && !adr15 && data[6] && data[7]  );
-  assign rom_ctrl_select_w = (!ioreq_b && !wr_b && !adr15 && !data[6] && data[7] & !data[5] );
-  assign rmr2_ctrl_select_w = (!ioreq_b && !wr_b && !adr15 && !data[6] && data[7] & data[5] & plus_enable_q );
+  assign ram_ctrl_select_w = (!ioreq_b & !wr_b & !adr15 & data[6] & data[7]  );
+  assign rom_ctrl_select_w = (!ioreq_b & !wr_b & !adr15 & !data[6] & data[7] & !data[5] );
+  assign rmr2_ctrl_select_w = (!ioreq_b & !wr_b & !adr15 & !data[6] & data[7] & data[5] & plus_unlock_w );
 `else
-  assign ram_ctrl_select_w = (!ioreq_b && !wr_b && !adr15 && data[6] && data[7] );
-  assign rom_ctrl_select_w = (!ioreq_b && !wr_b && !adr15 && !data[6] && data[7] & !data[5]);
+  assign ram_ctrl_select_w = (!ioreq_b & !wr_b & !adr15 & data[6] & data[7] );
+  assign rom_ctrl_select_w = (!ioreq_b & !wr_b & !adr15 & !data[6] & data[7] & !data[5]);
 `endif
 
 `ifdef DISABLE_RESET_RESYNC
@@ -367,13 +372,20 @@ module cpld_ram1m_plcc84(
 `ifndef EXT_RAMRD
   always @ (negedge clk or negedge reset_b_w)
     if (!reset_b_w)
-      { plus_map_enable_q, urom_disable_q, lrom_disable_q}  <= 3'b000;
+      { urom_disable_q, lrom_disable_q}  <= 2'b00;
     else if ( rom_ctrl_select_w )
       { urom_disable_q, lrom_disable_q } <= data[3:2];
-`ifdef PLUS
-    else if ( rmr2_ctrl_select_w )
-      plus_map_enable_q = (data[4] & data[3]);
 `endif
+
+`ifdef PLUS
+  wire plus_map_enable_d = (rmr2_ctrl_select_w) ? (data[4] & data[3]) : plus_map_enable_q;
+
+  always @ (negedge clk ) begin
+    if (!reset_b_w)
+      plus_map_enable_q  <= 1'b0;
+    else
+      plus_map_enable_q  <= plus_map_enable_d;
+  end
 `endif
 
   always @ ( * ) begin

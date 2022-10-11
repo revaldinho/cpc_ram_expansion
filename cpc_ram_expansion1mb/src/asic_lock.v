@@ -21,18 +21,37 @@
  *
  */
 
+// Compile Options
+//
+// REDUCED_COMPARE - default not set
+// set this to only compare the top nybble of the sequence to reduce CPLD resources if necessary
+
+
 `define INIT 2'b00
 `define NEXT 2'b01
 `define RUN  2'b11
 
-`ifdef PATENT_BEHAVIOUR
-  `define LOCKBYTE 8'hCD
-  `define UNLOCKBYTE 8'hEE
-`else
-  `define LOCKBYTE 8'h8A
-  `define UNLOCKBYTE 8'hCD
-`endif
+`ifdef REDUCED_COMPARE
+  `ifdef PATENT_BEHAVIOUR
+    `define LOCKBYTE 4'hC
+    `define UNLOCKBYTE 4'hE
+  `else
+    `define LOCKBYTE 4'h8
+    `define UNLOCKBYTE 4'hC
+  `endif
 
+  `define PRBS_SZ 4
+`else
+  `ifdef PATENT_BEHAVIOUR
+    `define LOCKBYTE 8'hCD
+    `define UNLOCKBYTE 8'hEE
+  `else
+    `define LOCKBYTE 8'h8A
+    `define UNLOCKBYTE 8'hCD
+  `endif
+
+  `define PRBS_SZ 8
+`endif
 
 
 module asic_lock(
@@ -47,11 +66,14 @@ module asic_lock(
 
 
   reg                        enf_d, enf_q ;
-  reg [7:0]                  prbs_d, prbs_q ;
+  reg [`PRBS_SZ-1:0]         prbs_d, prbs_q ;
   reg [1:0]                  fsm_q, fsm_d;
 
-  wire                       valid_w = (fsm_q == `RUN);
+`ifdef REDUCED_COMPARE
+  wire                       not_match  = !(data[7:4] == prbs_q);
+`else
   wire                       not_match  = !(data == prbs_q);
+`endif
 
   assign enf = enf_q;
 
@@ -75,24 +97,33 @@ module asic_lock(
       enf_d = enf_q;
   end
 
+`ifdef REDUCED_COMPARE
   always @ ( * ) begin
-    prbs_d[7] <= not_match | ( prbs_q[7] ^ prbs_q[4] );
-    prbs_d[6] <= not_match | prbs_q[7];
-    prbs_d[5] <= not_match | prbs_q[6];
-    prbs_d[4] <= not_match | prbs_q[5];
-    prbs_d[3] <= not_match | ( prbs_q[1] ^ prbs_q[0] );
-    prbs_d[2] <= not_match | prbs_q[3];
-    prbs_d[1] <= not_match | prbs_q[2];
-    prbs_d[0] <= not_match | prbs_q[1];
+    prbs_d[3] <= not_match | (prbs_q[3] ^ prbs_q[0] );
+    prbs_d[2] <= not_match |  prbs_q[3];
+    prbs_d[1] <= not_match |  prbs_q[2];
+    prbs_d[0] <= not_match |  prbs_q[1];
   end
+`else
+  always @ ( * ) begin
+    prbs_d[7] <= not_match | (prbs_q[7] ^ prbs_q[4] );
+    prbs_d[6] <= not_match |  prbs_q[7];
+    prbs_d[5] <= not_match |  prbs_q[6];
+    prbs_d[4] <= not_match |  prbs_q[5];
+    prbs_d[3] <= not_match | (prbs_q[1] ^ prbs_q[0] );
+    prbs_d[2] <= not_match |  prbs_q[3];
+    prbs_d[1] <= not_match |  prbs_q[2];
+    prbs_d[0] <= not_match |  prbs_q[1];
+  end
+`endif
 
   always @ ( posedge clk or negedge reset_b) begin
-    if ( !reset_b ) begin
+    if (!reset_b ) begin
       enf_q  <= 1'b0;
-      prbs_q <= 8'hFF;
+      prbs_q <= {`PRBS_SZ{1'b1}};
       fsm_q <= `INIT;
     end
-    else if ( !ioreq_b & !wr_b & io_cs & valid_w) begin
+    else if ( !ioreq_b & !wr_b & io_cs & (fsm_q==`RUN)) begin
       prbs_q <= prbs_d;
       enf_q <= enf_d;
       fsm_q <= fsm_d;
