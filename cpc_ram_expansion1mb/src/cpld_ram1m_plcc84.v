@@ -22,7 +22,13 @@
  * Optional definitions
  * ====================
  *
- *  CPC6128_ONLY = default OFF
+ *  PLUS = default OFF
+ *
+ *  - enable additional AMSTRAD PLUS compatibility to allow use of expansion RAM
+ *    when using additional ASIC features
+ *  - full CPC PLUS functionality is not yet tested and released
+ *
+ * CPC6128_ONLY = default OFF
  *
  *  - removes all shadow and overdrive logic
  *  - board will then be incompatible with 464/664 machines
@@ -64,13 +70,13 @@
 // //`define EXT_RAMRD 1
 // //`define DISABLE_RESET_RESYNC 1
 // //`define FULL_SHADOW_ONLY     1
-// 
+//
 // //`define FIT_XC9536 1
-// 
+//
 // `ifdef CPC6128_ONLY
 //   `define EXT_RAMRD 1
 // `endif
-// 
+//
 //  `ifdef FIT_XC9536
 //   // Disable resynchronisation of reset
 //   `define DISABLE_RESET_RESYNC 1
@@ -78,17 +84,18 @@
 // `endif
 
 
+
 module cpld_ram1m_plcc84(
                          input        rfsh_b,
                          inout        adr15,
                          inout        adr15_aux,
-                         
+
                          input [14:0] adr,
                          input        ioreq_b,
                          input        mreq_b,
                          input        reset_b,
                          input        busreset_b,
-                         input        busack_b, 
+                         input        busack_b,
                          inout        wr_b,
                          inout        rd_b,
                          input        m1_b,
@@ -97,16 +104,16 @@ module cpld_ram1m_plcc84(
                          input [3:0]  dip,
                          input        ramrd_b,
                          input        romen_b,
-                         
+
                          inout        ramdis,
                          inout        int_b,
-                         inout        nmi_b, 
+                         inout        nmi_b,
                          inout        ready,
                          inout [7:0]  gpio,
                          inout        romdis,
                          inout [4:0]  ramadrhi, // bits 4,3 also connected to DIP switches 2,1 resp and read on startup
 
-                         input [4:0]  tp,        
+                         inout [4:0]  tp,
                          output       ramcs0_b,
                          output       ramcs1_b,
                          output       busreq_b,
@@ -149,6 +156,23 @@ module cpld_ram1m_plcc84(
   wire             ram1mb_mode;
   wire             reset_b_w;
 
+`ifdef PLUS
+  wire             plus_unlock_w;
+  wire             rmr2_ctrl_select_w;
+  reg              plus_map_enable_q;
+
+  asic_lock al_0(
+                 .clk(clk),
+                 .reset_b(reset_b_w),
+                 .ioreq_b(ioreq_b),
+                 .wr_b(wr_b),
+                 .data(data),
+                 .io_cs( ({ adr15, adr[14:8]} == 8'hBC) ), // High when relevant IO address is decoded [ &BCxx]
+                 .enf(plus_unlock_w)
+                 );
+`endif
+
+
   /*
    * DIP Switch Settings
    * ===================
@@ -190,11 +214,18 @@ module cpld_ram1m_plcc84(
   assign ram64kb_mode  = !dip[2] & dip[3];
   assign ram1mb_mode   = dip[2] & dip[3];
   assign cardsel_w     = dip[2] | dip[3];
-  
+
   // Dont drive address outputs during reset due to overlay of DIP switches
   assign ramadrhi =  ( !reset_b_w ) ? 5'bzzzzz : ramadrhi_r[4:0];
+
+`ifdef PLUS
+  assign ram_ctrl_select_w = (!ioreq_b && !wr_b && !adr15 && data[6] && data[7]  );
+  assign rom_ctrl_select_w = (!ioreq_b && !wr_b && !adr15 && !data[6] && data[7] & !data[5] );
+  assign rmr2_ctrl_select_w = (!ioreq_b && !wr_b && !adr15 && !data[6] && data[7] & data[5] & plus_enable_q );
+`else
   assign ram_ctrl_select_w = (!ioreq_b && !wr_b && !adr15 && data[6] && data[7] );
-  assign rom_ctrl_select_w = (!ioreq_b && !wr_b && !adr15 && !data[6] && data[7] );
+  assign rom_ctrl_select_w = (!ioreq_b && !wr_b && !adr15 && !data[6] && data[7] & !data[5]);
+`endif
 
 `ifdef DISABLE_RESET_RESYNC
   assign reset_b_w = busreset_b;
@@ -333,15 +364,26 @@ module cpld_ram1m_plcc84(
        end
     end
 
-`ifndef EXT_RAMRD  
+`ifndef EXT_RAMRD
   always @ (negedge clk or negedge reset_b_w)
     if (!reset_b_w)
-      { urom_disable_q, lrom_disable_q}  <= 2'b00;
+      { plus_map_enable_q, urom_disable_q, lrom_disable_q}  <= 3'b000;
     else if ( rom_ctrl_select_w )
       { urom_disable_q, lrom_disable_q } <= data[3:2];
+`ifdef PLUS
+    else if ( rmr2_ctrl_select_w )
+      plus_map_enable_q = (data[4] & data[3]);
 `endif
-  
+`endif
+
   always @ ( * ) begin
+`ifdef PLUS
+    // If PLUS map is enabled then disable expansion RAM accesses to area 0x4000-0x7FFF
+    if ( plus_map_enable_q & !adr15 & adr[14] ) begin
+      {exp_ram_r, ramcs_b_r, ramadrhi_r} = { 1'b0, 1'b1, 6'bxxxxxx };
+    end
+    else
+`endif
     if ( shadow_mode )
       // FULL SHADOW MODE    - all CPU read accesses come from external memory (ramcs_b_r computed here is ignored)
       // PARTIAL SHADOW MODE - all CPU write accesses go to shadow memory but only shadow block 3 is ever read in mode C3 at bank 0x4000 (remapped to 0xC000)

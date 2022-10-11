@@ -1,8 +1,8 @@
-#project_name ?= cpld_ram1m_plcc84
-project_name ?= cpld_ram1m
-target ?= xc9572-10-PC44
+project_name ?= cpld_ram1m_plcc84
+#project_name ?= cpld_ram1m
+#target ?= xc9572-10-PC44
 #target ?= xc95108-10-PC84
-#target ?= xc9572-10-PC84
+target ?= xc9572-10-PC84
 #target ?= xc95108-10-PC84
 #target ?= xc9536-10-PC44
 
