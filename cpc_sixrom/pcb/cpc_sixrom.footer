@@ -8,9 +8,9 @@ Wire 0  (0 0) (3.9 0) (3.9 3.2) (0 3.2) (0 0);
 Layer Top;
 
 # PCB-Pool/PCB-Train design rule is actually 0.006/0.006 for wires
-CLASS 0 signal  0.010 0.010 ;
+CLASS 0 signal  0.012 0.012 ;
 CLASS 1 supply  0.020 0.012 ;
-CLASS 2 special 0.015 0.012 ;
+CLASS 2 special 0.016 0.014 ;
 
 ROTATE =R90 C22UF ; 
 MOVE C22UF       (0.2 0.25 ) ;
