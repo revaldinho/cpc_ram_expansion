@@ -25,21 +25,29 @@ MOVE SIL0         (3.3  2.60) ;
 ROTATE =R0 D0 ;
 MOVE D0         (2.9 0.5) ;
 
+ROTATE =R90 C100N_1 ;
+MOVE C100N_1        (0.25 1.15) ;
+ROTATE =R90 l01;
+MOVE l01            (0.25 0.7);
 ROTATE =R0 ROM01 ;
 MOVE ROM01          (1.1 0.95) ;
+
+ROTATE =R90 C100N_2 ;
+MOVE C100N_2        (0.25 2.00)  ;
+ROTATE =R90 l23;
+MOVE l23            (0.25 1.55);
 ROTATE =R0 ROM23 ;
 MOVE ROM23          (1.1 1.80) ;
-ROTATE =R0 ROM45 ;
-MOVE ROM45          (1.1 2.65) ;
+ROTATE =R0 ROM45 
+
+ROTATE =R90 C100N_3 ;
+MOVE C100N_3       (0.25 1.4)  ; 
+ROTATE =R90 l45;
+MOVE l45            (0.25 2.65);
+MOVE ROM45          (1.1 2.85) ;
+
 ROTATE =R270 CPLD ;
 MOVE CPLD          (2.85 1.45);
-
-ROTATE =R90 C100N_1 ;
-MOVE C100N_1     (0.3 1.15) ;
-ROTATE =R90 C100N_2 ;
-MOVE C100N_2     (0.3  2.00)  ;
-ROTATE =R90 C100N_3 ;
-MOVE C100N_3     (0.3 2.85)  ; 
 ROTATE =R270 C100N_4 ;
 MOVE C100N_4     (3.4 1.25)  ; 
 ROTATE =R0 C100N_5 ;
@@ -57,9 +65,6 @@ ROTATE =R180 l01;
 ROTATE =R180 l23;
 ROTATE =R180 l45;
 
-MOVE l01    ( 2.3 2.6);
-MOVE l23    ( 2.3 2.8);
-MOVE l45    ( 2.3 3.0);
 MOVE r10k_0 ( 2.1 2.6);
 MOVE r10k_1 ( 2.1 2.8);
 MOVE r10k_2 ( 2.1 3.0);
