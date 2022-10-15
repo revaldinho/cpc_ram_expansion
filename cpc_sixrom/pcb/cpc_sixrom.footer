@@ -25,26 +25,32 @@ MOVE SIL0         (3.3  2.60) ;
 ROTATE =R0 D0 ;
 MOVE D0         (2.9 0.5) ;
 
+ROTATE =R0 r10k_0 ;
+MOVE r10k_0         (0.6  1.35);
 ROTATE =R90 C100N_1 ;
-MOVE C100N_1        (0.25 1.15) ;
+MOVE C100N_1        (0.35 1.15) ;
 ROTATE =R90 l01;
-MOVE l01            (0.25 0.7);
+MOVE l01            (0.35 0.7);
 ROTATE =R0 ROM01 ;
-MOVE ROM01          (1.1 0.95) ;
+MOVE ROM01          (1.2 0.95) ;
 
+ROTATE =R0 r10k_1 ;
+MOVE r10k_1         (0.6 2.20);
 ROTATE =R90 C100N_2 ;
-MOVE C100N_2        (0.25 2.00)  ;
+MOVE C100N_2        (0.35 2.00)  ;
 ROTATE =R90 l23;
-MOVE l23            (0.25 1.55);
+MOVE l23            (0.35 1.55);
 ROTATE =R0 ROM23 ;
-MOVE ROM23          (1.1 1.80) ;
-ROTATE =R0 ROM45 
+MOVE ROM23          (1.2 1.80) ;
 
+ROTATE =R0 r10k_2 ;
+MOVE r10k_2         (0.6 3.05);
 ROTATE =R90 C100N_3 ;
-MOVE C100N_3       (0.25 1.4)  ; 
+MOVE C100N_3        (0.35 2.85)  ; 
 ROTATE =R90 l45;
-MOVE l45            (0.25 2.65);
-MOVE ROM45          (1.1 2.85) ;
+MOVE l45            (0.35 2.40);
+ROTATE =R0 ROM45 
+MOVE ROM45          (1.2 2.65) ;
 
 ROTATE =R270 CPLD ;
 MOVE CPLD          (2.85 1.45);
@@ -55,25 +61,16 @@ MOVE C100N_5     (2.65 0.9)  ;
 ROTATE =R90 C100N_6 ;
 MOVE C100N_6     (2.30 1.65)  ; 
 
-MOVE JTAG          (2.80 3.00)  ;
+MOVE JTAG          (2.60 3.00)  ;
 
 
-ROTATE =R180 r10k_0 ;
-ROTATE =R180 r10k_1 ;
-ROTATE =R180 r10k_2 ;
-ROTATE =R180 l01;
-ROTATE =R180 l23;
-ROTATE =R180 l45;
 
-MOVE r10k_0 ( 2.1 2.6);
-MOVE r10k_1 ( 2.1 2.8);
-MOVE r10k_2 ( 2.1 3.0);
 
 
 Layer tPlace ;
 CHANGE FONT PROPORTIONAL ; 
 CHANGE SIZE 0.08
-TEXT 'CPC Sixrom Card, v1.10' R90 (0.15 0.7) ;
+TEXT 'CPC Sixrom Card, v1.10' R90 (0.12 0.7) ;
 
 CHANGE SIZE 0.06
 TEXT '(C) 2022 Revaldinho'  R90      (3.7 0.25) ;
@@ -82,9 +79,9 @@ TEXT 'github.com/revaldinho/cpc_ram_expansion'  R90      (3.8 0.25) ;
 CHANGE FONT FIXED ; 
 CHANGE SIZE 0.03 ;
 CHANGE WIDTH 0.01 ;
-WIRE  (2.55 2.65) (2.55 2.8 ) (3.15 2.8 ) (3.15 2.65) ( 2.55 2.65 ) ;
-TEXT 'GND  TDI  TCK  NC' R0 (2.6 2.74) ;
-TEXT 'GND  TMS  TDO  5V' R0 (2.6 2.70) ;
+WIRE  (2.35 2.65) (2.35 2.8 ) (2.95 2.8 ) (2.95 2.65) ( 2.35 2.65 ) ;
+TEXT 'GND  TDI  TCK  NC' R0 (2.4 2.74) ;
+TEXT 'GND  TMS  TDO  5V' R0 (2.4 2.70) ;
 
 ## Preroute VDD and GND rings and some spurs
 layer top;
@@ -94,9 +91,9 @@ wire  'VDD' (2.05 0.20) (2.05 0.025) ;
 layer bottom;
 wire  0.020;
 wire  'VSS' (0.025 0.025) ( 3.875 0.025) (3.875 3.175) (0.025 3.175) (0.025 0.025);
-wire  'VSS' (1.85 3.175) (1.85 0.65) (1.75 0.65);
-wire  'VSS' (1.85 1.50) (1.75 1.50);
-wire  'VSS' (1.85 2.35) (1.75 2.35);
+wire  'VSS' (1.95 3.175) (1.95 0.65) (1.85 0.65);
+wire  'VSS' (1.95 1.50) (1.85 1.50);
+wire  'VSS' (1.95 2.35) (1.85 2.35);
 # Autorouter
 # AUTO VDD VDD_CPC VDD_EXT VDD3V3 CLK VSS;   # Route clock and supplies first
 DRC load /tmp/design_rules.dru ;
@@ -104,17 +101,17 @@ AUTO load /tmp/autorouter.ctl;
 AUTO ;
 
 ## Define power fills top and bottom over whole board area
- layer Top ;
- 
- change Isolate 0.02 ;
- change Orphans Off ;
- 
- polygon VDD 0.015 (0 0) (0 3.2) (3.9 3.2) (3.9 0) (0 0) ; 
- layer Bottom ;
- polygon VSS 0.015 (0 0) (0 3.2) (3.9 3.2) (3.9 0) (0 0) ;
- 
- 
- Ratsnest ;  ## Calculate and display polygons
+layer Top ;
+
+change Isolate 0.02 ;
+change Orphans Off ;
+
+polygon VDD 0.015 (0 0) (0 3.2) (3.9 3.2) (3.9 0) (0 0) ; 
+layer Bottom ;
+polygon VSS 0.015 (0 0) (0 3.2) (3.9 3.2) (3.9 0) (0 0) ;
+
+
+Ratsnest ;  ## Calculate and display polygons
 
 
 Window Fit;
