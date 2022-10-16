@@ -60,9 +60,9 @@ module cpc_backplane5 ();
                  .barrel2(VSS)
                  );
 
-  // Radial electolytics
-  cap22uf         C0(.minus(VSS),.plus(VDD1));
-  cap22uf         C1(.minus(VSS),.plus(VDD1));
+//  // Radial electolytics
+//  cap22uf         C0(.minus(VSS),.plus(VDD1));
+//  cap22uf         C1(.minus(VSS),.plus(VDD1));
 
   // Amstrad CPC Edge Connector
   //
