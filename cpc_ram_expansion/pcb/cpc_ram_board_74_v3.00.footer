@@ -5,13 +5,13 @@
 Grid Inch;
 Set Wire_Bend 0;
 Layer Dimension;
-Wire 0  (0 0) (3.92 3.2) (0 0);
+Wire 0  (0 0) (3.9 0) (3.9 3.2) (0 3.2) (0 0);
 Layer Top;
 
 # PCB-Pool/PCB-Train design rule is actually 0.006/0.006 for wires
 CLASS 0 signal  0.010 0.010 ;
 CLASS 1 supply  0.020 0.012 ;
-CLASS 2 special 0.015 0.010;
+CLASS 2 special 0.015 0.012;
 
 ROTATE =R180 CONN1 ;
 MOVE CONN1         (1.95 0.25) ;
@@ -84,11 +84,9 @@ layer Top ;
 change Isolate 0.02 ;
 change Orphans Off ;
 
-polygon VDD 0.02 (0 0) (0 3.2) (3.9 3.2) (3.9 0) (0 0) ;
-
+polygon VDD 0.015 (0 0) (0 3.2) (3.9 3.2) (3.9 0) (0 0) ; 
 layer Bottom ;
-polygon VSS 0.02 (0 0) (0 3.2) (3.9 3.2) (3.9 0) (0 0) ;
-
+polygon VSS 0.015 (0 0) (0 3.2) (3.9 3.2) (3.9 0) (0 0) ;
 
 Ratsnest ;  # Calculate and display polygons
 
