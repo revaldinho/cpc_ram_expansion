@@ -1,0 +1,71 @@
+# Maximum Eagle freeware board size is 4.0x3.2" (101x80mm)  but Seeed limit is 100x100
+
+# better to work in inches for 0.1 inch pad pitch
+Grid inch;
+Set Wire_Bend 0;
+Layer Dimension;
+Wire 0  (0 0) (3.9 0) (3.9 3.2) (0 3.2) (0 0);
+Layer Top;
+
+# PCB-Pool/PCB-Train design rule is actually 0.006/0.006 for wires
+CLASS 0 signal  0.012 0.010 ;
+CLASS 1 supply  0.020 0.012 ;
+CLASS 2 special 0.015 0.012 ;
+
+ROTATE =R90 PCONN;
+MOVE PCONN         (0.65 2.65) ;
+
+ROTATE =R90 CONN0 ;
+MOVE CONN0         (0.20 1.55) ;
+ROTATE =R270 CONN1 ;
+MOVE CONN1         (1.05 1.55) ;
+ROTATE =R270 CONN2 ;
+MOVE CONN2         (1.70 1.55) ;
+ROTATE =R270 CONN3 ;
+MOVE CONN3         (2.35 1.55) ;
+ROTATE =R270 CONN4 ;
+MOVE CONN4         (3.00 1.55) ;
+ROTATE =R270 CONN5 ;
+MOVE CONN5         (3.65 1.55) ;
+
+ROTATE =R0 L0 ;
+MOVE L0            (0.65 2.45);
+
+ROTATE =R0 C0 ;
+MOVE C0            (1.40 3.05);
+ROTATE =R0 C1 ;
+MOVE C1            (2.75 3.05);
+
+Layer tPlace ;
+CHANGE FONT PROPORTIONAL ; 
+CHANGE SIZE 0.08
+TEXT 'CPC Expansion Backplane5 v1.00' R90 (0.6 0.5) ;
+CHANGE SIZE 0.04
+TEXT '(C) 2018,2019,2022 Revaldinho'  R90      (0.7 0.5) ;
+TEXT 'github.com/revaldinho/cpc_ram_expansion'  R90      (0.8 0.5) ;
+
+layer top;
+wire  0.020;
+wire  'VDD1' (3.7 1.45) ( 3.87 1.45) (3.87 3.17) (1.35 3.17) (1.35 3.05) ;
+layer bottom;
+wire  0.020;
+wire  'VSS' (0.025 0.025) ( 3.87 0.025) (3.87 3.17) (0.025 3.17) (0.025 0.025);
+
+## Autorouter
+DRC load /tmp/design_rules.dru ;
+AUTO load /tmp/autorouter_74.ctl;
+
+AUTO ;
+
+## Define power fills top and bottom over whole board area
+ layer Top ;
+ 
+ change Isolate 0.02 ;
+ change Orphans Off ;
+ 
+ polygon VDD1 0.015 (0 0) (0 3.2) (3.9 3.2) (3.9 0) (0 0) ; 
+ layer Bottom ;
+ polygon VSS 0.015 (0 0) (0 3.2) (3.9 3.2) (3.9 0) (0 0) ;
+ 
+ 
+ Ratsnest ;  ## Calculate and display polygons
