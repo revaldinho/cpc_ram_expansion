@@ -25,7 +25,7 @@
 //
 // REDUCED_COMPARE - default not set
 // set this to only compare the top nybble of the sequence to reduce CPLD resources if necessary
-
+//`undef REDUCED_COMPARE
 
 `define INIT 2'b00
 `define NEXT 2'b01
@@ -68,14 +68,14 @@ module asic_lock(
   reg                        enf_d, enf_q ;
   reg [`PRBS_SZ-1:0]         prbs_d, prbs_q ;
   reg [1:0]                  fsm_q, fsm_d;
+  wire                       cken = ( !ioreq_b & !wr_b & io_cs & (fsm_q==`RUN));
+  assign enf = enf_q;
 
 `ifdef REDUCED_COMPARE
   wire                       not_match  = !(data[7:4] == prbs_q);
 `else
   wire                       not_match  = !(data == prbs_q);
 `endif
-
-  assign enf = enf_q;
 
   always @ ( * ) begin
     fsm_d = fsm_q;
@@ -86,7 +86,6 @@ module asic_lock(
       default: fsm_d = `INIT;
     endcase // case `INIT
   end
-
 
   always @ (* ) begin
     if ( prbs_q == `UNLOCKBYTE)
@@ -99,34 +98,34 @@ module asic_lock(
 
 `ifdef REDUCED_COMPARE
   always @ ( * ) begin
-    prbs_d[3] <= not_match | (prbs_q[3] ^ prbs_q[0] );
-    prbs_d[2] <= not_match |  prbs_q[3];
-    prbs_d[1] <= not_match |  prbs_q[2];
-    prbs_d[0] <= not_match |  prbs_q[1];
+    prbs_d[3] = not_match | (prbs_q[3] ^ prbs_q[0] );
+    prbs_d[2] = not_match |  prbs_q[3];
+    prbs_d[1] = not_match |  prbs_q[2];
+    prbs_d[0] = not_match |  prbs_q[1];
   end
 `else
   always @ ( * ) begin
-    prbs_d[7] <= not_match | (prbs_q[7] ^ prbs_q[4] );
-    prbs_d[6] <= not_match |  prbs_q[7];
-    prbs_d[5] <= not_match |  prbs_q[6];
-    prbs_d[4] <= not_match |  prbs_q[5];
-    prbs_d[3] <= not_match | (prbs_q[1] ^ prbs_q[0] );
-    prbs_d[2] <= not_match |  prbs_q[3];
-    prbs_d[1] <= not_match |  prbs_q[2];
-    prbs_d[0] <= not_match |  prbs_q[1];
+    prbs_d[7] = not_match | (prbs_q[7] ^ prbs_q[4] );
+    prbs_d[6] = not_match |  prbs_q[7];
+    prbs_d[5] = not_match |  prbs_q[6];
+    prbs_d[4] = not_match |  prbs_q[5];
+    prbs_d[3] = not_match | (prbs_q[1] ^ prbs_q[0] );
+    prbs_d[2] = not_match |  prbs_q[3];
+    prbs_d[1] = not_match |  prbs_q[2];
+    prbs_d[0] = not_match |  prbs_q[1];
   end
 `endif
 
   always @ ( posedge clk or negedge reset_b) begin
-    if (!reset_b ) begin
-      enf_q  <= 1'b0;
+    if (! reset_b ) begin
       prbs_q <= {`PRBS_SZ{1'b1}};
-      fsm_q <= `INIT;
+      enf_q  <= 1'b0;
+      fsm_q  <= `INIT;
     end
-    else if ( !ioreq_b & !wr_b & io_cs & (fsm_q==`RUN)) begin
+    else if ( cken ) begin
       prbs_q <= prbs_d;
-      enf_q <= enf_d;
-      fsm_q <= fsm_d;
+      enf_q  <= enf_d;
+      fsm_q  <= fsm_d;
     end
   end
 

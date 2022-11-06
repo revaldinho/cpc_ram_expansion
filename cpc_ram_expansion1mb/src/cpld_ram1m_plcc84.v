@@ -68,7 +68,7 @@
  */
 
 
-//`define PLUS 1
+`define PLUS 1
 //`define REDUCED_COMPARE 1
 
 // //`define CPC6128_ONLY 1
@@ -116,7 +116,7 @@ module cpld_ram1m_plcc84(
                          inout        ready,
                          inout [7:0]  gpio,
                          inout        romdis,
-                         inout [4:0]  ramadrhi, // bits 4,3 also connected to DIP switches 2,1 resp and read on startup
+                         output [4:0]  ramadrhi, 
 
                          inout [4:0]  tp,
                          output       ramcs0_b,
@@ -378,14 +378,11 @@ module cpld_ram1m_plcc84(
 `endif
 
 `ifdef PLUS
-  wire plus_map_enable_d = (rmr2_ctrl_select_w) ? (data[4] & data[3]) : plus_map_enable_q;
-
-  always @ (negedge clk ) begin
+  always @ (negedge clk or negedge reset_b_w)
     if (!reset_b_w)
       plus_map_enable_q  <= 1'b0;
-    else
-      plus_map_enable_q  <= plus_map_enable_d;
-  end
+    else if (rmr2_ctrl_select_w & data[4] & data[3])
+      plus_map_enable_q  <= 1'b1;
 `endif
 
   always @ ( * ) begin
