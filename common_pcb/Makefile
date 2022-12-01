@@ -16,6 +16,7 @@ ARGS ?=
 	-l ${netlister_dir}/lib/idc_connectors.lib \
 	-l ${netlister_dir}/lib/l1a-custom.lib \
 	-l ${netlister_dir}/lib/xilinx.lib \
+	-l ${netlister_dir}/lib/atmel_atf15xx.lib \
 	-l ${netlister_dir}/lib/rcl.lib \
 	-l ${netlister_dir}/lib/triac.lib \
 	-l ${netlister_dir}/lib/diode.lib \
@@ -33,6 +34,7 @@ ARGS ?=
 	-l ${netlister_dir}/lib/idc_connectors.lib \
 	-l ${netlister_dir}/lib/l1a-custom.lib \
 	-l ${netlister_dir}/lib/xilinx.lib \
+	-l ${netlister_dir}/lib/atmel_atf15xx.lib \
 	-l ${netlister_dir}/lib/rcl.lib \
 	-l ${netlister_dir}/lib/triac.lib \
 	-l ${netlister_dir}/lib/diode.lib \
