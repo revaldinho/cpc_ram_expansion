@@ -68,7 +68,7 @@
  */
 
 
-`define PLUS 1
+//`define PLUS 1
 //`define REDUCED_COMPARE 1
 
 // //`define CPC6128_ONLY 1
@@ -399,7 +399,7 @@ module cpld_ram1m_plcc84(
       case (ramblock_q[2:0])
  	3'b000: {exp_ram_r, ramcs_b_r, ramadrhi_r} = { 1'b0, !mwr_cyc_q , shadow_bank, adr15,adr[14] };
  	3'b001: {exp_ram_r, ramcs_b_r, ramadrhi_r} = ( {adr15,adr[14]}==2'b11 ) ? {2'b10, ramblock_q[6:3],2'b11} : { 1'b0, !mwr_cyc_q , shadow_bank, adr15,adr[14] };
- 	3'b010: {exp_ram_r, ramcs_b_r, ramadrhi_r} = { 2'b10, ramblock_q[5:3], adr15,adr[14]} ;
+ 	3'b010: {exp_ram_r, ramcs_b_r, ramadrhi_r} = { 2'b10, ramblock_q[6:3], adr15,adr[14]} ;
  	3'b011: {exp_ram_r, ramcs_b_r, ramadrhi_r} = ( {adr15_mx_w,adr[14]}==2'b11 ) ? {2'b10,ramblock_q[6:3],2'b11} : ({adr15_mx_w,adr[14]}==2'b01) ? {2'b00,shadow_bank,2'b11} : { 1'b0, !mwr_cyc_q , shadow_bank, adr15,adr[14] };
  	3'b100: {exp_ram_r, ramcs_b_r, ramadrhi_r} = ( {adr15,adr[14]}==2'b01 ) ? {2'b10,ramblock_q[6:3],2'b00} : { 1'b0, !mwr_cyc_q , shadow_bank, adr15, adr[14] };
  	3'b101: {exp_ram_r, ramcs_b_r, ramadrhi_r} = ( {adr15,adr[14]}==2'b01 ) ? {2'b10,ramblock_q[6:3],2'b01} : { 1'b0, !mwr_cyc_q , shadow_bank, adr15, adr[14] };
