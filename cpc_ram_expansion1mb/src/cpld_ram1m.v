@@ -61,7 +61,7 @@
  *
  */
 
-//`define FIT_XC9536 1
+`define FIT_XC9536 1
 
 `ifdef CPC6128_ONLY
   `define EXT_RAMRD 1
@@ -349,7 +349,7 @@ module cpld_ram1m(
       case (ramblock_q[2:0])
  	3'b000: {exp_ram_r, ramcs_b_r, ramadrhi_r} = { 2'b01, 6'bxxxxx };
  	3'b001: {exp_ram_r, ramcs_b_r, ramadrhi_r} = ( {adr15,adr14}==2'b11 ) ? {2'b10,ramblock_q[6:3],2'b11} : {2'b01, 6'bxxxxx};
- 	3'b010: {exp_ram_r, ramcs_b_r, ramadrhi_r} = { 2'b10,ramblock_q[5:3],adr15,adr14} ;
+ 	3'b010: {exp_ram_r, ramcs_b_r, ramadrhi_r} = { 2'b10,ramblock_q[6:3],adr15,adr14} ;
  	3'b011: {exp_ram_r, ramcs_b_r, ramadrhi_r} = ( {adr15_mx_w,adr14}==2'b11 ) ? {2'b10,ramblock_q[6:3],2'b11} : {2'b01, 6'bxxxxx };
  	3'b100: {exp_ram_r, ramcs_b_r, ramadrhi_r} = ( {adr15,adr14}==2'b01 ) ? {2'b10,ramblock_q[6:3],2'b00} : {2'b01, 6'bxxxxx };
  	3'b101: {exp_ram_r, ramcs_b_r, ramadrhi_r} = ( {adr15,adr14}==2'b01 ) ? {2'b10,ramblock_q[6:3],2'b01} : {2'b01, 6'bxxxxx };
