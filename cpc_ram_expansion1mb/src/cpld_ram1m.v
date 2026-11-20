@@ -1,9 +1,8 @@
-
 /*
  * This code is part of the cpc_ram_expansion set of Amstrad CPC peripherals.
  * https://github.com/revaldinho/cpc_ram_expansion
  *
- * Copyright (C) 2018,2019,2020 Revaldinho
+ * Copyright (C) 2018-26 Revaldinho
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -20,60 +19,38 @@
  *
  * ----------------------------------------------------------------------
  *
+ * Simplified version to unify builds for XC9536 and XC9572 to make the most
+ * of available parts. 
+ * 
+ * Board supports just two modes now modes
+ * o 6128 mode
+ * o 464 mode with full shadow operation and Amstrad mode 'C3' support
+ * 
+ * Full shadow is provided in place of the original partial shadow - the logic is 
+ * slightly simpler for full shadow and it has the advantage of tolerating some faults
+ * in base RAM in old machines.
+ *
+ * The older dk'Tronics mode is no longer supported. This would make the card appear 64K
+ * larger for a CPC464 but isn't 100% compatible with the 6128. Although dk'Tronics mode
+ * is useful in the 512KB card (allowing use of both dk'Tronics Silicon Disk and expansion
+ * RAM software for example), the 1MB card already has enough RAM to be compatible with 
+ * any legacy software despite the 64K shadow bank penalty.
+ *  
  * Optional definitions
- * ====================
+ * ==================== *
  *
- *  CPC6128_ONLY = default OFF
- *
- *  - removes all shadow and overdrive logic
- *  - board will then be incompatible with 464/664 machines
- *  - logic will fit in very small CPLD, or take up less space when integrating in a multi-function
- *    peripheral
- *
- * EXT_RAMRD = default OFF
- *
- * - uses external gate array generated RAMRD_B rather than internally generated version
- * - saves logic on boards not implementing the shadow mode, ie still suitable for boards
- *   targetting 6128/Plus or DK'Tronics mode operation for 464/664.
- * - use of the external RAMRD_B makes timing more critical for shadow mode operation on
- *   the 464/664, so this is not recommended if needing to use video mode C3 on those machines
- * - NB. EXTRAM_RD should always be set if CPC6128_ONLY define is set
- *
- * DISABLE_RESET_RESYNC = default OFF
+ * DISABLE_RESET_RESYNC = default ON
  *
  * - disables the two stage reset release synchroniser
  * - this is purely to save logic in small CPLDs
  * - very small risk that start up won't be clean once in a while (almost never in fact)
  *
- * FULL_SHADOW_ONLY - default OFF
- *
- * - enables full shadow mode operation whenever shadow mode is selected.
- * - simplifies and reduces shadow mode logic slightly
- * - mainly of benefit in trying to fit in small CPLDs but still support CPC464/664 mode
- *   C3 operation
- * - little disadvantage here since full and partial shadow schemes behave identically
- *   to the end user - full shadow has the slight advantage of 'repairing' some internal
- *   RAM faults
- *
- * FIT_XC9536 - default ON
- *
- * - selects combination of the above to fit the design in a Xilinx XC9536 CPLD
  *
  */
 
-`define FIT_XC9536 1
-
-`ifdef CPC6128_ONLY
-  `define EXT_RAMRD 1
-`endif
-
-`ifdef FIT_XC9536
-  // Barely fits in the CPLD without some features removed
-  //`define EXT_RAMRD 1
-  `define DISABLE_RESET_RESYNC 1
-  `define FULL_SHADOW_ONLY     1
-  `define CARD_ALWAYS_ENABLED  1
-`endif
+// Barely fits in the XC9536 CPLD without some features removed
+//`define EXT_RAMRD 1
+`define DISABLE_RESET_RESYNC 1
 
 module cpld_ram1m(
   input        rfsh_b,
@@ -100,10 +77,8 @@ module cpld_ram1m(
 
   parameter   shadow_bank= 4'b0111;  // Shadow bank always high bank in 7FFE RAM (SRAM0)
 
-
   reg [6:0]        ramblock_q;
   reg [5:0]        ramadrhi_r;
-  wire             cardsel_w;
   wire             adr15_mx_w;
   reg              mode3_overdrive_q;
   reg              mwr_cyc_q;
@@ -116,22 +91,19 @@ module cpld_ram1m(
   reg              reset1_b_q;
 `endif
   reg              exp_ram_q;
-`ifdef EXT_RAMRD
+`ifndef INT_RAMRD
   wire             ramrd_b_w = ramrd_b;
 `else
   reg 	           urom_disable_q;
   reg 	           lrom_disable_q;
   reg              int_ramrd_b_r ;    // compute local ramrd signal rather than wait on one from ULA
   wire             ramrd_b_w = int_ramrd_b_r;
+  wire             rom_ctrl_select_w;
 `endif
   wire             ram_ctrl_select_w;
-  wire             rom_ctrl_select_w;
-  wire             full_shadow;
-  wire             overdrive_mode;
+  wire             cpc464_mode;
   wire             mwr_cyc_d;
   wire             adr15_overdrive_w;
-  wire             ram64kb_mode;
-  wire             ram1mb_mode;
   wire             reset_b_w;
 
   /*
@@ -140,49 +112,17 @@ module cpld_ram1m(
    *
    * NB DIPs are numbered 1-4 on the physical component and in the table  here, but 0..3 in Verilog
    *
-   * ---------+-----------------------------------------
-   * DIP1 DIP2|  Mode selection
-   * ---------+-----------------------------------------
-   *  OFF  OFF|  6128 Mode
-   *  OFF   ON|  DK'Tronics Mode
-   *   ON  OFF|  Shadow mode (NB XC9536 implements FULL SHADOW only)
-   *   ON   ON|  Full shadow mode if enabled/Shadow mode if not
-   * ---------+-----------------------------------------
-   * DIP3 DIP4|  RAM size selection
-   * ---------+-----------------------------------------
-   *  OFF OFF |  Card Disabled (not for XC9536)
-   * ---------+-----------------------------------------
-   *  OFF  ON |  64K mode (Max 6128 compatibility)
-   *   ON OFF |  512K Mode
-   *   ON  ON |  1MB mode
-   * ---------+-----------------------------------------
+   * --------------------+-----------------
+   * DIP1 DIP2 DIP3 DIP4 |  Mode selection
+   * --------------------+-----------------
+   *  OFF  X    X    X   |  6128 Mode
+   *  ON   X    X    X   |   464 Mode
+   * --------------------+-----------------
    */
 
-`ifdef CPC6128_ONLY
-  assign overdrive_mode = 1'b0;
-  assign full_shadow = 1'b0;
-  assign shadow_mode = 1'b0;
-`else
-  `ifdef FULL_SHADOW_ONLY
-  assign full_shadow   = dip[0];
-  `else
-  assign full_shadow   = dip[1] & dip[0];
-  `endif
-  assign shadow_mode   = dip[0] ;
-  assign overdrive_mode= dip[0] | dip[1];
-`endif
-
-  assign ram64kb_mode  = !dip[2] & dip[3];
-  assign ram1mb_mode   = dip[2] & dip[3];
-`ifdef CARD_ALWAYS_ENABLED
-  assign cardsel_w     = 1'b1;
-`else
-  assign cardsel_w     = dip[2] | dip[3];
-`endif
-  // Dont drive address outputs during reset due to overlay of DIP switches
-  assign ramadrhi =  ( !reset_b_w ) ? 5'bzzzzz : ramadrhi_r[4:0];
+  assign cpc464_shadow_mode = dip[0] ;   
+  assign ramadrhi =   ramadrhi_r[4:0];
   assign ram_ctrl_select_w = (!iorq_b && !wr_b && !adr15 && data[6] && data[7] );
-  assign rom_ctrl_select_w = (!iorq_b && !wr_b && !adr15 && !data[6] && data[7] );
 
 `ifdef DISABLE_RESET_RESYNC
   assign reset_b_w = reset_b;
@@ -190,12 +130,13 @@ module cpld_ram1m(
   assign reset_b_w = reset1_b_q & reset_b & reset_b_q;
 `endif
 
-`ifndef EXT_RAMRD
+`ifdef INT_RAMRD
+  assign rom_ctrl_select_w = (!iorq_b && !wr_b && !adr15 && !data[6] && data[7] );
   // NB mode 3 DK'T 0x4000 -> remapped to 0xC000, so allow for this when
   // creating our internal version of ramrd_b_r
   always @ ( * ) begin
     int_ramrd_b_r = 1'b1 ; 	 // default disable RAM accesses
-    if ( rfsh_b & !mreq_b & !rd_b)
+    if ( rfsh_b & !mreq_b )
       if ( adr15_mx_w != adr14 )
         int_ramrd_b_r = 1'b0; // RAM in range 0x4000 - 0xBFFF never overlapped by ROM
                             // and this is true even if we overdrive adr15.
@@ -204,11 +145,14 @@ module cpld_ram1m(
       else if ( lrom_disable_q & ( {adr15_q,adr14} == 2'b00 ))
         int_ramrd_b_r = 1'b0; // RAM read in 0x0000 - 0x3FFF only if LROM disabled
   end
-`endif //  `ifndef EXT_RAMRD
-
   // Remember that wr_b is overdrive for first high phase of clock for M4 compatibility so don't write ;
   assign ramwe_b = ! ( !wr_b & mwr_cyc_q & mwr_cyc_f_q );
   assign ramoe_b = ramrd_b_w ;
+`else
+  assign ramoe_b = ramrd_b ;
+  assign ramwe_b = wr_b ;   
+`endif //  `ifndef EXT_RAMRD
+
 
   /* Memory Data Access
    *          ____      ____      ____      ____      ____
@@ -230,38 +174,24 @@ module cpld_ram1m(
 
   // M4 Compatibility: overdrive wr_b for the first high phase of CLK
   // of an expansion RAM write to fool the M4 card
-  assign wr_b = ( overdrive_mode & exp_ram_q & (mwr_cyc_q & !mwr_cyc_f_q)) ? 1'b0 : 1'bz;
-  assign rd_b = ( overdrive_mode & exp_ram_q & (mwr_cyc_q|mwr_cyc_f_q)) ? 1'b0 : 1'bz ;
+  assign wr_b = ( cpc464_shadow_mode & exp_ram_q & (mwr_cyc_q & !mwr_cyc_f_q)) ? 1'b0 : 1'bz;
+  assign rd_b = ( cpc464_shadow_mode & exp_ram_q & (mwr_cyc_q|mwr_cyc_f_q)) ? 1'b0 : 1'bz ;
 
   // Overdrive A15 for writes only in shadow modes (full and partial) but for all
   // access types otherwise. Need to compute whether A15 will need to be driven
   // before the first rising edge of the MREQ cycle for the gate array to act on
   // it. Cant wait to sample mwr_cyc_q after it has been set initially.
-  assign mwr_cyc_d = !mreq_b & rd_b & rfsh_b;
-  assign adr15_overdrive_w = mode3_overdrive_q & adr14 & !adr15_mx_w & ((shadow_mode) ? (mwr_cyc_q|mwr_cyc_d): !mreq_b) ;
+  assign mwr_cyc_d = !mreq_b & rd_b & rfsh_b ;
+  assign adr15_overdrive_w = mode3_overdrive_q & adr14 & !adr15_mx_w & ((cpc464_shadow_mode) ? (mwr_cyc_q|mwr_cyc_d): !mreq_b) ;
   assign { adr15, adr15_aux} = (adr15_overdrive_w ) ? 2'b11 : 2'bzz;
   assign adr15_mx_w = (mreq_b) ? adr15: adr15_q;
 
   // Never, ever use internal RAM for reads in full shadow mode
-  assign ramdis = (cardsel_w & (full_shadow | !ramcs_b_r)) ? 1'b1 : 1'bz;
-
-  // Alternative
-  // - drive ramdis and romdis
-  // - always overdrive ADR15 in mode3 allowing gate array to  initiate ROM or RAM access
-  // - block both and generate a RAM access internally
-  // - full shadow mode not addressed here
-  //
-  // assign adr15_overdrive_w = mode3_overdrive_q & adr14 & !adr15_q & !mreq_b ;
-  // assign ramromdis = (cardsel_w & !ramcs_b_r & int_ramrd_r) ? 1'b1 : 1'bz;
-
+  assign ramdis = (cpc464_shadow_mode | !ramcs_b_r) ? 1'b1 : 1'bz;
   // Low RAM is enabled for all (base memory) shadow writes and when selected by 0x7Exx
-`ifdef FULL_SHADOW_ONLY
-  assign ramcs0_b =  !cardsel_w | !((!ramadrhi_r[5] & exp_ram_r) | (full_shadow & !exp_ram_r)) | mreq_b | !rfsh_b;
-`else
-  assign ramcs0_b =  !cardsel_w | !((!ramadrhi_r[5] & exp_ram_r) | (full_shadow & !exp_ram_r) | (shadow_mode & !exp_ram_r & !ramcs_b_r)) | mreq_b | !rfsh_b;
-`endif
+  assign ramcs0_b =  !((!ramadrhi_r[5] & exp_ram_r) | (cpc464_shadow_mode & !exp_ram_r)) | mreq_b | !rfsh_b;
   // High RAM is enabled only for expansion RAM accesses to 0x7Fxx
-  assign ramcs1_b = !cardsel_w | !(ramadrhi_r[5] & exp_ram_r) | mreq_b | !rfsh_b ;
+  assign ramcs1_b =  !(ramadrhi_r[5] & exp_ram_r) | mreq_b | !rfsh_b ;
 
   always @ (posedge clk)
     if ( mwr_cyc_d )
@@ -305,24 +235,17 @@ module cpld_ram1m(
     end
     else begin
        if ( ram_ctrl_select_w ) begin
-         if (ram64kb_mode)
-           // 64KB mode, selects always bank 0 in upper RAM (and doesn't clash with shadow bank)
-           ramblock_q <= {4'b1000, data[2:0]} ;
-         else if (ram1mb_mode)
-           // 1MB mode uses given bank in upper (0x7FFF) or lower (0x7FFE) RAM, but if bank selected is lower 0b111
-           // (which is used for shadow RAM) then must alias that to the next lower bank 0b110
-           if ( shadow_mode & {adr8,data[5:3]}==shadow_bank )
-             ramblock_q <= {adr8,data[5:4], 1'b0, data[2:0]};
-           else
-             ramblock_q <= {adr8,data[5:0]};
-         else
-           // 512KB mode selects always upper RAM (and doesn't clash with shadow bank)
-           ramblock_q <= {1'b1,data[5:0]};
-         mode3_overdrive_q <= overdrive_mode & (data[2:0] == 3'b011);
+          // 1MB mode uses given bank in upper (0x7FFF) or lower (0x7FFE) RAM, but if bank selected is lower 0b111
+          // (which is used for shadow RAM) then must alias that to the next lower bank 0b110
+          if ( cpc464_shadow_mode & {adr8,data[5:3]}==shadow_bank )
+            ramblock_q <= {adr8,data[5:4], 1'b0, data[2:0]};
+          else
+            ramblock_q <= {adr8,data[5:0]};
+          mode3_overdrive_q <= cpc464_shadow_mode & (data[2:0] == 3'b011);
        end
     end
 
-`ifndef EXT_RAMRD
+`ifdef INT_RAMRD
   always @ (negedge clk or negedge reset_b_w)
     if (!reset_b_w)
       { urom_disable_q, lrom_disable_q}  <= 2'b00;
@@ -331,9 +254,8 @@ module cpld_ram1m(
 `endif
 
   always @ ( * ) begin
-    if ( shadow_mode )
+    if ( cpc464_shadow_mode )
       // FULL SHADOW MODE    - all CPU read accesses come from external memory (ramcs_b_r computed here is ignored)
-      // PARTIAL SHADOW MODE - all CPU write accesses go to shadow memory but only shadow block 3 is ever read in mode C3 at bank 0x4000 (remapped to 0xC000)
       case (ramblock_q[2:0])
  	3'b000: {exp_ram_r, ramcs_b_r, ramadrhi_r} = { 1'b0, !mwr_cyc_q , shadow_bank, adr15,adr14 };
  	3'b001: {exp_ram_r, ramcs_b_r, ramadrhi_r} = ( {adr15,adr14}==2'b11 ) ? {2'b10, ramblock_q[6:3],2'b11} : { 1'b0, !mwr_cyc_q , shadow_bank, adr15,adr14 };
