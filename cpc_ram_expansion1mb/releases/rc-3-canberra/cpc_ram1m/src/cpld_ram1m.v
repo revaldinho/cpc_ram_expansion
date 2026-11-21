@@ -1,3 +1,4 @@
+
 /*
  * This code is part of the cpc_ram_expansion set of Amstrad CPC peripherals.
  * https://github.com/revaldinho/cpc_ram_expansion
@@ -68,9 +69,10 @@
 
 `ifdef FIT_XC9536
   // Barely fits in the CPLD without some features removed
-  `define EXT_RAMRD 1
+  //`define EXT_RAMRD 1
   `define DISABLE_RESET_RESYNC 1
   `define FULL_SHADOW_ONLY     1
+  `define CARD_ALWAYS_ENABLED  1
 `endif
 
 module cpld_ram1m(
@@ -174,7 +176,7 @@ module cpld_ram1m(
   assign ram1mb_mode   = dip[2] & dip[3];
 `ifdef CARD_ALWAYS_ENABLED
   assign cardsel_w     = 1'b1;
-`else  
+`else
   assign cardsel_w     = dip[2] | dip[3];
 `endif
   // Dont drive address outputs during reset due to overlay of DIP switches
@@ -319,15 +321,15 @@ module cpld_ram1m(
          mode3_overdrive_q <= overdrive_mode & (data[2:0] == 3'b011);
        end
     end
-  
-`ifndef EXT_RAMRD  
+
+`ifndef EXT_RAMRD
   always @ (negedge clk or negedge reset_b_w)
     if (!reset_b_w)
       { urom_disable_q, lrom_disable_q}  <= 2'b00;
     else if ( rom_ctrl_select_w )
       { urom_disable_q, lrom_disable_q } <= data[3:2];
 `endif
-  
+
   always @ ( * ) begin
     if ( shadow_mode )
       // FULL SHADOW MODE    - all CPU read accesses come from external memory (ramcs_b_r computed here is ignored)
@@ -335,7 +337,7 @@ module cpld_ram1m(
       case (ramblock_q[2:0])
  	3'b000: {exp_ram_r, ramcs_b_r, ramadrhi_r} = { 1'b0, !mwr_cyc_q , shadow_bank, adr15,adr14 };
  	3'b001: {exp_ram_r, ramcs_b_r, ramadrhi_r} = ( {adr15,adr14}==2'b11 ) ? {2'b10, ramblock_q[6:3],2'b11} : { 1'b0, !mwr_cyc_q , shadow_bank, adr15,adr14 };
- 	3'b010: {exp_ram_r, ramcs_b_r, ramadrhi_r} = { 2'b10, ramblock_q[5:3], adr15,adr14} ;
+ 	3'b010: {exp_ram_r, ramcs_b_r, ramadrhi_r} = { 2'b10, ramblock_q[6:3], adr15,adr14} ;
  	3'b011: {exp_ram_r, ramcs_b_r, ramadrhi_r} = ( {adr15_mx_w,adr14}==2'b11 ) ? {2'b10,ramblock_q[6:3],2'b11} : ({adr15_mx_w,adr14}==2'b01) ? {2'b00,shadow_bank,2'b11} : { 1'b0, !mwr_cyc_q , shadow_bank, adr15,adr14 };
  	3'b100: {exp_ram_r, ramcs_b_r, ramadrhi_r} = ( {adr15,adr14}==2'b01 ) ? {2'b10,ramblock_q[6:3],2'b00} : { 1'b0, !mwr_cyc_q , shadow_bank, adr15, adr14 };
  	3'b101: {exp_ram_r, ramcs_b_r, ramadrhi_r} = ( {adr15,adr14}==2'b01 ) ? {2'b10,ramblock_q[6:3],2'b01} : { 1'b0, !mwr_cyc_q , shadow_bank, adr15, adr14 };
