@@ -49,7 +49,6 @@
  */
 
 // Barely fits in the XC9536 CPLD without some features removed
-//`define EXT_RAMRD 1
 `define DISABLE_RESET_RESYNC 1
 
 module cpld_ram1m(
@@ -151,7 +150,7 @@ module cpld_ram1m(
 `else
   assign ramoe_b = ramrd_b ;
   assign ramwe_b = wr_b ;   
-`endif //  `ifndef EXT_RAMRD
+`endif
 
 
   /* Memory Data Access

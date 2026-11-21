@@ -1,0 +1,76 @@
+Release Note for RC-4-Delta
+
+
+This release contains JEDECs for the cpld_ram1m for both XC9572 and XC9536, and
+related JEDECs for the cpld_ram1m_plcc84 for XC9572 and XC95108 in the PLCC84 pin package
+
+
+cpld_ram_1m
+-----------
+
+This is the 'production' version of the 1MB RAM intended mainly for the Amstrad CPC464
+and 664 computers. It also works with the CPC6128, but the Old School 74 Series alternative
+works just as well for that machine and parts for that build are still readily available.
+
+Operation has been simplified for this release and relies only a a single DIP switch
+
+DIP1 = 0 = 6128 mode
+DIP1 = 1 = 464 mode
+
+In 6128 mode the full 1MByte of RAM is available to all programs
+
+In 464 mode, the card runs in full shadow mode only.
+
+Previous releases supported full shadow, partial shadow and dk'Tronics modes.
+
+In testing, there was no advantage in partial shadow mode over full shadow, and in fact
+there is a possibilty that full shadow can help in bringing up old CPC464s which have
+faulty internal RAM. (In full shadow mode ALL RAM reads are taken from the expansion
+card. Writes still go to base RAM when appropriate, but in this case only writes to
+the video RAM area really matter.)
+
+The older dk'Tronics mode was supported to allow a full 1MB expansion to be available
+at the expense of 100% compatibility in expansion mode 'C3' (used by FutureOS and
+some other more modern software and demos). The actual dk'Tronics silicon disk and
+bank switching software only supports up to 512KB of memory anyway, so in this case
+losing 64KB is moot.
+
+Supporting full shadow only as the CPC464 mode of operation supports all software, both
+legacy and more modern demos, and simplifies the CPLD logic so that the same source
+will build and fit into both XC9572 and XC9536 CPLDs. With these CPLDs also considered
+vintage and in short supply these days, this may eke out the usefulness of these cards
+a little longer.
+
+
+cpld_ram1m_plcc84
+-----------------
+
+This board uses an even rarer and more expensive CPLD. It supports all the features of
+the board above but the CPLD has enough capacity to offer other features. For me this
+board is more for experimental work on GPIOs etc with the RAM as just a convenience.
+
+The released firmware supports only the RAM expansion, but offers a couple more options
+than the main cpld_ram1m:
+
+
+The following table describes the DIP settings
+
+   * ---------+-----------------------------------------
+   * DIP1 DIP2|  Mode selection
+   * ---------+-----------------------------------------
+   *  OFF  OFF|  6128 Mode
+   *  OFF   ON|  DK'Tronics Mode
+   *   ON    X|  Full Shadow mode
+   * ---------+-----------------------------------------
+   * DIP3 DIP4|  RAM size selection
+   * ---------+-----------------------------------------
+   *  OFF OFF |  not used
+   * ---------+-----------------------------------------
+   *  OFF  ON |  64K mode (Max 6128 compatibility)
+   *   ON OFF |  512K Mode
+   *   ON  ON |  1MB mode
+   * ---------+-----------------------------------------
+
+
+
+Rev.
